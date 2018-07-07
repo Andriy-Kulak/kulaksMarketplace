@@ -8,6 +8,9 @@ class Home extends Component {
           <div className="pure-u-1-1">
             <h1>Good to Go!</h1>
             <p>Your Truffle Box is installed and ready.</p>
+            <h2> ----------------------------- </h2>
+              <button onClick={() => (this.props.makeMyselfAdmin())}>Make Myself Admin</button>
+            <h2> ----------------------------- </h2>
             <h2>UPort Authentication</h2>
             <p>This particular box comes with UPort authentication built-in.</p>
             <p>NOTE: To interact with your smart contracts through UPort's web3 instance, make sure they're deployed to the Ropsten testnet.</p>

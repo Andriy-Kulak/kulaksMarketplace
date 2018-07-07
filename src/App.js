@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router'
+import contract from 'truffle-contract'
 import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
 import { HiddenOnlyAuth, VisibleOnlyAuth } from './util/wrappers'
 import getWeb3 from './util/getWeb3'
@@ -44,15 +45,7 @@ class App extends Component {
     })
   }
 
-  instantiateContract() {
-    /*
-     * SMART CONTRACT EXAMPLE
-     *
-     * Normally these functions would be called in the context of a
-     * state management library, but for convenience I've placed them here.
-     */
-
-    const contract = require('truffle-contract')
+  instantiateContract = async() => {
     const simpleStorage = contract(SimpleStorageContract)
     simpleStorage.setProvider(this.state.web3.currentProvider)
 
@@ -60,7 +53,8 @@ class App extends Component {
     var simpleStorageInstance
 
     // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
+    const accounts  = await this.state.web3.eth.getAccounts()
+      console.log('this.state.web3', this.state.web3)
       console.log('accounts =>', accounts)
       simpleStorage.deployed().then((instance) => {
         simpleStorageInstance = instance
@@ -75,7 +69,7 @@ class App extends Component {
         // AK_ADDED
         return this.setState({ storageValue: result.c[0], contract: simpleStorageInstance, account: accounts[0] })
       })
-    })
+    // })
   }
 
   handleClick(event) {

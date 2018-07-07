@@ -58,3 +58,8 @@ The functions in solidity always return transaction hash. You can use constant f
 
 If you need to change state of contract in a function and aslo want to return some value, Events are best possible solution AFAIK.
 
+
+
+
+Ganache-CLI:
+- employ relief bulb heavy choose century label cheap nerve inform lecture word
