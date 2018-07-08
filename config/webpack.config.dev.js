@@ -79,17 +79,20 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-
+  eslint: {
+    configFile: '.eslintrc.json',
+    emitError: false,
+  },
+  rules: [{
+    enforce: 'pre',
+    test: /\.jsx?$/,
+    exclude: /(node_modules|bower_components)/,
+    loader: 'eslint-loader',
+    options: {
+      emitWarning: true
+    }
+  }],
   module: {
-    // First, run the linter.
-    // It's important to do this before Babel processes the JS.
-    preLoaders: [
-      {
-        test: /\.(js|jsx)$/,
-        loader: 'eslint',
-        include: paths.appSrc,
-      }
-    ],
     loaders: [
       // Default loader: load all assets that are not handled
       // by other loaders with the url loader.

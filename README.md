@@ -62,4 +62,4 @@ If you need to change state of contract in a function and aslo want to return so
 
 
 Ganache-CLI:
-- stairs hood meat master planet crime scrap entire electric equal measure skate
+- stairs proud grant kite build element tomorrow soda gentle crazy shock museum
