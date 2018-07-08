@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class Home extends Component {
+class HomeBody extends Component {
   render() {
     return(
       <main className="container">
@@ -41,4 +41,4 @@ class Home extends Component {
   }
 }
 
-export default Home
+export default HomeBody

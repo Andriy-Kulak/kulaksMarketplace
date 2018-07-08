@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import contract from 'truffle-contract'
 import MarketplaceContract from '../../../build/contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
-import Home from '../../layouts/home/Home'
+import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 
 // Styles
@@ -11,7 +11,7 @@ import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import './styles.css'
 
-class App extends Component {
+class Home extends Component {
   constructor(props) {
     super(props)
 
@@ -98,7 +98,7 @@ class App extends Component {
     return (
       <div className="App">
         <Layout>
-          <Home
+          <HomeBody
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}
             makeMyselfAdmin={() => (this.makeMyselfAdmin())} />
@@ -108,4 +108,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default Home
