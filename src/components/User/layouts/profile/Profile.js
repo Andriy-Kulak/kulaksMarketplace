@@ -7,6 +7,7 @@ class Profile extends Component {
   }
 
   render() {
+    console.log('this.props.authData', this.props.authData)
     return(
       <main className="container">
         <div className="pure-g">
