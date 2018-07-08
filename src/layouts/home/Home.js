@@ -13,6 +13,7 @@ class Home extends Component {
             </div>
             <h2> ----------------------------- </h2>
               <button onClick={() => (this.props.makeMyselfAdmin())}>Make Myself Admin</button>
+              <button onClick={() => (this.props.updateValue(20))}>Update Value to 20</button>
             <h2> ----------------------------- </h2>
             <h2>UPort Authentication</h2>
             <p>This particular box comes with UPort authentication built-in.</p>
