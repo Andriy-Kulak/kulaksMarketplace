@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import contract from 'truffle-contract'
-import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
-import { HiddenOnlyAuth, VisibleOnlyAuth } from './util/wrappers'
+import MarketplaceContract from '../build/contracts/KulaksMarketplace.json'
 import getWeb3 from './util/getWeb3'
-
-// UI Components
-import LoginButtonContainer from './user/ui/loginbutton/LoginButtonContainer'
-import LogoutButtonContainer from './user/ui/logoutbutton/LogoutButtonContainer'
+import Home from './layouts/home/Home'
+import Layout from './components/Layout'
 
 // Styles
 import './css/oswald.css'
@@ -46,7 +42,7 @@ class App extends Component {
   }
 
   instantiateContract = async() => {
-    const simpleStorage = contract(SimpleStorageContract)
+    const simpleStorage = contract(MarketplaceContract)
     simpleStorage.setProvider(this.state.web3.currentProvider)
 
     // Declaring this for later so we can chain functions on SimpleStorage.
@@ -72,6 +68,38 @@ class App extends Component {
     // })
   }
 
+  makeMyselfAdmin = async() => {
+    const simpleStorage = contract(MarketplaceContract)
+    simpleStorage.setProvider(this.state.web3.currentProvider)
+
+    // Declaring this for later so we can chain functions on SimpleStorage.
+    var simpleStorageInstance
+
+    // Get accounts.
+    const time = Date.now()
+    const accounts  = await this.state.web3.eth.getAccounts()
+    console.log('time it took to get accounts', Date.now() - time)
+      console.log('this.state.web3', this.state.web3)
+      console.log('accounts =>', accounts)
+      simpleStorage.deployed().then((instance) => {
+        simpleStorageInstance = instance
+        console.log('What is in simpleStorageInstance', simpleStorageInstance)
+
+        // Stores a given value, 5 by default.
+        return simpleStorageInstance.becomeAdmin(null, {from: accounts[0]})
+      }).then((result) => {
+        console.log('CHECK RESULT For becomeAdmin', result)
+        // Get the value from the contract to prove it worked.
+        return simpleStorageInstance.checkIfSenderAdmin.call(accounts[0])
+      }).then((result) => {
+        console.log('CHECK RESULT For checkIfSenderAdmin', result)
+        // Update state with the result.
+        // AK_ADDED
+        // return this.setState({ storageValue: result.c[0], contract: simpleStorageInstance, account: accounts[0] })
+      })
+    // })
+  }
+
   handleClick(event) {
     const contract = this.state.contract
     const account = this.state.account
@@ -87,37 +115,12 @@ class App extends Component {
   }
 
   render() {
-    const OnlyAuthLinks = VisibleOnlyAuth(() =>
-      <span>
-        <li className="pure-menu-item">
-          <Link to="/dashboard" className="pure-menu-link">Dashboard</Link>
-        </li>
-        <li className="pure-menu-item">
-          <Link to="/profile" className="pure-menu-link">Profile</Link>
-        </li>
-        <LogoutButtonContainer />
-      </span>
-    )
-
-    const OnlyGuestLinks = HiddenOnlyAuth(() =>
-      <span>
-        <LoginButtonContainer />
-      </span>
-    )
-
     return (
       <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-          <div style={{color:'white'}}>
-            <p>The stored value is: {this.state.storageValue}</p>
-          </div>
-          <Link to="/" className="pure-menu-heading pure-menu-link">Truffle Box Test</Link>
-          <ul className="pure-menu-list navbar-right">
-            <OnlyGuestLinks />
-            <OnlyAuthLinks />
-          </ul>
-        </nav>
-        {this.props.children}
+        <Layout> 
+          <Home storageValue={this.state.storageValue} makeMyselfAdmin={() => (this.makeMyselfAdmin())} />
+          {this.props.children}
+        </Layout>
       </div>
     );
   }

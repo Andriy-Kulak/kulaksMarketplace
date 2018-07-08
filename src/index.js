@@ -19,11 +19,9 @@ const history = syncHistoryWithStore(browserHistory, store)
 ReactDOM.render((
     <Provider store={store}>
       <Router history={history}>
-        <Route path="/" component={App}>
-          <IndexRoute component={Home} makeMyselfAdmin={() => (console.log('test PASSSSSSSSSSS'))}/>
-          <Route path="dashboard" component={UserIsAuthenticated(Dashboard)} />
-          <Route path="profile" component={UserIsAuthenticated(Profile)} />
-        </Route>
+        <Route path="/" component={App} />
+        <Route path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
+        <Route path="/profile" component={UserIsAuthenticated(Profile)} />
       </Router>
     </Provider>
   ),

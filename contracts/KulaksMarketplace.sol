@@ -21,10 +21,6 @@ contract KulaksMarketplace {
   mapping(address => Store) public stores;
   address[] private storeOwners;
   
-  constructor(address creator) public {
-      admins[creator] = true;
-  }
-  
   modifier shopOwnerOnly() {
     require(shopOwners[msg.sender] == true);
     _;
