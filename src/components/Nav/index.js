@@ -1,8 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router'
 // UI Components
-import LoginButtonContainer from '../../user/ui/loginbutton/LoginButtonContainer'
-import LogoutButtonContainer from '../../user/ui/logoutbutton/LogoutButtonContainer'
+import LoginButtonContainer from '../User/ui/loginbutton/LoginButtonContainer'
+import LogoutButtonContainer from '../User/ui/logoutbutton/LogoutButtonContainer'
 import { HiddenOnlyAuth, VisibleOnlyAuth } from '../../util/wrappers'
 
 const Nav = () => {

@@ -6,9 +6,9 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { UserIsAuthenticated } from './util/wrappers.js'
 
 // Layouts
-import App from './App'
+import App from './containers/App'
 import Dashboard from './layouts/dashboard/Dashboard'
-import Profile from './user/layouts/profile/Profile'
+import Profile from './components/User/layouts/profile/Profile'
 
 // Redux Store
 import store from './store'

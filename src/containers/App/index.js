@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
-import MarketplaceContract from '../build/contracts/KulaksMarketplace.json'
-import getWeb3 from './util/getWeb3'
-import Home from './layouts/home/Home'
-import Layout from './components/Layout'
+import MarketplaceContract from '../../../build/contracts/KulaksMarketplace.json'
+import getWeb3 from '../../util/getWeb3'
+import Home from '../../layouts/home/Home'
+import Layout from '../../components/Layout'
 
 // Styles
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css'
-import './App.css'
+import '../../css/oswald.css'
+import '../../css/open-sans.css'
+import '../../css/pure-min.css'
+import './styles.css'
 
 class App extends Component {
   constructor(props) {

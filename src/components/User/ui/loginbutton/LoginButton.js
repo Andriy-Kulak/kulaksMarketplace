@@ -1,7 +1,7 @@
 import React from 'react'
 
 // Images
-import uPortLogo from '../../../img/uport-logo.svg'
+import uPortLogo from '../../../../img/uport-logo.svg'
 
 const LoginButton = ({ onLoginUserClick }) => {
   return(
