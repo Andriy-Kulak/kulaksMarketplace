@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
-import MarketplaceContract from '../../../build/contracts/KulaksMarketplace.json'
+import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
@@ -49,7 +49,7 @@ class Home extends Component {
     var simpleStorageInstance
 
     // Get accounts.
-    const accounts  = await this.state.web3.eth.getAccounts()
+    const accounts = await this.state.web3.eth.getAccounts()
       console.log('this.state.web3', this.state.web3)
       console.log('accounts =>', accounts)
       MarketContract.deployed().then((instance) => {
@@ -84,7 +84,7 @@ class Home extends Component {
     const { contractInstance, account } = this.state
 
     console.log('contractInstance ---', contractInstance)
-    contractInstance.set(value, {from: account})
+    contractInstance.set(value, { from: account })
       .then(result => {
         console.log('CHECK RESULT For setting new value', result)
         return contractInstance.get.call()
