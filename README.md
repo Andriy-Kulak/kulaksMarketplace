@@ -43,6 +43,7 @@ Notes
 - deploying with Infura and Truffle: https://truffleframework.com/tutorials/using-infura-custom-provider
     1. `truffle compile`
     2. `truffle migrate --network rinkeby`
+    3. `npm run contracts:sync-src`
 - to check your deployed contract:
     1. Go to remix, (Environment should be Injected Web3) and paste in address and click "at Address"
 
