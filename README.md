@@ -61,6 +61,21 @@ If you need to change state of contract in a function and aslo want to return so
 
 
 
+To Deploy Contract To Test Network:
+ - Run `deploy:contracts-rinkeby`. This does 3 things:
+ 1. Compiles contract
+ 2. Deploys it to rinkeby test network and keep tracks of account #
+ 3. copies over the contract json file into `/src..` folder
+ - You can then deploy the app to heroku using heroku cli and it will point to the account on test network. Make sure you have the proper
+
+ To deploy to heroku
+ 1. Install heroku if you don't have it available `brew install heroku/brew/heroku`
+ 2. Login with heroku credentials by entering `heroku login`
+ 3. Create a heroku environment `heroku create __app_name__`
+ 4. Add a remote heroku branch with the git url you created in previous step. (It's the second link.) `git remote add heroku __name_of_heroku_git_link__`
+ 5. Deploy to heroku by entering `git push origin heroku master`
+ 6. If you want to deploy a local brach instead of local master, enter `git push origin heroku your_branch:master`
+
 
 Ganache-CLI:
 - ramp blind chair various dog awake evil mouse melt brother cactus tape
