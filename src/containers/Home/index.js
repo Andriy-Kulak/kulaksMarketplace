@@ -6,10 +6,12 @@ import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 
 // Styles
+import 'antd/dist/antd.css' // eslint-disable-line
 import '../../css/oswald.css'
 import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import './styles.css'
+
 
 class Home extends Component {
   constructor(props) {

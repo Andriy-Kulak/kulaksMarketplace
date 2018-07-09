@@ -9,10 +9,10 @@ const Nav = () => {
   const OnlyAuthLinks = VisibleOnlyAuth(() =>(
     <span>
       <li className="pure-menu-item">
-        <Link to="/dashboard" href="/dashboard" className="pure-menu-link">Dashboard</Link>
+        <Link to="/dashboard" className="pure-menu-link">Dashboard</Link>
       </li>
       <li className="pure-menu-item">
-        <Link to="/profile" href="/profile" className="pure-menu-link">Profile</Link>
+        <Link to="/profile" className="pure-menu-link">Profile</Link>
       </li>
       <LogoutButtonContainer />
     </span>)

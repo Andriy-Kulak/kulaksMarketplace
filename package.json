@@ -53,6 +53,7 @@
     "whatwg-fetch": "1.0.0"
   },
   "dependencies": {
+    "antd": "^3.6.5",
     "prop-types": "^15.6.2",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
@@ -70,6 +71,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "deploy:contracts-rinkeby": "truffle compile && truffle migrate --network rinkeby && npm run contracts:sync-src",
+    "deploy:locally": "truffle compile && truffle migrate --reset && npm run contracts:sync-src",
     "build:contracts": "truffle compile && npm run contracts:sync-src",
     "contracts:sync-src": "rimraf src/contracts && cp -R build/contracts/ src/contracts"
   },

@@ -1,11 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const LogoutButton = ({ onLogoutUserClick }) => {
-  return(
-    <li className="pure-menu-item">
+  return (
+    <li>
       <a href="#" className="pure-menu-link" onClick={(event) => onLogoutUserClick(event)}>Logout</a>
-    </li>
-  )
+    </li>)
+}
+
+LogoutButton.propTypes = {
+  onLogoutUserClick: PropTypes.func.isRequired
 }
 
 export default LogoutButton
