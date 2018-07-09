@@ -63,3 +63,7 @@ If you need to change state of contract in a function and aslo want to return so
 
 Ganache-CLI:
 - ramp blind chair various dog awake evil mouse melt brother cactus tape
+
+
+HEROKU:
+git push heroku-dev ak-adjust-4: master
