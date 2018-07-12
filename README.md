@@ -69,3 +69,8 @@ This repo was built from react-uport truffle scaffold. These were the initial or
 4. paste the mneumonic to metamask and go to localhost:8545
 5. run > truffle migrate --reset
 6. npm run start
+
+
+Biggest frustation so far:
+- figuring out all configs when deploying the application either locally or to a test network
+- sometimes local deployment would work on initial contract method call, but then when I was trying to update the contract, the contract seems to have succeeded
