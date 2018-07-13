@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 const LogoutButton = ({ onLogoutUserClick }) => {
   return (
-    <li>
+    <li className="pure-menu-item">
       <a href="#" className="pure-menu-link" onClick={(event) => onLogoutUserClick(event)}>Logout</a>
     </li>)
 }
