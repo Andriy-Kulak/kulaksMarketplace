@@ -10,10 +10,11 @@ Steps to Set up Uport Account So you Can Sign in
 3. create uport account. Instead of signing in you, use your phone to authenticate requests
 
 Locally Start
-1. run > ganache-cli and copy mneumoic
-2. paste the mneumonic to metamask and go to localhost:8545
-3. run > truffle migrate --reset
-4. npm run start
+1. run > ganache in gui (or ganache-cli with port 7545). Copy mneumonic and paste it in metamask.
+2. create a custom RPC in metamask with `http://localhost:7545` to match local ganache environment
+3. paste the mneumonic to metamask and go to localhost:8545
+4. run > truffle migrate --reset
+5. npm run start
 
 If you were to do deployment of contract to test network from scratch, there are a few initial steps:
 1. Set up infura at https://infura.io/
