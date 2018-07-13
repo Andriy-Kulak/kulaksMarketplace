@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
 
-class Dashboard extends Component {
+class Profile extends Component {
   constructor(props, { authData }) {
     super(props)
     authData = this.props
   }
 
   render() {
-    return(
+    return (
       <main className="container">
         <div className="pure-g">
           <div className="pure-u-1-1">
-            <h1>Dashboard</h1>
-            <p><strong>Congratulations {this.props.authData.name}!</strong> from {this.props.authData.country} If you're seeing this page, you've logged in with UPort successfully.</p>
+            <h1>Profile</h1>
+            <p>Change these details in UPort to see them reflected here.</p>
+            <p>
+              <strong>Name</strong><br />
+              {this.props.authData.name}
+            </p>
           </div>
         </div>
       </main>
@@ -20,4 +24,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard
+export default Profile

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class Home extends Component {
+class HomeBody extends Component {
   render() {
     return(
       <main className="container">
@@ -8,6 +8,13 @@ class Home extends Component {
           <div className="pure-u-1-1">
             <h1>Good to Go!</h1>
             <p>Your Truffle Box is installed and ready.</p>
+            <div>
+              <p>The stored value is: {this.props.storageValue}</p>
+            </div>
+            <h2> ----------------------------- </h2>
+              <button onClick={() => (this.props.makeMyselfAdmin())}>Make Myself Admin</button>
+              <button onClick={() => (this.props.updateValue(20))}>Update Value to 20</button>
+            <h2> ----------------------------- </h2>
             <h2>UPort Authentication</h2>
             <p>This particular box comes with UPort authentication built-in.</p>
             <p>NOTE: To interact with your smart contracts through UPort's web3 instance, make sure they're deployed to the Ropsten testnet.</p>
@@ -34,4 +41,4 @@ class Home extends Component {
   }
 }
 
-export default Home
+export default HomeBody

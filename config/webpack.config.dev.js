@@ -1,23 +1,21 @@
-var autoprefixer = require('autoprefixer');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-var getClientEnvironment = require('./env');
-var paths = require('./paths');
-
-
+const autoprefixer = require('autoprefixer')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
+const getClientEnvironment = require('./env')
+const paths = require('./paths')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-var publicPath = '/';
+const publicPath = '/'
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-var publicUrl = '';
+const publicUrl = ''
 // Get environment variables to inject into our app.
-var env = getClientEnvironment(publicUrl);
+const env = getClientEnvironment(publicUrl)
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -59,7 +57,7 @@ module.exports = {
     // containing code from all our entry points, and the Webpack runtime.
     filename: 'static/js/bundle.js',
     // This is the URL that app is served from. We use "/" in development.
-    publicPath: publicPath
+    publicPath
   },
   resolve: {
     // This allows you to set a fallback for where Webpack should look for modules.
@@ -79,17 +77,20 @@ module.exports = {
       'react-native': 'react-native-web'
     }
   },
-
+  eslint: {
+    configFile: '.eslintrc.json',
+    emitError: false,
+  },
+  rules: [{
+    enforce: 'pre',
+    test: /\.jsx?$/,
+    exclude: /(node_modules|bower_components)/,
+    loader: 'eslint-loader',
+    options: {
+      emitWarning: true
+    }
+  }],
   module: {
-    // First, run the linter.
-    // It's important to do this before Babel processes the JS.
-    preLoaders: [
-      {
-        test: /\.(js|jsx)$/,
-        loader: 'eslint',
-        include: paths.appSrc,
-      }
-    ],
     loaders: [
       // Default loader: load all assets that are not handled
       // by other loaders with the url loader.
@@ -185,15 +186,15 @@ module.exports = {
       // CURRENTLY REMOVED DUE TO INCOMPATIBILITY WITH TRUFFLE 3
       // Compile and migrate contracts manually.
       //
-      /*{
+      /* {
         test: /\.sol$/,
         loader: 'truffle-solidity?network_id=123'
-      }*/
+      } */
     ]
   },
 
   // We use PostCSS for autoprefixing only.
-  postcss: function() {
+  postcss: () => {
     return [
       autoprefixer({
         browsers: [
@@ -203,7 +204,7 @@ module.exports = {
           'not ie < 9', // React doesn't support IE8 anyway
         ]
       }),
-    ];
+    ]
   },
   plugins: [
     // Makes the public URL available as %PUBLIC_URL% in index.html, e.g.:
@@ -239,4 +240,4 @@ module.exports = {
     net: 'empty',
     tls: 'empty'
   }
-};
+}
