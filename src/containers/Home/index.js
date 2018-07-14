@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
-import { getUserBalance } from '../../redux/home/actions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
+import { getUserBalance } from '../../redux/user/actions'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -47,22 +47,22 @@ class Home extends Component {
     const MarketContract = contract(MarketplaceContract)
     MarketContract.setProvider(this.state.web3.currentProvider)
 
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    let simpleStorageInstance
 
     // Get accounts.
     const accounts = await this.state.web3.eth.getAccounts()
-    MarketContract.deployed().then((instance) => {
-      simpleStorageInstance = instance
+    MarketContract.deployed().then((contractInstance) => {
 
-      // Stores a given value, 5 by default.
-      return simpleStorageInstance.set(5, { from: accounts[0] })
-    }).then(() => {
-      // Get the value from the contract to prove it worked.
-      return simpleStorageInstance.get.call(accounts[0])
-    }).then((result) => {
-      // Update state with the result.
-      return this.setState({ storageValue: result.c[0], contractInstance: simpleStorageInstance, account: accounts[0] })
+      // used to test the application to set the value to 5
+      //   // Stores a given value, 5 by default.
+      //   return simpleStorageInstance.set(5, { from: accounts[0] })
+      // }).then(() => {
+      //   // Get the value from the contract to prove it worked.
+      //   return simpleStorageInstance.get.call(accounts[0])
+      // }).then((result) => {
+      //   // Update state with the result.
+      //   return this.setState({ storageValue: result.c[0], contractInstance: simpleStorageInstance, account: accounts[0] })
+
+      return this.setState({ contractInstance, account: accounts[0] })
     })
     // })
   }
@@ -73,29 +73,11 @@ class Home extends Component {
     if (!user) {
       alert('You are not signed in')
     } else {
-      console.log('userEthAddress ===>', user.ethAddress)
-      console.log('web3.eth.', web3.eth)
-      console.log('web3.', web3)
-      // console.log('get balance of EthAddress', web3.fromWei(web3.eth.getBalance(user.ethAddress)))
-      // web3.eth.defaultAccount = user.ethAddress
 
-      // web3.eth.coinbase = user.ethAddress
-
-      // web3.eth.getAccounts((err, acc) => {
-      //   console.log('acc -->', acc)
-      //   each(acc, (e) => {
       dispatch(getUserBalance(web3, user.ethAddress))
-      web3.eth.getBalance(user.ethAddress, (error, result) => {
-        console.log('ERRRORRRRRR', error)
-        if (!error) {
-          console.log('Result from web3', result)
-        }
-      })
-      //   })
-      // })
+
       const { contractInstance, account } = this.state
-      console.log('web 3 account', account)
-      console.log('contractInstance ===>', contractInstance)
+
       // make the logged in user an admin
       contractInstance.becomeAdmin(user.ethAddress, { from: account })
         .then((result) => {
@@ -113,9 +95,7 @@ class Home extends Component {
     if (!user) {
       alert('You are not signed in')
     } else {
-      console.log('userEthAddress ===>', user.ethAddress)
       const { contractInstance, account } = this.state
-      console.log('contractInstance ===>', contractInstance)
       // make the logged in user an admin
       contractInstance.becomeShopOwner(user.ethAddress, { from: account })
         .then((result) => {
