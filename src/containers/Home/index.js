@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
-// import Web3 from 'web3'
-import each from 'lodash/each'
+import { getUserBalance } from '../../redux/home/actions'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
@@ -70,7 +69,7 @@ class Home extends Component {
 
   makeMyselfAdmin = async () => {
     const { web3 } = this.state
-    const { user } = this.props
+    const { user, dispatch } = this.props
     if (!user) {
       alert('You are not signed in')
     } else {
@@ -85,6 +84,7 @@ class Home extends Component {
       // web3.eth.getAccounts((err, acc) => {
       //   console.log('acc -->', acc)
       //   each(acc, (e) => {
+      dispatch(getUserBalance(web3, user.ethAddress))
       web3.eth.getBalance(user.ethAddress, (error, result) => {
         console.log('ERRRORRRRRR', error)
         if (!error) {
