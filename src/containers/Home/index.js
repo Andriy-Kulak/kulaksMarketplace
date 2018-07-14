@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
+// import Web3 from 'web3'
+import each from 'lodash/each'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import HomeBody from '../../components/HomeBody'
@@ -12,11 +16,9 @@ import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import './styles.css'
 
-
 class Home extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       storageValue: 0,
       web3: null,
@@ -67,15 +69,63 @@ class Home extends Component {
   }
 
   makeMyselfAdmin = async () => {
-    const { contractInstance, account } = this.state
-    contractInstance.becomeAdmin(null, { from: account })
-      .then((result) => {
-        console.log('CHECK RESULT For becomeAdmin', result)
-        // Get the value from the contract to prove it worked.
-        return contractInstance.checkIfSenderAdmin.call(account)
-      }).then((result) => {
-        console.log('CHECK RESULT For checkIfSenderAdmin', result)
+    const { web3 } = this.state
+    const { user } = this.props
+    if (!user) {
+      alert('You are not signed in')
+    } else {
+      console.log('userEthAddress ===>', user.ethAddress)
+      console.log('web3.eth.', web3.eth)
+      console.log('web3.', web3)
+      // console.log('get balance of EthAddress', web3.fromWei(web3.eth.getBalance(user.ethAddress)))
+      // web3.eth.defaultAccount = user.ethAddress
+
+      // web3.eth.coinbase = user.ethAddress
+
+      // web3.eth.getAccounts((err, acc) => {
+      //   console.log('acc -->', acc)
+      //   each(acc, (e) => {
+      web3.eth.getBalance(user.ethAddress, (error, result) => {
+        console.log('ERRRORRRRRR', error)
+        if (!error) {
+          console.log('Result from web3', result)
+        }
       })
+      //   })
+      // })
+      const { contractInstance, account } = this.state
+      console.log('web 3 account', account)
+      console.log('contractInstance ===>', contractInstance)
+      // make the logged in user an admin
+      contractInstance.becomeAdmin(user.ethAddress, { from: account })
+        .then((result) => {
+          console.log('CHECK RESULT For becomeAdmin', result)
+          // Get the value from the contract to prove it worked.
+          return contractInstance.checkIfUserAdmin.call(user.ethAddress)
+        }).then((result) => {
+          console.log('CHECK RESULT For checkIfUserAdmin', result)
+        })
+    }
+  }
+
+  makeMyselfShopOwner = async () => {
+    const { user } = this.props
+    if (!user) {
+      alert('You are not signed in')
+    } else {
+      console.log('userEthAddress ===>', user.ethAddress)
+      const { contractInstance, account } = this.state
+      console.log('contractInstance ===>', contractInstance)
+      // make the logged in user an admin
+      contractInstance.becomeShopOwner(user.ethAddress, { from: account })
+        .then((result) => {
+          console.log('CHECK RESULT For becomeAdmin', result)
+          // Get the value from the contract to prove it worked.
+          return contractInstance.checkIfUserShopOwner.call(user.ethAddress)
+        }).then((result) => {
+          console.log('CHECK RESULT For checkIfUserShopOwner', result)
+        })
+    }
   }
 
   handleClick(value) {
@@ -90,6 +140,7 @@ class Home extends Component {
   }
 
   render() {
+    const { user } = this.props
     return (
       <div className="App">
         <Layout>
@@ -97,6 +148,8 @@ class Home extends Component {
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}
             makeMyselfAdmin={() => (this.makeMyselfAdmin())}
+            makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
+            userData={user}
           />
         </Layout>
       </div>
@@ -104,4 +157,12 @@ class Home extends Component {
   }
 }
 
-export default Home
+Home.propTypes = {
+  user: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+  user: state.user.data
+})
+
+export default connect(mapStateToProps)(Home)

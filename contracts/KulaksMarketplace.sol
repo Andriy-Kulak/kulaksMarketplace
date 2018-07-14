@@ -54,34 +54,31 @@ contract KulaksMarketplace {
      );
   }
 
-  function becomeAdmin() public returns (bool) {
-      admins[msg.sender] = true;
+  function becomeAdmin(address adminAddress) public returns (bool) {
+      admins[adminAddress] = true;
   }
   
-  function becomeShopOwner() public returns (bool) {
-      shopOwners[msg.sender] = true;
+  function becomeShopOwner(address ownerAddress) public returns (bool) {
+      shopOwners[ownerAddress] = true;
   }
   
   
-  function checkIfSenderAdmin () public view returns (bool) {
-      if(admins[msg.sender] == true) {
+  function checkIfUserAdmin (address checkAddress) public view returns (bool) {
+      if(admins[checkAddress] == true) {
           return true;
       } else {
           return false;
       }
   }
   
-  function checkIfSenderShopOwners () public view returns (bool) {
-      if(shopOwners[msg.sender] == true) {
+  function checkIfUserShopOwner (address checkAddress) public view returns (bool) {
+      if(shopOwners[checkAddress] == true) {
           return true;
       } else {
           return false;
       }
   }
   
-  
-
-
   function set(uint x) public {
     storedData = x;
   }

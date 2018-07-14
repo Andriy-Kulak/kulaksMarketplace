@@ -1,19 +1,28 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 class HomeBody extends Component {
+  constructor() {
+    super()
+    this.state = {
+      key: 1
+    }
+  }
   render() {
-    return(
+    const { makeMyselfAdmin, updateValue, storageValue, makeMyselfShopOwner } = this.props
+    return (
       <main className="container">
         <div className="pure-g">
           <div className="pure-u-1-1">
             <h1>Good to Go!</h1>
             <p>Your Truffle Box is installed and ready.</p>
             <div>
-              <p>The stored value is: {this.props.storageValue}</p>
+              <p>The stored value is: {storageValue}</p>
             </div>
             <h2> ----------------------------- </h2>
-              <button onClick={() => (this.props.makeMyselfAdmin())}>Make Myself Admin</button>
-              <button onClick={() => (this.props.updateValue(20))}>Update Value to 20</button>
+            <button onClick={() => (makeMyselfAdmin())}>Make Myself Admin</button>
+            <button onClick={() => (makeMyselfShopOwner())}>Make Myself Shop Owner</button>
+            <button onClick={() => (updateValue(20))}>Update Value to 20</button>
             <h2> ----------------------------- </h2>
             <h2>UPort Authentication</h2>
             <p>This particular box comes with UPort authentication built-in.</p>
@@ -33,12 +42,19 @@ class HomeBody extends Component {
               {"Hello { this.props.authData.name }!"}
             </code></pre>
             <h3>Further Reading</h3>
-            <p>The React/Redux portions of the authentication fuctionality are provided by <a href="https://github.com/mjrussell/redux-auth-wrapper" target="_blank">mjrussell/redux-auth-wrapper</a>.</p>
+            <p>The React/Redux portions of the authentication fuctionality are provided by <a href="https://github.com/mjrussell/redux-auth-wrapper" target="_blank" rel="noopener noreferrer">mjrussell/redux-auth-wrapper</a>.</p>
           </div>
         </div>
       </main>
     )
   }
+}
+
+HomeBody.propTypes = {
+  makeMyselfAdmin: PropTypes.func.isRequired,
+  updateValue: PropTypes.func.isRequired,
+  storageValue: PropTypes.number.isRequired,
+  makeMyselfShopOwner: PropTypes.func.isRequired
 }
 
 export default HomeBody

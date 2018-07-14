@@ -75,3 +75,24 @@ This repo was built from react-uport truffle scaffold. These were the initial or
 Biggest frustation so far:
 - figuring out all configs when deploying the application either locally or to a test network
 - sometimes local deployment would work on initial contract method call, but then when I was trying to update the contract, the contract seems to have succeeded
+
+
+
+Getting account balances:
+- https://stackoverflow.com/questions/32312884/how-do-i-get-the-balance-of-an-account-in-ethereum
+```
+web3.eth.defaultAccount = user.ethAddress
+web3.eth.coinbase = user.ethAddress
+
+web3.eth.getAccounts((err, acc) => {
+  console.log('acc -->', acc)
+  each(acc, (e) => {
+    web3.eth.getBalance(e, (error, result) => {
+      if (!error) {
+        console.log(e + ': ' + result)
+        console.log('Result from web3', result)
+      }
+    })
+  })
+})
+```
