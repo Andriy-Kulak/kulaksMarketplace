@@ -9,7 +9,7 @@ class HomeBody extends Component {
     }
   }
   render() {
-    const { makeMyselfAdmin, updateValue, storageValue, makeMyselfShopOwner } = this.props
+    const { makeMyselfAdmin, updateValue, storageValue, makeMyselfShopOwner, userData, userAcctBalance } = this.props
     return (
       <main className="container">
         <div className="pure-g">
@@ -24,6 +24,10 @@ class HomeBody extends Component {
             <button onClick={() => (makeMyselfShopOwner())}>Make Myself Shop Owner</button>
             <button onClick={() => (updateValue(20))}>Update Value to 20</button>
             <h2> ----------------------------- </h2>
+            {userAcctBalance !== null &&
+            <div>
+              The user's account currently has: {userAcctBalance} Eth
+            </div>}
             <h2>UPort Authentication</h2>
             <p>This particular box comes with UPort authentication built-in.</p>
             <p>NOTE: To interact with your smart contracts through UPort's web3 instance, make sure they're deployed to the Ropsten testnet.</p>

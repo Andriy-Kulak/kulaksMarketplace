@@ -73,7 +73,6 @@ class Home extends Component {
     if (!user) {
       alert('You are not signed in')
     } else {
-
       dispatch(getUserBalance(web3, user.ethAddress))
 
       const { contractInstance, account } = this.state
@@ -114,13 +113,13 @@ class Home extends Component {
       .then(() => {
         return contractInstance.get.call()
           .then((getResult) => {
-            return this.setState({ storageValue: getResult.c[0]})
+            return this.setState({ storageValue: getResult.c[0] })
           })
       })
   }
 
   render() {
-    const { user } = this.props
+    const { user, userAcctBalance } = this.props
     return (
       <div className="App">
         <Layout>
@@ -130,6 +129,7 @@ class Home extends Component {
             makeMyselfAdmin={() => (this.makeMyselfAdmin())}
             makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
             userData={user}
+            userAcctBalance={userAcctBalance}
           />
         </Layout>
       </div>
@@ -138,11 +138,13 @@ class Home extends Component {
 }
 
 Home.propTypes = {
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  userAcctBalance: PropTypes.number.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  user: state.user.data
+  user: state.user.data,
+  userAcctBalance: state.user.userAcctBalance
 })
 
 export default connect(mapStateToProps)(Home)
