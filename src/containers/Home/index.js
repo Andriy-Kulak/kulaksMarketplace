@@ -7,6 +7,7 @@ import getWeb3 from '../../util/getWeb3'
 import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 import { getUserBalance } from '../../redux/user/actions'
+import { createStore } from '../../redux/shops/actions'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -44,13 +45,20 @@ class Home extends Component {
   }
 
   instantiateContract = async () => {
+    const { web3 } = this.state
     const MarketContract = contract(MarketplaceContract)
-    MarketContract.setProvider(this.state.web3.currentProvider)
+    MarketContract.setProvider(web3.currentProvider)
 
 
     // Get accounts.
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
+
+      // contractInstance.send(web3.toWei(10, "ether")).then(function(result, e) {
+      //   // Same result object as above.
+      //   console.log('RESULT ===========', result)
+      //   console.log('ERROR ===========', e)
+      // });
 
       // used to test the application to set the value to 5
       //   // Stores a given value, 5 by default.
@@ -89,6 +97,20 @@ class Home extends Component {
     }
   }
 
+  createStore = () => {
+    const { user, dispatch } = this.props
+    if (!user) {
+      alert('You are not signed in')
+    } else {
+      dispatch(createStore({
+        name: 'Test Name',
+        type: 'TEst Type',
+        description: 'Test Description',
+        address: user.ethAddress
+      }))
+    }
+  }
+
   makeMyselfShopOwner = async () => {
     const { user } = this.props
     if (!user) {
@@ -118,11 +140,22 @@ class Home extends Component {
       })
   }
 
+  testBalance = async () => {
+    const { contractInstance, account } = this.state
+    const result = await contractInstance.testBalance.call()
+    console.log('BALANCE ======>>', result)
+  }
+
   render() {
     const { user, userAcctBalance } = this.props
     return (
       <div className="App">
         <Layout>
+          <div style={{ paddingTop: '100px' }}>
+            <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
+            <button onClick={() => (this.createStore())}> Create STORE</button>
+          </div>
+          
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}
@@ -139,7 +172,8 @@ class Home extends Component {
 
 Home.propTypes = {
   user: PropTypes.object.isRequired,
-  userAcctBalance: PropTypes.number.isRequired
+  userAcctBalance: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({

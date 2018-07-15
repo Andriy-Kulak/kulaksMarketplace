@@ -1,0 +1,1 @@
+export const CREATE_SHOP = 'shop/CREATE_SHOP'

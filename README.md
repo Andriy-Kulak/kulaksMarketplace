@@ -96,3 +96,9 @@ web3.eth.getAccounts((err, acc) => {
   })
 })
 ```
+
+
+Limitations of solidity:
+- cannot send back objects
+- cannot send arrays of uknown length
+-  there is no optional parameters in Solidity
