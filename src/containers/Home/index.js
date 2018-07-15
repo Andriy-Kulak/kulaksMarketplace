@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import contract from 'truffle-contract'
+import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
@@ -8,6 +9,9 @@ import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 import { getUserBalance } from '../../redux/user/actions'
 import { createStore } from '../../redux/shops/actions'
+import { loadingModal } from '../../redux/modal/actions'
+
+import DefaultModal from '../../components/Modal'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -77,11 +81,11 @@ class Home extends Component {
 
   makeMyselfAdmin = async () => {
     const { web3 } = this.state
-    const { user, dispatch } = this.props
+    const { user, actions } = this.props
     if (!user) {
       alert('You are not signed in')
     } else {
-      dispatch(getUserBalance(web3, user.ethAddress))
+      actions.getUserBalance(web3, user.ethAddress)
 
       const { contractInstance, account } = this.state
 
@@ -98,16 +102,16 @@ class Home extends Component {
   }
 
   createStore = () => {
-    const { user, dispatch } = this.props
+    const { user, actions } = this.props
     if (!user) {
       alert('You are not signed in')
     } else {
-      dispatch(createStore({
+      actions.createStore({
         name: 'Test Name',
         type: 'TEst Type',
         description: 'Test Description',
         address: user.ethAddress
-      }))
+      })
     }
   }
 
@@ -146,14 +150,20 @@ class Home extends Component {
     console.log('BALANCE ======>>', result)
   }
 
+  loadingTrigger = () => {
+    const { actions } = this.props
+    return actions.loadingModal()
+  }
+
   render() {
-    const { user, userAcctBalance } = this.props
+    const { user, userAcctBalance, modal } = this.props
     return (
       <div className="App">
         <Layout>
           <div style={{ paddingTop: '100px' }}>
             <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
             <button onClick={() => (this.createStore())}> Create STORE</button>
+            <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
           </div>
           
           <HomeBody
@@ -164,6 +174,11 @@ class Home extends Component {
             userData={user}
             userAcctBalance={userAcctBalance}
           />
+          <DefaultModal
+            active={modal.active}
+            header={modal.header}
+            body={modal.body}
+          />
         </Layout>
       </div>
     )
@@ -173,12 +188,22 @@ class Home extends Component {
 Home.propTypes = {
   user: PropTypes.object.isRequired,
   userAcctBalance: PropTypes.number.isRequired,
-  dispatch: PropTypes.func.isRequired
+  actions: PropTypes.object.isRequired,
+  modal: PropTypes.object.isRequired
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators({
+    loadingModal,
+    getUserBalance,
+    createStore
+  }, dispatch),
+})
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
+  modal: state.modal,
   userAcctBalance: state.user.userAcctBalance
 })
 
-export default connect(mapStateToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
