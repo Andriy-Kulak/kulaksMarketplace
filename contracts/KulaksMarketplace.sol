@@ -6,7 +6,15 @@ contract KulaksMarketplace {
     string name;
     string description;
     uint price;
+    uint storeId;
     
+  }
+  struct PurchaseTransaction {
+      address purchasedBy;
+      uint[] products;
+      uint subtotal;
+      uint shippingAndHandling;
+      uint totalCost;
   }
   struct Store {
     uint id;
@@ -14,19 +22,24 @@ contract KulaksMarketplace {
     string storeType;
     string description;
     address owner;
-    // Product[] products;
   }
   
   constructor () public payable {
       storeCount = 1;
+      productCount = 1;
+      transactionCount = 1;
   }
+  uint productCount;
   uint storedData;
   uint storeCount;
-  mapping(address => bool) public admins;
-  mapping(address => bool) public shopOwners;
-  mapping(uint => Store) public stores;
-  mapping(address => uint[]) public storeIds;
+  uint transactionCount;
+  mapping(address => bool) public admins; // enter an address to confirm if it's an admin
+  mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
+  mapping(uint => Store) public stores; // enter storeId to get info about the store
+  mapping(address => uint[]) public storeIds; // enter an address to get an array of creates stores for the particular shopOwner
+  mapping(uint => uint[]) public productIds; // enter a storeId to get an array of created products for the particular store
   address[] private storeOwners;
+  mapping(uint => Product) public storeProducts;
   
   modifier shopOwnerOnly() {
     require(shopOwners[msg.sender] == true);
@@ -39,16 +52,16 @@ contract KulaksMarketplace {
   }
   
   
-  function createStore(string _name, string _storeType, string _description) public shopOwnerOnly {
+  function createStore(string _name, string _storeType, string _description) public {
      uint id = storeCount;
+     
      Store memory newStore = Store({
        id: id,
        name: _name,
        description: _description,
        storeType: _storeType,
        owner: msg.sender
-       // products: new Product[](0)
-    });
+     });
 
       // need to add a
      stores[id] = newStore;
@@ -57,6 +70,43 @@ contract KulaksMarketplace {
      // increment counter by 1 since you are using it for id's for stores as well
     storeCount++;
     // stores.push(newStore);
+  }
+  
+  function createStoreTest() public {
+     uint id = storeCount;
+     
+     Store memory newStore = Store({
+       id: id,
+       name: "TEST 3333333333",
+       description: "TEST 3333333333",
+       storeType: "TEST 3333333333",
+       owner: 0xca35b7d915458ef540ade6068dfe2f44e8fa733c
+     });
+
+      // need to add a
+     stores[id] = newStore;
+     
+     storeIds[msg.sender].push(id);
+     // increment counter by 1 since you are using it for id's for stores as well
+    storeCount++;
+    // stores.push(newStore);
+  }
+  
+  function createProduct(uint _storeId, string _name, string _description, uint _price) public shopOwnerOnly {
+     uint id = productCount;
+     
+     Product memory newProduct = Product({
+       id: id,
+       storeId: _storeId,
+       name: _name,
+       description: _description,
+       price: _price
+     });
+     
+     storeProducts[id] = newProduct; // adding a product to storeProducts mapping
+     productIds[_storeId].push(id); // pushing the product id to be refernced in the store struct
+     productCount ++;
+    
   }
   
   function doesUserHaveStores () public view returns(bool, uint) {

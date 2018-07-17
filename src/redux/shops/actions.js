@@ -7,11 +7,14 @@ function storeCreated(result) {
   })
 }
 
-export function createStore({ contractInstance, name, type, description, address }) {
+export function createStore({ contractInstance, name, type, description, account }) {
   return (dispatch) => {
-    contractInstance.createStore(name, type, description, { from: address }).then((result) => {
-      console.log('CREATED STORE RESULT =========', )
+    contractInstance.createStore(name, type, description, { from: account, gas: 550000 }).then((result) => {
+      console.log('CREATED STORE RESULT =========', result)
       dispatch(storeCreated(result))
+    }).catch((e) => {
+      console.log('ERROR', e)
+      console.log('ERROR message', e.message)
     })
   }
 }

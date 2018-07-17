@@ -58,25 +58,8 @@ class Home extends Component {
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
 
-      // contractInstance.send(web3.toWei(10, "ether")).then(function(result, e) {
-      //   // Same result object as above.
-      //   console.log('RESULT ===========', result)
-      //   console.log('ERROR ===========', e)
-      // });
-
-      // used to test the application to set the value to 5
-      //   // Stores a given value, 5 by default.
-      //   return simpleStorageInstance.set(5, { from: accounts[0] })
-      // }).then(() => {
-      //   // Get the value from the contract to prove it worked.
-      //   return simpleStorageInstance.get.call(accounts[0])
-      // }).then((result) => {
-      //   // Update state with the result.
-      //   return this.setState({ storageValue: result.c[0], contractInstance: simpleStorageInstance, account: accounts[0] })
-
       return this.setState({ contractInstance, account: accounts[0] })
     })
-    // })
   }
 
   makeMyselfAdmin = async () => {
@@ -101,19 +84,6 @@ class Home extends Component {
     }
   }
 
-  createStore = () => {
-    const { user, actions } = this.props
-    if (!user) {
-      alert('You are not signed in')
-    } else {
-      actions.createStore({
-        name: 'Test Name',
-        type: 'TEst Type',
-        description: 'Test Description',
-        address: user.ethAddress
-      })
-    }
-  }
 
   makeMyselfShopOwner = async () => {
     const { user } = this.props
@@ -133,6 +103,20 @@ class Home extends Component {
     }
   }
 
+  createStore = () => {
+    const { actions } = this.props
+    const { contractInstance, account } = this.state
+    // make the logged in user an admin
+    // ({ contractInstance, name, type, description, address })
+    actions.createStore({
+      contractInstance,
+      name: 'test Name 1',
+      type: 'test Store Type 1',
+      description: 'test Description',
+      account
+    })
+  }
+
   handleClick(value) {
     const { contractInstance, account } = this.state
     contractInstance.set(value, { from: account })
@@ -145,7 +129,7 @@ class Home extends Component {
   }
 
   testBalance = async () => {
-    const { contractInstance, account } = this.state
+    const { contractInstance } = this.state
     const result = await contractInstance.testBalance.call()
     console.log('BALANCE ======>>', result)
   }
@@ -153,6 +137,18 @@ class Home extends Component {
   loadingTrigger = () => {
     const { actions } = this.props
     return actions.loadingModal()
+  }
+
+  testSender = async () => {
+    const { contractInstance } = this.state
+    const result = await contractInstance.testSender.call()
+    console.log('testSender RESULT ======>>', result)
+  }
+
+  getFirstStore = async () => {
+    const { contractInstance } = this.state
+    const result = await contractInstance.getStoreInfo.call(1)
+    console.log('getFirstStore RESULT ======>>', result)
   }
 
   render() {
@@ -164,8 +160,10 @@ class Home extends Component {
             <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
             <button onClick={() => (this.createStore())}> Create STORE</button>
             <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
+            <button onClick={() => (this.testSender())}> Test SENDER</button>
+            <button onClick={() => (this.getFirstStore())}> Get First Store</button>
           </div>
-          
+
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}
@@ -185,9 +183,14 @@ class Home extends Component {
   }
 }
 
+Home.defaultProps = {
+  user: null,
+  userAcctBalance: null
+}
+
 Home.propTypes = {
-  user: PropTypes.object.isRequired,
-  userAcctBalance: PropTypes.number.isRequired,
+  user: PropTypes.object,
+  userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired
 }

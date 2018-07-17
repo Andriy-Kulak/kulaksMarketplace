@@ -17,10 +17,15 @@ const DefaultModal = ({ active, header, body }) => {
   )
 }
 
+DefaultModal.defaultProps = {
+  header: null,
+  body: null
+}
+
 DefaultModal.propTypes = {
   active: PropTypes.bool.isRequired,
-  header: PropTypes.string.isRequired,
-  body: PropTypes.string.isRequired
+  header: PropTypes.string,
+  body: PropTypes.string
 }
 
 export default DefaultModal

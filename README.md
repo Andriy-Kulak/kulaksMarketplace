@@ -11,7 +11,7 @@ Steps to Set up Uport Account So you Can Sign in
 
 Locally Start
 1. run > ganache in gui (or ganache-cli with port 7545). Copy mneumonic and paste it in metamask.
-2. create a custom RPC in metamask with `http://localhost:7545` to match local ganache environment
+2. create a custom RPC in metamask with `http://127.0.0.1:7545` to match local ganache environment
 3. paste the mneumonic to metamask and go to localhost:8545
 4. run > truffle migrate --reset
 5. npm run start
