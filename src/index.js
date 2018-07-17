@@ -8,6 +8,7 @@ import { UserIsAuthenticated } from './util/wrappers'
 // Layouts
 import Dashboard from './containers/Dashboard'
 import Home from './containers/Home'
+import ShopOwner from './containers/ShopOwner'
 import Profile from './components/User/layouts/profile/Profile'
 
 // Redux Store
@@ -21,6 +22,7 @@ ReactDOM.render((
       <Route path="/" component={Home} />
       <Route path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
       <Route path="/profile" component={UserIsAuthenticated(Profile)} />
+      <Route path="/shopowner" component={ShopOwner} />
     </Router>
   </Provider>
 ),

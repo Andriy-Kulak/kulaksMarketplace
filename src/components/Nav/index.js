@@ -27,6 +27,9 @@ const Nav = () => {
     <nav className="navbar pure-menu pure-menu-horizontal">
       <Link to="/" className="pure-menu-heading pure-menu-link">Truffle Scaffold with UPort and eth Contract</Link>
       <ul className="pure-menu-list navbar-right">
+        <li className="pure-menu-item">
+          <Link to="/shopowner" className="pure-menu-heading pure-menu-link">Shop Owner</Link>
+        </li>
         <OnlyGuestLinks />
         <OnlyAuthLinks />
       </ul>

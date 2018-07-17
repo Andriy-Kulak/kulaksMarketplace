@@ -72,25 +72,6 @@ contract KulaksMarketplace {
     // stores.push(newStore);
   }
   
-  function createStoreTest() public {
-     uint id = storeCount;
-     
-     Store memory newStore = Store({
-       id: id,
-       name: "TEST 3333333333",
-       description: "TEST 3333333333",
-       storeType: "TEST 3333333333",
-       owner: 0xca35b7d915458ef540ade6068dfe2f44e8fa733c
-     });
-
-      // need to add a
-     stores[id] = newStore;
-     
-     storeIds[msg.sender].push(id);
-     // increment counter by 1 since you are using it for id's for stores as well
-    storeCount++;
-    // stores.push(newStore);
-  }
   
   function createProduct(uint _storeId, string _name, string _description, uint _price) public shopOwnerOnly {
      uint id = productCount;
@@ -109,7 +90,7 @@ contract KulaksMarketplace {
     
   }
   
-  function doesUserHaveStores () public view returns(bool, uint) {
+  function doesOwnerHaveStores () public view returns(bool, uint) {
       if(storeIds[msg.sender].length > 0) {
           return(true,  storeIds[msg.sender].length);
       } else {

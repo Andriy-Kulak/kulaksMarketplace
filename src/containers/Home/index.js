@@ -5,13 +5,19 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
-import HomeBody from '../../components/HomeBody'
-import Layout from '../../components/Layout'
+
+
+// actions
 import { getUserBalance } from '../../redux/user/actions'
-import { createStore } from '../../redux/shops/actions'
+import { createStore, getAllStoresByOwner } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
+// components
+import HomeBody from '../../components/HomeBody'
+import Layout from '../../components/Layout'
+import CreateStore from '../../components/CreateStore'
 import DefaultModal from '../../components/Modal'
+import StoreList from '../../components/StoreList'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -50,6 +56,7 @@ class Home extends Component {
 
   instantiateContract = async () => {
     const { web3 } = this.state
+    const { actions } = this.props
     const MarketContract = contract(MarketplaceContract)
     MarketContract.setProvider(web3.currentProvider)
 
@@ -57,7 +64,6 @@ class Home extends Component {
     // Get accounts.
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
-
       return this.setState({ contractInstance, account: accounts[0] })
     })
   }
@@ -103,18 +109,26 @@ class Home extends Component {
     }
   }
 
-  createStore = () => {
+  createStore = ({ name, type, description }) => {
+    if (!name || !type || !description) {
+      alert('You did not provide a name, type or description for the store')
+    }
+
     const { actions } = this.props
     const { contractInstance, account } = this.state
-    // make the logged in user an admin
-    // ({ contractInstance, name, type, description, address })
     actions.createStore({
       contractInstance,
-      name: 'test Name 1',
-      type: 'test Store Type 1',
-      description: 'test Description',
+      name,
+      type,
+      description,
       account
     })
+  }
+
+  getAllStoresByOwner = () => {
+    const { contractInstance, account } = this.state
+    const { actions } = this.props
+    actions.getAllStoresByOwner({ contractInstance, account })
   }
 
   handleClick(value) {
@@ -152,17 +166,23 @@ class Home extends Component {
   }
 
   render() {
-    const { user, userAcctBalance, modal } = this.props
+    const { user, userAcctBalance, modal, shops } = this.props
+    console.log('shops', shops.owner)
     return (
       <div className="App">
         <Layout>
-          <div style={{ paddingTop: '100px' }}>
+          <div style={{ paddingTop: '10px' }}>
             <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
             <button onClick={() => (this.createStore())}> Create STORE</button>
             <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
             <button onClick={() => (this.testSender())}> Test SENDER</button>
             <button onClick={() => (this.getFirstStore())}> Get First Store</button>
+            <button onClick={() => (this.getAllStoresByOwner())}> Get All Stores By Owner</button>
           </div>
+
+          <CreateStore onSubmit={(values) => (this.createStore({ ...values }))} />
+
+          <StoreList storeList={shops.owner} />
 
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
@@ -199,14 +219,16 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     loadingModal,
     getUserBalance,
-    createStore
+    createStore,
+    getAllStoresByOwner,
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
   modal: state.modal,
-  userAcctBalance: state.user.userAcctBalance
+  userAcctBalance: state.user.userAcctBalance,
+  shops: state.shops
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
