@@ -17,7 +17,7 @@ import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 import CreateStore from '../../components/CreateStore'
 import DefaultModal from '../../components/Modal'
-import StoreList from '../../components/StoreList'
+import ShopList from '../../components/ShopList'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -184,7 +184,7 @@ class Home extends Component {
 
           <CreateStore onSubmit={(values) => (this.createStore({ ...values }))} />
 
-          <StoreList storeList={shops.owner} />
+          <ShopList shopList={shops.owner} />
 
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
