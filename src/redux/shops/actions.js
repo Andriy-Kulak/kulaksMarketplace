@@ -38,7 +38,7 @@ export function getAllShopsByOwner({ contractInstance, account }) {
         console.log('ARE WE GETTING HEREEEE', x)
         if (x[0] === true && x[1].c[0]) {
           const storeId = x[1].c[0]
-          getShopInfoArray.push(contractInstance.getShopInfo(storeId, { from: account }))
+          getShopInfoArray.push(contractInstance.stores(storeId, { from: account }))
         }
       })
       console.log('getStoreInfoArray ==>', getShopInfoArray)

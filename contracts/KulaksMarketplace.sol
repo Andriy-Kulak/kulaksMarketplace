@@ -68,14 +68,14 @@ contract KulaksMarketplace {
       // need to add a
      stores[id] = newStore;
      
+     // push the storeId to a storeIds mapping for reference
      storeIds[msg.sender].push(id);
      // increment counter by 1 since you are using it for id's for stores as well
     storeCount++;
-    // stores.push(newStore);
   }
   
   
-  function createProduct(uint _storeId, string _name, string _description, uint _price) public shopOwnerOnly {
+  function createProduct(uint _storeId, string _name, string _description, uint _price) public {
      uint id = productCount;
      
      Product memory newProduct = Product({
