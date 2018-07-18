@@ -64,7 +64,8 @@ class Home extends Component {
     // Get accounts.
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
-      return this.setState({ contractInstance, account: accounts[0] })
+      this.setState({ contractInstance, account: accounts[0] })
+      return this.getAllStoresByOwner()
     })
   }
 

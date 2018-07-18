@@ -4,17 +4,19 @@ import { StyledContainer } from './styles'
 
 const ShopList = ({ shopList }) => {
   return (
-    <StyledContainer>
+    <div>
       <h2>Stores Owned:</h2>
-      {shopList.map((x) => (
-        <div key={x.id}>
-          <h3>Name: {x.name}</h3>
-          <p>id: {x.id}</p>
-          <p>Type: {x.type}</p>
-          <p>Description: {x.description}</p>
-        </div>
-      ))}
-    </StyledContainer>
+      <StyledContainer>
+        {shopList.map((x) => (
+          <div key={x.id}>
+            <h3>Name: {x.name}</h3>
+            <p>id: {x.id}</p>
+            <p>Type: {x.type}</p>
+            <p>Description: {x.description}</p>
+          </div>
+        ))}
+      </StyledContainer>
+    </div>
   )
 }
 

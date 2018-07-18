@@ -1,25 +1,8 @@
+import { reset } from 'redux-form'
 import { CREATE_SHOP, GET_ALL_OWNER_STORES } from './constants'
 
-function shopCreated(result) {
-  return ({
-    type: CREATE_SHOP,
-    payload: result
-  })
-}
-
-export function createShop({ contractInstance, name, type, description, account }) {
-  return (dispatch) => {
-    contractInstance.createStore(name, type, description, { from: account, gas: 550000 }).then((result) => {
-      console.log('CREATED STORE RESULT =========', result)
-      dispatch(shopCreated(result))
-    }).catch((e) => {
-      console.log('ERROR', e)
-      console.log('ERROR message', e.message)
-    })
-  }
-}
-
 export function getAllShopsByOwner({ contractInstance, account }) {
+  const start = Date.now()
   return async (dispatch) => {
     // checking if shopOwner has created stores
     const response = await contractInstance.doesOwnerHaveShops({ from: account })
@@ -71,10 +54,34 @@ export function getAllShopsByOwner({ contractInstance, account }) {
           shopsArray.push({ id, name, type, description, owner })
         }
       })
+      console.log('time it took to get all stores', Date.now() - start)
       return dispatch({
         type: GET_ALL_OWNER_STORES,
         payload: shopsArray
       })
     }
+  }
+}
+
+function shopCreated(result) {
+  return ({
+    type: CREATE_SHOP,
+    payload: result
+  })
+}
+
+export function createShop({ contractInstance, name, type, description, account }) {
+  return (dispatch) => {
+    contractInstance.createStore(name, type, description, { from: account, gas: 550000 }).then((result) => {
+      console.log('CREATED STORE RESULT =========', result)
+      dispatch(shopCreated(result))
+      dispatch(reset('newStore')) // clear fields from newStore form
+
+      // trigger methods so you get the latest list of shops
+      dispatch(getAllShopsByOwner({ contractInstance, account }))
+    }).catch((e) => {
+      console.log('ERROR', e)
+      console.log('ERROR message', e.message)
+    })
   }
 }
