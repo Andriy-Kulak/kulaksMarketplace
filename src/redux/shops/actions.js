@@ -7,7 +7,7 @@ function storeCreated(result) {
   })
 }
 
-export function createStore({ contractInstance, name, type, description, account }) {
+export function createShop({ contractInstance, name, type, description, account }) {
   return (dispatch) => {
     contractInstance.createStore(name, type, description, { from: account, gas: 550000 }).then((result) => {
       console.log('CREATED STORE RESULT =========', result)
@@ -19,53 +19,57 @@ export function createStore({ contractInstance, name, type, description, account
   }
 }
 
-export function getAllStoresByOwner({ contractInstance, account }) {
+export function getAllShopsByOwner({ contractInstance, account }) {
   return async (dispatch) => {
-    const response = await contractInstance.doesOwnerHaveStores.call({ from: account })
+    // checking if shopOwner has created stores
+    const response = await contractInstance.doesOwnerHaveShops.call({ from: account })
     console.log('RESPOND FROM GET ALL STORES ====>', response)
     if (response[0] === false) {
-      dispatch({
+      return dispatch({
         type: GET_ALL_OWNER_STORES,
         payload: [] // owner does not have any stores so return back an empty array
       })
     }
     const lengthOfArray = response[1].c[0]
-    console.log('reponse[1].c[0]', lengthOfArray)
-
-    // Promise.all([contractInstance.getStoreInfo.call(1), contractInstance.getStoreInfo.call(4)]).then((result) => {
-    //   console.log('Promise result TEST 23423423', result)
-    // })
+    console.log('reponse[1].c[0] lengthOfArray', lengthOfArray)
 
     if (response[0] === true && response[1] && response[1].c[0]) {
       let counter = 0
-      const storesArray = []
+      const shopsArray = []
+      const getStoreIdsArray = []
+      const getStoreInfoArray = []
 
       while (counter < lengthOfArray) {
-        contractInstance.getStoreIdByOrder(counter, { from: account }).then((storeIdResp) => {
-          console.log('1111 storeIdResponse =====>', storeIdResp)
-
-          if (storeIdResp[0] === true && storeIdResp[1].c[0]) {
-            const storeId = storeIdResp[1].c[0]
-            console.log('222 storeIdResp[1].c[0]', storeIdResp[1].c[0])
-            contractInstance.getStoreInfo(storeId, { from: account }).then((storeInfoResp) => {
-              console.log('33333', storeInfoResp)
-              storesArray.push({
-                id: storeId,
-                name: storeInfoResp[0],
-                type: storeInfoResp[1],
-                description: storeInfoResp[2],
-                owner: storeInfoResp[3],
-              })
-            })
-          }
-        })
-        console.log('444 counter ----', counter)
+        getStoreIdsArray.push(contractInstance.getShopIdByOrder(counter))
+        console.log('counter ----', counter)
         counter += 1
       }
-      console.log('GETTING wedfwdfwdfsdfsdfsdfsdfsdfsdfsdf', storesArray)
+
+      const storeIdResp = await Promise.all(getStoreIdsArray)
+      console.log('storeIdResp ==>', storeIdResp)
+      console.log('getStoreIdsArray ==>', getStoreIdsArray)
+      storeIdResp.forEach((x) => {
+        console.log('ARE WE GETTING HEREEEE', x)
+        if (x[0] === true && x[1].c[0]) {
+          const storeId = x[1].c[0]
+          getStoreInfoArray.push(contractInstance.getShopInfo(storeId, { from: account }))
+        }
+      })
+      console.log('getStoreInfoArray ==>', getStoreInfoArray)
+      const storeInfoResp = await Promise.all(getStoreInfoArray)
+      console.log('storeInfoResp ==>', storeInfoResp)
+      storeInfoResp.forEach((x) => {
+        shopsArray.push({
+          id: x[0].c[0],
+          name: x[1],
+          type: x[2],
+          description: x[3],
+          owner: x[4],
+        })
+      })
       return dispatch({
         type: GET_ALL_OWNER_STORES,
-        payload: storesArray
+        payload: shopsArray
       })
     }
   }

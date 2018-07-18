@@ -92,7 +92,7 @@ contract KulaksMarketplace {
     
   }
   
-  function doesOwnerHaveStores () public view returns(bool, uint) {
+  function doesOwnerHaveShops () public view returns(bool, uint) {
       if(storeIds[msg.sender].length > 0) {
           return(true,  storeIds[msg.sender].length);
       } else {
@@ -100,7 +100,7 @@ contract KulaksMarketplace {
       }
   }
   
-  function getStoreIdByOrder (uint id) public view returns(bool, uint) {
+  function getShopIdByOrder (uint id) public view returns(bool, uint) {
       if(storeIds[msg.sender][id] > 0) {
           return(true, storeIds[msg.sender][id]);
      } else {
@@ -108,25 +108,16 @@ contract KulaksMarketplace {
      }
   }
   
-  function getStoreInfo (uint id) public view returns(string, string, string, address) {
+  function getShopInfo (uint id) public view returns(uint, string, string, string, address) {
       return(
+        stores[id].id,
         stores[id].name,
         stores[id].description,
         stores[id].storeType,
         stores[id].owner
       );
   }
-  
-  // function getStoreByOwner() public view returns(string, string, string, address) {
-  function getStoreByOwner(uint id) public view returns(string, string, string, address) {
-     return (
-        stores[id].name,
-        stores[id].description,
-        stores[id].storeType,
-        stores[id].owner
-     );
-  }
-  
+
   function sendValueTest(address userAddress) public payable {
       userAddress.transfer(1 ether);
   }

@@ -9,7 +9,7 @@ import getWeb3 from '../../util/getWeb3'
 
 // actions
 import { getUserBalance } from '../../redux/user/actions'
-import { createStore, getAllStoresByOwner } from '../../redux/shops/actions'
+import { createShop, getAllShopsByOwner } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
@@ -116,7 +116,7 @@ class Home extends Component {
 
     const { actions } = this.props
     const { contractInstance, account } = this.state
-    actions.createStore({
+    actions.createShop({
       contractInstance,
       name,
       type,
@@ -128,7 +128,7 @@ class Home extends Component {
   getAllStoresByOwner = () => {
     const { contractInstance, account } = this.state
     const { actions } = this.props
-    actions.getAllStoresByOwner({ contractInstance, account })
+    actions.getAllShopsByOwner({ contractInstance, account })
   }
 
   handleClick(value) {
@@ -221,8 +221,8 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     loadingModal,
     getUserBalance,
-    createStore,
-    getAllStoresByOwner,
+    createShop,
+    getAllShopsByOwner,
   }, dispatch),
 })
 
