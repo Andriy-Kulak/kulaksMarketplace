@@ -155,8 +155,10 @@ class Home extends Component {
 
   testSender = async () => {
     const { contractInstance } = this.state
-    const result = await contractInstance.testSender.call()
-    console.log('testSender RESULT ======>>', result)
+    const result = await contractInstance.owner()
+    const resultWithCall = await contractInstance.owner.call()
+    console.log('owner RESULT ======>>', result)
+    console.log('owner result with Call ===>', resultWithCall)
   }
 
   getFirstStore = async () => {

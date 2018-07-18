@@ -41,13 +41,13 @@ export function getAllStoresByOwner({ contractInstance, account }) {
       const storesArray = []
 
       while (counter < lengthOfArray) {
-        contractInstance.getStoreIdByOrder.call(counter).then((storeIdResp) => {
+        contractInstance.getStoreIdByOrder(counter, { from: account }).then((storeIdResp) => {
           console.log('1111 storeIdResponse =====>', storeIdResp)
 
           if (storeIdResp[0] === true && storeIdResp[1].c[0]) {
             const storeId = storeIdResp[1].c[0]
             console.log('222 storeIdResp[1].c[0]', storeIdResp[1].c[0])
-            contractInstance.getStoreInfo.call(storeId).then((storeInfoResp) => {
+            contractInstance.getStoreInfo(storeId, { from: account }).then((storeInfoResp) => {
               console.log('33333', storeInfoResp)
               storesArray.push({
                 id: storeId,
