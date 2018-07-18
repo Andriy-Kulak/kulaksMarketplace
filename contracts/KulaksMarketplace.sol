@@ -28,9 +28,9 @@ contract KulaksMarketplace {
       storeCount = 1;
       productCount = 1;
       transactionCount = 1;
-      owner = msg.sender;
+      user = msg.sender;
   }
-  address public owner;
+  address public user; // the address that instantiated the contract
   uint productCount;
   uint storedData;
   uint storeCount;
@@ -101,11 +101,11 @@ contract KulaksMarketplace {
   }
   
   function getStoreIdByOrder (uint id) public view returns(bool, uint) {
-      // if(storeIds[msg.sender][id] > 0) {
+      if(storeIds[msg.sender][id] > 0) {
           return(true, storeIds[msg.sender][id]);
-     // } else {
-       //   return(false, 0);
-   //   }
+     } else {
+        return(false, 0);
+     }
   }
   
   function getStoreInfo (uint id) public view returns(string, string, string, address) {
@@ -130,11 +130,6 @@ contract KulaksMarketplace {
   function sendValueTest(address userAddress) public payable {
       userAddress.transfer(1 ether);
   }
-  
-  function testSender () public view returns (address) {
-      return owner;
-  }
-  
   
   function testBalance () public view returns (uint) {
       return this.balance;
