@@ -185,7 +185,7 @@ class Home extends Component {
 
           <CreateStore onSubmit={(values) => (this.createStore({ ...values }))} />
 
-          <ShopList shopList={shops.owner} />
+          <ShopList shopList={shops.owner} createProduct={(values) => (console.log('CREATE PRODUCT VALUES', values))} />
 
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}

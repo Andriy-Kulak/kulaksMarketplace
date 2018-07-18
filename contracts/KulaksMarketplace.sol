@@ -41,7 +41,7 @@ contract KulaksMarketplace {
   mapping(address => uint[]) public storeIds; // enter an address to get an array of creates stores for the particular shopOwner
   mapping(uint => uint[]) public productIds; // enter a storeId to get an array of created products for the particular store
   address[] private storeOwners;
-  mapping(uint => Product) public storeProducts;
+  mapping(uint => Product) public products;
   
   modifier shopOwnerOnly() {
     require(shopOwners[msg.sender] == true);
@@ -86,7 +86,7 @@ contract KulaksMarketplace {
        price: _price
      });
      
-     storeProducts[id] = newProduct; // adding a product to storeProducts mapping
+     products[id] = newProduct; // adding a product to storeProducts mapping
      productIds[_storeId].push(id); // pushing the product id to be refernced in the store struct
      productCount ++;
     
@@ -100,22 +100,28 @@ contract KulaksMarketplace {
       }
   }
   
-  function getShopIdByOrder (uint id) public view returns(bool, uint) {
-      if(storeIds[msg.sender][id] > 0) {
-          return(true, storeIds[msg.sender][id]);
+  function doesStoreHaveProducts (uint storeId) public view returns(bool, uint) {
+      if(productIds[storeId].length > 0) {
+          return(true,  productIds[storeId].length);
+      } else {
+          return(false, 0);
+      }
+  }
+  
+  function getShopIdByOrder (uint order) public view returns(bool, uint) {
+      if(storeIds[msg.sender][order] > 0) {
+          return(true, storeIds[msg.sender][order]);
      } else {
         return(false, 0);
      }
   }
   
-  function getShopInfo (uint id) public view returns(uint, string, string, string, address) {
-      return(
-        stores[id].id,
-        stores[id].name,
-        stores[id].description,
-        stores[id].storeType,
-        stores[id].owner
-      );
+  function getProductIdByOrder (uint _storeId, uint _order) public view returns(bool, uint) {
+      if(productIds[_storeId][_order] > 0) {
+          return(true, productIds[_storeId][_order]);
+     } else {
+        return(false, 0);
+     }
   }
 
   function sendValueTest(address userAddress) public payable {
