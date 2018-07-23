@@ -1,2 +1,4 @@
 export const CREATE_SHOP = 'shop/CREATE_SHOP'
 export const GET_ALL_OWNER_STORES = 'shop/GET_ALL_OWNER_STORES'
+export const CREATE_PRODUCT = 'shop/CREATE_PRODUCT'
+export const GET_PRODUCTS_BY_SHOP = 'shop/GET_PRODUCTS_BY_SHOP'

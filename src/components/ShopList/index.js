@@ -28,6 +28,8 @@ class ShopList extends Component {
               <button onClick={() => (this.setState({ ...this.state, create: true, selectedStore: x.id }))}>Create New Product</button>
               {create === true && x.id === selectedStore &&
               <CreateProduct onSubmit={(values) => (this.props.createProduct({ ...values, storeId: selectedStore }))} />}
+              <br />
+              <button onClick={() => (this.props.selectShop(x.id))}>View Store Products</button>
             </div>
           ))}
         </StyledContainer>
@@ -38,7 +40,8 @@ class ShopList extends Component {
 
 ShopList.propTypes = {
   shopList: PropTypes.array.isRequired,
-  createProduct: PropTypes.func.isRequired
+  createProduct: PropTypes.func.isRequired,
+  selectShop: PropTypes.func.isRequired
 }
 
 export default ShopList

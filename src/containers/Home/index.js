@@ -9,7 +9,7 @@ import getWeb3 from '../../util/getWeb3'
 
 // actions
 import { getUserBalance } from '../../redux/user/actions'
-import { createShop, getAllShopsByOwner } from '../../redux/shops/actions'
+import { createShop, getAllShopsByOwner, createProduct, getAllProductsByShop } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
@@ -18,6 +18,7 @@ import Layout from '../../components/Layout'
 import CreateStore from '../../components/CreateStore'
 import DefaultModal from '../../components/Modal'
 import ShopList from '../../components/ShopList'
+import ProductList from '../../components/ProductList'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -33,7 +34,8 @@ class Home extends Component {
       storageValue: 0,
       web3: null,
       contractInstance: null,
-      account: null
+      account: null,
+      selectedShopId: 1
     }
   }
 
@@ -65,7 +67,11 @@ class Home extends Component {
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
       this.setState({ contractInstance, account: accounts[0] })
-      return this.getAllStoresByOwner()
+      this.getAllStoresByOwner()
+      return actions.getAllProductsByShop({
+        storeId: 1,
+        account: accounts[0],
+        contractInstance })
     })
   }
 
@@ -168,9 +174,26 @@ class Home extends Component {
     console.log('getFirstStore RESULT ======>>', result)
   }
 
+  createProduct = async (values) => {
+    const { name, description, price, storeId } = values
+    const parsedPrice = parseInt(price, 10)
+    const { contractInstance, account } = this.state
+    const result = await contractInstance.createProduct(storeId, name, description, parsedPrice, { from: account })
+    console.log('RESULT of CREATE PRODUCT ==>', result)
+  }
+
+  selectShop = (id) => {
+    const { actions } = this.props
+    const { contractInstance, account } = this.state
+    this.setState({ ...this.state, selectedShopId: id })
+    actions.getAllProductsByShop({ storeId: id, account, contractInstance })
+  }
+
   render() {
-    const { user, userAcctBalance, modal, shops } = this.props
+    const { user, userAcctBalance, modal, shops, actions } = this.props
+    const { contractInstance, account, selectedShopId } = this.state
     console.log('shops', shops.owner)
+    console.log('actions ===>', actions)
     return (
       <div className="App">
         <Layout>
@@ -183,10 +206,16 @@ class Home extends Component {
             <button onClick={() => (this.getAllStoresByOwner())}> Get All Stores By Owner</button>
           </div>
 
-          <CreateStore onSubmit={(values) => (this.createStore({ ...values }))} />
+          <CreateStore onSubmit={(values) => (this.createStore(values))} />
 
-          <ShopList shopList={shops.owner} createProduct={(values) => (console.log('CREATE PRODUCT VALUES', values))} />
+          <ShopList
+            shopList={shops.owner}
+            createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
+            selectShop={(id) => (this.selectShop(id))}
+          />
 
+          <ProductList productList={shops.products} shopId={selectedShopId} shopName="test shop name" />
+          {/* productList, shopId, shopName  */}
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}
@@ -215,7 +244,7 @@ Home.propTypes = {
   user: PropTypes.object,
   userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
-  modal: PropTypes.object.isRequired
+  modal: PropTypes.object.isRequired,
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -224,6 +253,8 @@ const mapDispatchToProps = (dispatch) => ({
     getUserBalance,
     createShop,
     getAllShopsByOwner,
+    createProduct,
+    getAllProductsByShop
   }, dispatch),
 })
 
