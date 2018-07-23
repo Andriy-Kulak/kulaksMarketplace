@@ -93,11 +93,11 @@ contract KulaksMarketplace {
   }
   
   function doesOwnerHaveShops () public view returns(bool, uint) {
-      if(storeIds[msg.sender].length > 0) {
+      // if(storeIds[msg.sender].length > 0) {
           return(true,  storeIds[msg.sender].length);
-      } else {
-          return(false, 0);
-      }
+      // } else {
+      //     return(false, 0);
+      // }
   }
   
   function doesStoreHaveProducts (uint storeId) public view returns(bool, uint) {
@@ -109,7 +109,7 @@ contract KulaksMarketplace {
   }
   
   function getShopIdByOrder (uint order) public view returns(bool, uint) {
-      if(storeIds[msg.sender][order] > 0) {
+      if(storeIds[msg.sender][order] >= 0) {
           return(true, storeIds[msg.sender][order]);
      } else {
         return(false, 0);
