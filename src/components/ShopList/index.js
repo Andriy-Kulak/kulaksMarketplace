@@ -17,7 +17,7 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
       <h2>Shops:</h2>
       <StyledContainer>
         <Tabs
-          defaultActiveKey="1"
+          defaultActiveKey={1}
           tabPosition="top"
           type="card"
           onTabClick={(value) => (selectShop(value))}
@@ -50,17 +50,3 @@ ShopList.propTypes = {
 }
 
 export default ShopList
-
-{/* {shopList.map((x) => (
-  <div key={x.id}>
-    <h3>Name: {x.name}</h3>
-    <p>id: {x.id}</p>
-    <p>Type: {x.type}</p>
-    <p>Description: {x.description}</p>
-    <button onClick={() => (this.setState({ ...this.state, create: true, selectedStore: x.id }))}>Create New Product</button>
-    {create === true && x.id === selectedStore &&
-    <CreateProduct onSubmit={(values) => (this.props.createProduct({ ...values, shopId: selectedStore }))} />}
-    <br />
-    <button onClick={() => (this.props.selectShop(x.id))}>View Store Products</button>
-  </div>
-))} */}

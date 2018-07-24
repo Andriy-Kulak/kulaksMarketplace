@@ -14,7 +14,7 @@ const ProductList = ({ productList }) => {
           <StyledProduct key={x.id}>
             <h3>Name: {x.name}</h3>
             <p>id: {x.id}</p>
-            <p>Type: {x.price}</p>
+            <p>Price: {x.price}</p>
             <p>Description: {x.description}</p>
           </StyledProduct>
         ))}
