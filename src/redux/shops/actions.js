@@ -32,7 +32,6 @@ export function getAllShopsByOwner({ contractInstance, account }) {
 
       while (counter < lengthOfArray) {
         getShopIdsArray.push(contractInstance.getShopIdByOrder(counter))
-        console.log('counter ----', counter)
         counter += 1
       }
 
@@ -85,7 +84,6 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
       const getProductInfoArray = []
       while (counter < lengthOfArray) {
         getProductIdsArray.push(contractInstance.getProductIdByOrder(shopId, counter))
-        console.log('counter ----', counter)
         counter += 1
       }
       const productIdResp = await Promise.all(getProductIdsArray)

@@ -197,7 +197,6 @@ class Home extends Component {
     const { user, userAcctBalance, modal, shops, actions } = this.props
     const { contractInstance, account, selectedShopId } = this.state
     console.log('shops', shops.owner)
-    console.log('actions ===>', actions)
     return (
       <div className="App">
         <Layout>
