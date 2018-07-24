@@ -71,7 +71,7 @@ export function getAllShopsByOwner({ contractInstance, account }) {
 export function getAllProductsByShop({ contractInstance, account, shopId }) {  
   return async (dispatch) => {
     const products = []
-    const storeProdResp = await contractInstance.doesStoreHaveProducts(shopId, { from: account })
+    const storeProdResp = await contractInstance.doesShopHaveProducts(shopId, { from: account })
     if (storeProdResp[0] === false) {
       return dispatch({
         type: GET_PRODUCTS_BY_SHOP,

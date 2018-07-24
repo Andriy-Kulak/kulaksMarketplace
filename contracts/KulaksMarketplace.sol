@@ -19,7 +19,7 @@ contract KulaksMarketplace {
   struct Shop {
     uint id;
     string name;
-    string storeType;
+    string shopType;
     string description;
     address owner;
   }
@@ -39,8 +39,7 @@ contract KulaksMarketplace {
   mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
   mapping(uint => Shop) public shops; // enter shopId to get info about the store
   mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
-  mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular store
-  address[] private storeOwners;
+  mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
   mapping(uint => Product) public products;
   
   modifier shopOwnerOnly() {
@@ -54,14 +53,14 @@ contract KulaksMarketplace {
   }
   
   
-  function createShop(string _name, string _storeType, string _description) public {
+  function createShop(string _name, string _shopType, string _description) public {
      uint id = shopCount;
      
      Shop memory newShop = Shop({
        id: id,
        name: _name,
        description: _description,
-       storeType: _storeType,
+       shopType: _shopType,
        owner: user
      });
 
@@ -86,7 +85,7 @@ contract KulaksMarketplace {
        price: _price
      });
      
-     products[id] = newProduct; // adding a product to storeProducts mapping
+     products[id] = newProduct; // adding a product to shopProducts mapping
      productIds[_shopId].push(id); // pushing the product id to be refernced in the store struct
      productCount ++;
     
@@ -100,7 +99,7 @@ contract KulaksMarketplace {
       // }
   }
   
-  function doesStoreHaveProducts (uint shopId) public view returns(bool, uint) {
+  function doesShopHaveProducts (uint shopId) public view returns(bool, uint) {
       if(productIds[shopId].length > 0) {
           return(true,  productIds[shopId].length);
       } else {
