@@ -15,7 +15,6 @@ import { loadingModal } from '../../redux/modal/actions'
 // components
 import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
-import CreateStore from '../../components/CreateStore'
 import DefaultModal from '../../components/Modal'
 import ShopList from '../../components/ShopList'
 import ProductList from '../../components/ProductList'
@@ -177,16 +176,21 @@ class Home extends Component {
   createProduct = async (values) => {
     const { name, description, price, shopId } = values
     const parsedPrice = parseInt(price, 10)
+    const { actions } = this.props
     const { contractInstance, account } = this.state
-    const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
-    console.log('RESULT of CREATE PRODUCT ==>', result)
+    actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
+    // const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
+    // console.log('RESULT of CREATE PRODUCT ==>', result)
   }
 
   selectShop = (id) => {
-    const { actions } = this.props
-    const { contractInstance, account } = this.state
-    this.setState({ ...this.state, selectedShopId: id })
-    actions.getAllProductsByShop({ shopId: id, account, contractInstance })
+    // if id = newShop, don't do anything. User has selected the tab for creating a new Shop
+    if (id !== 'newShop') {
+      const { actions } = this.props
+      const { contractInstance, account } = this.state
+      this.setState({ ...this.state, selectedShopId: parseInt(id, 10) })
+      actions.getAllProductsByShop({ shopId: id, account, contractInstance })
+    }
   }
 
   render() {
@@ -206,16 +210,15 @@ class Home extends Component {
             <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
           </div>
 
-          <CreateStore onSubmit={(values) => (this.createShop(values))} />
+          {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
 
           <ShopList
+            productList={shops.products}
             shopList={shops.owner}
             createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
             selectShop={(id) => (this.selectShop(id))}
+            createShop={(values) => this.createShop(values)}
           />
-
-          <ProductList productList={shops.products} shopId={selectedShopId} shopName="test shop name" />
-          {/* productList, shopId, shopName  */}
           <HomeBody
             updateValue={(value) => (this.handleClick(value))}
             storageValue={this.state.storageValue}

@@ -1,31 +1,34 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyledContainer } from './styles'
+import { StyledContainer, StyledProduct } from './styles'
 
-const ProductList = ({ productList, shopId, shopName }) => {
+const ProductList = ({ productList }) => {
   return (
     <div>
-      <h2>Products for: {shopName}</h2>
+      {productList.length === 0 &&
+        <h3>This shop currently does not have any products. Create a Product below.</h3>}
+      {productList.length > 0 && <h2>Available Products</h2>}
       <StyledContainer>
-        {productList &&
-        productList[shopId] &&
-        productList[shopId].map((x) => (
-          <div key={x.id}>
+        {productList.length > 0 &&
+        productList.map((x) => (
+          <StyledProduct key={x.id}>
             <h3>Name: {x.name}</h3>
             <p>id: {x.id}</p>
             <p>Type: {x.price}</p>
             <p>Description: {x.description}</p>
-          </div>
+          </StyledProduct>
         ))}
       </StyledContainer>
     </div>
   )
 }
 
+ProductList.defaultProps = {
+  productList: []
+}
+
 ProductList.propTypes = {
-  productList: PropTypes.object.isRequired,
-  shopId: PropTypes.number.isRequired,
-  shopName: PropTypes.string.isRequired
+  productList: PropTypes.array,
 }
 
 export default ProductList

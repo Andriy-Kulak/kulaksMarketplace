@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 const CreateProduct = ({ handleSubmit }) => {
   return (
     <div style={{ border: '1px solid black' }}>
-      <h3>Create Store</h3>
+      <h3>Create Product</h3>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">
