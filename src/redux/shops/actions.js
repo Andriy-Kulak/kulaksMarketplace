@@ -1,6 +1,14 @@
 import { reset } from 'redux-form'
 import { CREATE_SHOP, GET_ALL_OWNER_STORES, CREATE_PRODUCT, GET_PRODUCTS_BY_SHOP } from './constants'
 
+const prodRespConfirm = ({ id, name, description, price, shopId }) => {
+  return (typeof id === 'number' && typeof name === 'string' && typeof price === 'number' && typeof description === 'string' && typeof shopId === 'number')
+}
+
+const shopRespConfirm = ({ id, name, type, description }) => {
+  return (typeof id === 'number' && typeof name === 'string' && typeof type === 'string' && typeof description === 'string')
+}
+
 export function getAllShopsByOwner({ contractInstance, account }) {
   const start = Date.now()
   return async (dispatch) => {
@@ -12,10 +20,6 @@ export function getAllShopsByOwner({ contractInstance, account }) {
         type: GET_ALL_OWNER_STORES,
         payload: [] // owner does not have any stores so return back an empty array
       })
-    }
-
-    const shopRespConfirm = ({ id, name, type, description }) => {
-      return (typeof id === 'number' && typeof name === 'string' && typeof type === 'string' && typeof description === 'string')
     }
 
     if (response[0] === true && response[1] && response[1].c[0]) {
@@ -39,7 +43,7 @@ export function getAllShopsByOwner({ contractInstance, account }) {
         console.log('ARE WE GETTING HEREEEE store', x)
         if (x[0] === true && x[1].c[0]) {
           const storeId = x[1].c[0]
-          getShopInfoArray.push(contractInstance.stores(storeId, { from: account }))
+          getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
         }
       })
       console.log('getStoreInfoArray ==>', getShopInfoArray)
@@ -64,14 +68,10 @@ export function getAllShopsByOwner({ contractInstance, account }) {
   }
 }
 
-export function getAllProductsByShop({ contractInstance, account, storeId }) {
-  const prodRespConfirm = ({ id, name, description, price, storeId }) => {
-    return (typeof id === 'number' && typeof name === 'string' && typeof price === 'number' && typeof description === 'string' && typeof storeId === 'number')
-  }
-
+export function getAllProductsByShop({ contractInstance, account, shopId }) {  
   return async (dispatch) => {
     const products = []
-    const storeProdResp = await contractInstance.doesStoreHaveProducts(storeId, { from: account })
+    const storeProdResp = await contractInstance.doesStoreHaveProducts(shopId, { from: account })
     if (storeProdResp[0] === false) {
       return dispatch({
         type: GET_PRODUCTS_BY_SHOP,
@@ -84,7 +84,7 @@ export function getAllProductsByShop({ contractInstance, account, storeId }) {
       const getProductIdsArray = []
       const getProductInfoArray = []
       while (counter < lengthOfArray) {
-        getProductIdsArray.push(contractInstance.getProductIdByOrder(storeId, counter))
+        getProductIdsArray.push(contractInstance.getProductIdByOrder(shopId, counter))
         console.log('counter ----', counter)
         counter += 1
       }
@@ -106,16 +106,16 @@ export function getAllProductsByShop({ contractInstance, account, storeId }) {
         const description = x[2]
         const price = x[3].c[0]
         const productStoreId = x[4].c[0]
-        if (prodRespConfirm({ id, name, description, price, storeId: productStoreId })) {
+        if (prodRespConfirm({ id, name, description, price, shopId: productStoreId })) {
           products.push({ id, name, description, price, storeId: productStoreId })
         }
       })
-      console.log('storeInfoResp ==>', productInfoResp)
+      console.log('productInfoResp ==>', productInfoResp)
       console.log('PRODCUTS ======>', products)
       return dispatch({
         type: GET_PRODUCTS_BY_SHOP,
         payload: {
-          [storeId]: products
+          [shopId]: products
         }
       })
     }
@@ -140,10 +140,10 @@ export function productCreated(result) {
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
     console.log('contractInstance ===>', contractInstance)
-    contractInstance.createStore(name, type, description, { from: account, gas: 550000 }).then((result) => {
+    contractInstance.createShop(name, type, description, { from: account, gas: 550000 }).then((result) => {
       console.log('CREATED STORE RESULT =========', result)
       dispatch(shopCreated(result))
-      dispatch(reset('newStore')) // clear fields from newStore form
+      dispatch(reset('newShop')) // clear fields from newStore form
 
       // trigger methods so you get the latest list of shops
       dispatch(getAllShopsByOwner({ contractInstance, account }))
@@ -154,16 +154,15 @@ export function createShop({ contractInstance, name, type, description, account 
   }
 }
 
-export function createProduct({ contractInstance, name, description, price, account, storeId }) {
+export function createProduct({ contractInstance, name, description, price, account, shopId }) {
   return async (dispatch) => {
-    // const { name, description, price, storeId } = values
     const parsedPrice = parseInt(price, 10)
-    // const { contractInstance, account } = this.state
     try {
-      const result = await contractInstance.createProduct(storeId, name, description, parsedPrice, { from: account })
+      const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
       console.log(' RESULT FROM CREATE PRODUCT ACTION', result)
       dispatch(productCreated(result))
-      dispatch(getAllProductsByShop({ storeId, contractInstance, account }))
+      dispatch(getAllProductsByShop({ shopId, contractInstance, account }))
+      dispatch(reset('newProduct'))
     } catch (e) {
       console.log('ERROR', e)
       console.log('ERROR message', e.message)

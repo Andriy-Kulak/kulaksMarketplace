@@ -36,7 +36,7 @@ CreateStore.propTypes = {
 
 const CreateStoreWithForm = reduxForm({
   // a unique name for the form
-  form: 'newStore'
+  form: 'newShop'
 })(CreateStore)
 
 export default CreateStoreWithForm

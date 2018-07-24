@@ -27,7 +27,7 @@ class ShopList extends Component {
               <p>Description: {x.description}</p>
               <button onClick={() => (this.setState({ ...this.state, create: true, selectedStore: x.id }))}>Create New Product</button>
               {create === true && x.id === selectedStore &&
-              <CreateProduct onSubmit={(values) => (this.props.createProduct({ ...values, storeId: selectedStore }))} />}
+              <CreateProduct onSubmit={(values) => (this.props.createProduct({ ...values, shopId: selectedStore }))} />}
               <br />
               <button onClick={() => (this.props.selectShop(x.id))}>View Store Products</button>
             </div>

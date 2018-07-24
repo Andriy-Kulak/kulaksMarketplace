@@ -6,7 +6,7 @@ contract KulaksMarketplace {
     string name;
     string description;
     uint price;
-    uint storeId;
+    uint shopId;
     
   }
   struct PurchaseTransaction {
@@ -16,7 +16,7 @@ contract KulaksMarketplace {
       uint shippingAndHandling;
       uint totalCost;
   }
-  struct Store {
+  struct Shop {
     uint id;
     string name;
     string storeType;
@@ -25,7 +25,7 @@ contract KulaksMarketplace {
   }
   
   constructor () public payable {
-      storeCount = 1;
+      shopCount = 1;
       productCount = 1;
       transactionCount = 1;
       user = msg.sender;
@@ -33,92 +33,92 @@ contract KulaksMarketplace {
   address public user; // the address that instantiated the contract
   uint productCount;
   uint storedData;
-  uint storeCount;
+  uint shopCount;
   uint transactionCount;
   mapping(address => bool) public admins; // enter an address to confirm if it's an admin
   mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
-  mapping(uint => Store) public stores; // enter storeId to get info about the store
-  mapping(address => uint[]) public storeIds; // enter an address to get an array of creates stores for the particular shopOwner
-  mapping(uint => uint[]) public productIds; // enter a storeId to get an array of created products for the particular store
+  mapping(uint => Shop) public shops; // enter shopId to get info about the store
+  mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
+  mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular store
   address[] private storeOwners;
   mapping(uint => Product) public products;
   
   modifier shopOwnerOnly() {
-    require(shopOwners[msg.sender] == true);
+    require(shopOwners[user] == true);
     _;
   }
   
   modifier adminOnly() {
-    require(shopOwners[msg.sender] == true);
+    require(shopOwners[user] == true);
     _;
   }
   
   
-  function createStore(string _name, string _storeType, string _description) public {
-     uint id = storeCount;
+  function createShop(string _name, string _storeType, string _description) public {
+     uint id = shopCount;
      
-     Store memory newStore = Store({
+     Shop memory newShop = Shop({
        id: id,
        name: _name,
        description: _description,
        storeType: _storeType,
-       owner: msg.sender
+       owner: user
      });
 
       // need to add a
-     stores[id] = newStore;
+     shops[id] = newShop;
      
-     // push the storeId to a storeIds mapping for reference
-     storeIds[msg.sender].push(id);
-     // increment counter by 1 since you are using it for id's for stores as well
-    storeCount++;
+     // push the shopId to a shopIds mapping for reference
+     shopIds[user].push(id);
+     // increment counter by 1 since you are using it for id's for shops as well
+    shopCount++;
   }
   
   
-  function createProduct(uint _storeId, string _name, string _description, uint _price) public {
+  function createProduct(uint _shopId, string _name, string _description, uint _price) public {
      uint id = productCount;
      
      Product memory newProduct = Product({
        id: id,
-       storeId: _storeId,
+       shopId: _shopId,
        name: _name,
        description: _description,
        price: _price
      });
      
      products[id] = newProduct; // adding a product to storeProducts mapping
-     productIds[_storeId].push(id); // pushing the product id to be refernced in the store struct
+     productIds[_shopId].push(id); // pushing the product id to be refernced in the store struct
      productCount ++;
     
   }
   
   function doesOwnerHaveShops () public view returns(bool, uint) {
-      // if(storeIds[msg.sender].length > 0) {
-          return(true,  storeIds[user].length);
+      // if(shopIds[user].length > 0) {
+          return(true,  shopIds[user].length);
       // } else {
       //     return(false, 0);
       // }
   }
   
-  function doesStoreHaveProducts (uint storeId) public view returns(bool, uint) {
-      if(productIds[storeId].length > 0) {
-          return(true,  productIds[storeId].length);
+  function doesStoreHaveProducts (uint shopId) public view returns(bool, uint) {
+      if(productIds[shopId].length > 0) {
+          return(true,  productIds[shopId].length);
       } else {
           return(false, 0);
       }
   }
   
   function getShopIdByOrder (uint order) public view returns(bool, uint) {
-      if(storeIds[user][order] >= 0) {
-          return(true, storeIds[user][order]);
+      if(shopIds[user][order] >= 0) {
+          return(true, shopIds[user][order]);
      } else {
         return(false, 0);
      }
   }
   
-  function getProductIdByOrder (uint _storeId, uint _order) public view returns(bool, uint) {
-      if(productIds[_storeId][_order] > 0) {
-          return(true, productIds[_storeId][_order]);
+  function getProductIdByOrder (uint _shopId, uint _order) public view returns(bool, uint) {
+      if(productIds[_shopId][_order] > 0) {
+          return(true, productIds[_shopId][_order]);
      } else {
         return(false, 0);
      }

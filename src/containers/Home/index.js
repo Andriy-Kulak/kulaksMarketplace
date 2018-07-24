@@ -67,9 +67,9 @@ class Home extends Component {
     const accounts = await this.state.web3.eth.getAccounts()
     MarketContract.deployed().then((contractInstance) => {
       this.setState({ contractInstance, account: accounts[0] })
-      this.getAllStoresByOwner()
+      this.getAllShopsByOwner()
       return actions.getAllProductsByShop({
-        storeId: 1,
+        shopId: 1,
         account: accounts[0],
         contractInstance })
     })
@@ -116,7 +116,7 @@ class Home extends Component {
     }
   }
 
-  createStore = ({ name, type, description }) => {
+  createShop = ({ name, type, description }) => {
     if (!name || !type || !description) {
       alert('You did not provide a name, type or description for the store')
     }
@@ -132,7 +132,7 @@ class Home extends Component {
     })
   }
 
-  getAllStoresByOwner = () => {
+  getAllShopsByOwner = () => {
     const { contractInstance, account } = this.state
     const { actions } = this.props
     actions.getAllShopsByOwner({ contractInstance, account })
@@ -175,10 +175,10 @@ class Home extends Component {
   }
 
   createProduct = async (values) => {
-    const { name, description, price, storeId } = values
+    const { name, description, price, shopId } = values
     const parsedPrice = parseInt(price, 10)
     const { contractInstance, account } = this.state
-    const result = await contractInstance.createProduct(storeId, name, description, parsedPrice, { from: account })
+    const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
     console.log('RESULT of CREATE PRODUCT ==>', result)
   }
 
@@ -186,7 +186,7 @@ class Home extends Component {
     const { actions } = this.props
     const { contractInstance, account } = this.state
     this.setState({ ...this.state, selectedShopId: id })
-    actions.getAllProductsByShop({ storeId: id, account, contractInstance })
+    actions.getAllProductsByShop({ shopId: id, account, contractInstance })
   }
 
   render() {
@@ -199,14 +199,14 @@ class Home extends Component {
         <Layout>
           <div style={{ paddingTop: '10px' }}>
             <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
-            <button onClick={() => (this.createStore())}> Create STORE</button>
+            <button onClick={() => (this.createShop())}> Create STORE</button>
             <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
             <button onClick={() => (this.testSender())}> Test SENDER</button>
             <button onClick={() => (this.getFirstStore())}> Get First Store</button>
-            <button onClick={() => (this.getAllStoresByOwner())}> Get All Stores By Owner</button>
+            <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
           </div>
 
-          <CreateStore onSubmit={(values) => (this.createStore(values))} />
+          <CreateStore onSubmit={(values) => (this.createShop(values))} />
 
           <ShopList
             shopList={shops.owner}
