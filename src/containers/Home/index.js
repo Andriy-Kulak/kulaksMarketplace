@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import contract from 'truffle-contract'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
+import instantiateContract from '../../util/instantiateContract'
 
 
 // actions
@@ -17,7 +17,6 @@ import HomeBody from '../../components/HomeBody'
 import Layout from '../../components/Layout'
 import DefaultModal from '../../components/Modal'
 import ShopList from '../../components/ShopList'
-import ProductList from '../../components/ProductList'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
@@ -39,39 +38,33 @@ class Home extends Component {
   }
 
   componentWillMount = async () => {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
-    getWeb3
-      .then((results) => {
-        this.setState({
-          web3: results.web3
-        })
+    try {
+      const { web3, contractInstance, account } = await instantiateContract({
+        getWeb3,
+        contractJson: MarketplaceContract
+      })
+      this.setState({
+        ...this.state,
+        web3,
+        contractInstance,
+        account
 
-        // Instantiate contract once web3 provided.
-        this.instantiateContract()
       })
-      .catch(() => {
-        console.log('Error finding web3.')
-      })
+      this.initializeData()
+    } catch (e) {
+      console.log('Error finding web3 or instatiating the contract.', e.message)
+    }
   }
 
-  instantiateContract = async () => {
-    const { web3 } = this.state
+  initializeData = async () => {
+    const { account, contractInstance } = this.state
     const { actions } = this.props
-    const MarketContract = contract(MarketplaceContract)
-    MarketContract.setProvider(web3.currentProvider)
-
-
-    // Get accounts.
-    const accounts = await this.state.web3.eth.getAccounts()
-    MarketContract.deployed().then((contractInstance) => {
-      this.setState({ contractInstance, account: accounts[0] })
-      this.getAllShopsByOwner()
-      return actions.getAllProductsByShop({
-        shopId: 1,
-        account: accounts[0],
-        contractInstance })
-    })
+    this.getAllShopsByOwner() // get all shops for owner
+    // by default you will only get products for the first shop if it exists in the contract
+    return actions.getAllProductsByShop({
+      shopId: 1,
+      account,
+      contractInstance })
   }
 
   makeMyselfAdmin = async () => {
@@ -197,6 +190,7 @@ class Home extends Component {
     const { user, userAcctBalance, modal, shops, actions } = this.props
     const { contractInstance, account } = this.state
     console.log('shops', shops.owner)
+    console.log('this.state', this.state.web3)
     return (
       <div className="App">
         <Layout>
