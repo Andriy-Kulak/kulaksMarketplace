@@ -2,10 +2,9 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 
-const CreateStore = ({ handleSubmit, doShopsExist }) => {
+const CreateStore = ({ handleSubmit }) => {
   return (
     <div style={{ border: '1px solid black' }}>
-      {!doShopsExist && <h4>You do not have any existing shop. Create a new one below!</h4>}
       <h3>Create Shop</h3>
       <form onSubmit={handleSubmit}>
         <div>
@@ -33,7 +32,6 @@ const CreateStore = ({ handleSubmit, doShopsExist }) => {
 
 CreateStore.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  doShopsExist: PropTypes.bool.isRequired
 }
 
 const CreateStoreWithForm = reduxForm({

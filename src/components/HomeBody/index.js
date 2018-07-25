@@ -14,20 +14,20 @@ class HomeBody extends Component {
       <main className="container">
         <div className="pure-g">
           <div className="pure-u-1-1">
-            <h1>Good to Go!</h1>
-            <p>Your Truffle Box is installed and ready.</p>
-            <div>
+            {/* <h1>Good to Go!</h1>
+            <p>Your Truffle Box is installed and ready.</p> */}
+            {/* <div>
               <p>The stored value is: {storageValue}</p>
             </div>
             <h2> ----------------------------- </h2>
             <button onClick={() => (makeMyselfAdmin())}>Make Myself Admin</button>
             <button onClick={() => (makeMyselfShopOwner())}>Make Myself Shop Owner</button>
             <button onClick={() => (updateValue(20))}>Update Value to 20</button>
-            <h2> ----------------------------- </h2>
-            {userAcctBalance !== null &&
+            <h2> ----------------------------- </h2> */}
+            {/* {userAcctBalance !== null &&
             <div>
               The user's account currently has: {userAcctBalance} Eth
-            </div>}
+            </div>} */}
             <h3>Redirect Path</h3>
             <p>This example redirects home ("/") when trying to access an authenticated route without first authenticating. You can change this path in the failureRedirectUrl property of the UserIsAuthenticated wrapper on <strong>line 9</strong> of util/wrappers.js.</p>
           </div>

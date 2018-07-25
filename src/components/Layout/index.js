@@ -4,11 +4,14 @@ import PropTypes from 'prop-types'
 import Nav from '../Nav'
 
 // styles
+import { StyledPadding } from './styles'
 
 const Layout = (props) => (
   <div>
     <Nav />
-    {props.children}
+    <StyledPadding>
+      {props.children}
+    </StyledPadding>
   </div>
 )
 

@@ -206,13 +206,25 @@ class Home extends Component {
     console.log('this.state', this.state.web3)
     return (
       <Layout>
-        <div style={{ paddingTop: '10px' }}>
+        <div style={{ paddingTop: '10px', border: '1px solid black' }}>
+          <h2>Testing Section</h2>
+          <p>
+            For the purposes of this sample e-commerce app, we are giving you ability to change between Admin, Shop Owner and Regular User access types.
+            This will give you ability to test and play around with functionality of all 3 types of access.
+          </p>
           <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
           <button onClick={() => (this.createShop())}> Create STORE</button>
           <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
           <button onClick={() => (this.testSender())}> Test SENDER</button>
           <button onClick={() => (this.getFirstStore())}> Get First Store</button>
           <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+          <div>
+            <p>The stored value is: {this.state.storageValue}</p>
+          </div>
+          <h2> ----------------------------- </h2>
+          <button onClick={() => (this.makeMyselfAdmin())}>Make Myself Admin</button>
+          <button onClick={() => (this.makeMyselfShopOwner())}>Make Myself Shop Owner</button>
+          <button onClick={() => (this.handleClick(20))}>Update Value to 20</button>
         </div>
 
         {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
@@ -226,14 +238,14 @@ class Home extends Component {
           withdrawBalance={(id) => (actions.withdrawBalance({ shopId: id, account, contractInstance }))}
           createShop={(values) => this.createShop(values)}
         />
-        <HomeBody
+        {/* <HomeBody
           updateValue={(value) => (this.handleClick(value))}
           storageValue={this.state.storageValue}
           makeMyselfAdmin={() => (this.makeMyselfAdmin())}
           makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
           userData={user}
           userAcctBalance={userAcctBalance}
-        />
+        /> */}
         <DefaultModal
           active={modal.active}
           header={modal.header}

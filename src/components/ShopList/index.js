@@ -1,11 +1,15 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Tabs from 'antd/lib/tabs'
 import Icon from 'antd/lib/icon'
-import { StyledContainer } from './styles'
+
+// styles
+import { StyledContainer, StyledNoShopsWarn, StyledTabs } from './styles'
+
+// components
 import CreateProduct from '../CreateProduct'
-import ProductList from '../../components/ProductList'
-import CreateStore from '../../components/CreateStore'
+import ProductList from '../ProductList'
+import CreateStore from '../CreateStore'
 
 
 const ShopList = ({ shopList, productList, createProduct, selectShop, createShop, shopBalances, withdrawBalance }) => {
@@ -13,10 +17,12 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
 
   return (
     <div>
-      <h1>Admin Panel</h1>
+      <h1>Shop Owner Panel</h1>
       <h2>Shops:</h2>
+      {!shopList.length > 0 &&
+      <StyledNoShopsWarn>You do not have any existing shop. Create a new one below!</StyledNoShopsWarn>}
       <StyledContainer>
-        <Tabs
+        <StyledTabs
           defaultActiveKey="1"
           tabPosition="top"
           type="card"
@@ -38,9 +44,9 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
             tab={<span><Icon type="plus-square" />Create New Shop</span>}
             key="newShop"
           >
-            <CreateStore doShopsExist={shopList.length > 0} onSubmit={(values) => (createShop(values))} />
+            <CreateStore onSubmit={(values) => (createShop(values))} />
           </TabPane>
-        </Tabs>
+        </StyledTabs>
       </StyledContainer>
     </div>
   )

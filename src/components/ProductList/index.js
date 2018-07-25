@@ -1,13 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { browserHistory } from 'react-router'
-import { StyledContainer, StyledProduct } from './styles'
+
+// styles
+import { StyledContainer, StyledProduct, StyledNoProductsWarn } from './styles'
 
 const ProductList = ({ productList, shopId }) => {
   return (
     <div>
       {productList.length === 0 &&
-        <h3>This shop currently does not have any products. Create a Product below.</h3>}
+        <StyledNoProductsWarn>
+          This shop currently does not have any products. Create a Product below.
+        </StyledNoProductsWarn>}
       {productList.length > 0 && <h2>Available Products</h2>}
       <StyledContainer>
         {productList.length > 0 &&
