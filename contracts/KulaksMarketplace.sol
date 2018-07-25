@@ -6,82 +6,164 @@ contract KulaksMarketplace {
     string name;
     string description;
     uint price;
+    uint shopId;
     
   }
-  struct Store {
+  struct Shop {
+    uint id;
     string name;
-    string storeType;
+    string shopType;
     string description;
     address owner;
-    // Product[] products;
   }
+  
+  constructor () public payable {
+      shopCount = 1;
+      productCount = 1;
+      transactionCount = 1;
+      user = msg.sender;
+  }
+  address public user; // the address that instantiated the contract
+  uint productCount;
   uint storedData;
-  mapping(address => bool) public admins;
-  mapping(address => bool) public shopOwners;
-  mapping(address => Store) public stores;
-  address[] private storeOwners;
+  uint shopCount;
+  uint transactionCount;
+  uint shippingAndHandling = 20;
+  mapping(uint => uint) public shopBalances;
+  mapping(address => bool) public admins; // enter an address to confirm if it's an admin
+  mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
+  mapping(uint => Shop) public shops; // enter shopId to get info about the store
+  mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
+  mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
+  mapping(uint => Product) public products;
   
   modifier shopOwnerOnly() {
-    require(shopOwners[msg.sender] == true);
+    require(shopOwners[user] == true);
     _;
   }
   
   modifier adminOnly() {
-    require(shopOwners[msg.sender] == true);
+    require(shopOwners[user] == true);
     _;
   }
   
   
-  function createStore(string _name, string _storeType, string _description) public shopOwnerOnly {
-     Store memory newStore = Store({
+  function createShop(string _name, string _shopType, string _description) public {
+     uint id = shopCount;
+     
+     Shop memory newShop = Shop({
+       id: id,
        name: _name,
        description: _description,
-       storeType: _storeType,
-       owner: msg.sender
-       // products: new Product[](0)
-    });
+       shopType: _shopType,
+       owner: user
+     });
+
       // need to add a
-     stores[msg.sender] = newStore;
-    // stores.push(newStore);
+     shops[id] = newShop;
+     
+     // push the shopId to a shopIds mapping for reference
+     shopIds[user].push(id);
+     // increment counter by 1 since you are using it for id's for shops as well
+    shopCount++;
   }
   
-  function getStoreByOwner() public view returns(string, string, string, address) {
-     return (
-        stores[msg.sender].name,
-        stores[msg.sender].description,
-        stores[msg.sender].storeType,
-        stores[msg.sender].owner
-     );
+  
+  function createProduct(uint _shopId, string _name, string _description, uint _price) public {
+     uint id = productCount;
+     
+     Product memory newProduct = Product({
+       id: id,
+       shopId: _shopId,
+       name: _name,
+       description: _description,
+       price: _price
+     });
+     
+     products[id] = newProduct; // adding a product to shopProducts mapping
+     productIds[_shopId].push(id); // pushing the product id to be refernced in the store struct
+     productCount ++;
+    
+  }
+  
+  function purchaseProduct(uint _productId, uint quantity) public payable  {
+      // require for value of transaction to be of the right amount
+     require(msg.value == products[_productId].price * quantity + shippingAndHandling);
+      // keeping track of balance of a shop. shop owner can then send that value to their account
+     shopBalances[products[_productId].shopId] += msg.value;
+     // return products[_productId].price * quantity + shippingAndHandling;
+  }
+  
+  function moveShopBalanceToOwner (uint _shopId) public payable {
+      shops[_shopId].owner.transfer(shopBalances[_shopId]);
+      shopBalances[_shopId] = 0; // after the money has been transfered over, make balance 0 again
   }
 
-  function becomeAdmin() public returns (bool) {
-      admins[msg.sender] = true;
+  function doesOwnerHaveShops () public view returns(bool, uint) {
+      // if(shopIds[user].length > 0) {
+          return(true,  shopIds[user].length);
+      // } else {
+      //     return(false, 0);
+      // }
   }
   
-  function becomeShopOwner() public returns (bool) {
-      shopOwners[msg.sender] = true;
+  function doesShopHaveProducts (uint shopId) public view returns(bool, uint) {
+      if(productIds[shopId].length > 0) {
+          return(true,  productIds[shopId].length);
+      } else {
+          return(false, 0);
+      }
+  }
+  
+  function getShopIdByOrder (uint order) public view returns(bool, uint) {
+      if(shopIds[user][order] >= 0) {
+          return(true, shopIds[user][order]);
+     } else {
+        return(false, 0);
+     }
+  }
+  
+  function getProductIdByOrder (uint _shopId, uint _order) public view returns(bool, uint) {
+      if(productIds[_shopId][_order] > 0) {
+          return(true, productIds[_shopId][_order]);
+     } else {
+        return(false, 0);
+     }
+  }
+
+  function sendValueTest(address userAddress) public payable {
+      userAddress.transfer(1 ether);
+  }
+  
+  function testBalance () public view returns (uint) {
+      return this.balance;
+  }
+
+  function becomeAdmin(address adminAddress) public returns (bool) {
+      admins[adminAddress] = true;
+  }
+  
+  function becomeShopOwner(address ownerAddress) public returns (bool) {
+      shopOwners[ownerAddress] = true;
   }
   
   
-  function checkIfSenderAdmin () public view returns (bool) {
-      if(admins[msg.sender] == true) {
+  function checkIfUserAdmin (address checkAddress) public view returns (bool) {
+      if(admins[checkAddress] == true) {
           return true;
       } else {
           return false;
       }
   }
   
-  function checkIfSenderShopOwners () public view returns (bool) {
-      if(shopOwners[msg.sender] == true) {
+  function checkIfUserShopOwner (address checkAddress) public view returns (bool) {
+      if(shopOwners[checkAddress] == true) {
           return true;
       } else {
           return false;
       }
   }
   
-  
-
-
   function set(uint x) public {
     storedData = x;
   }

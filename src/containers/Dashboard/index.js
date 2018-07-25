@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Layout from '../../components/Layout'
 
 const Dashboard = ({ authData }) => {
+  console.log('auth data', authData)
   return (
     <Layout>
       <main className="container">

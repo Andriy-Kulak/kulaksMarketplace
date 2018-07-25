@@ -11,7 +11,7 @@ Steps to Set up Uport Account So you Can Sign in
 
 Locally Start
 1. run > ganache in gui (or ganache-cli with port 7545). Copy mneumonic and paste it in metamask.
-2. create a custom RPC in metamask with `http://localhost:7545` to match local ganache environment
+2. create a custom RPC in metamask with `http://127.0.0.1:7545` to match local ganache environment
 3. paste the mneumonic to metamask and go to localhost:8545
 4. run > truffle migrate --reset
 5. npm run start
@@ -75,3 +75,30 @@ This repo was built from react-uport truffle scaffold. These were the initial or
 Biggest frustation so far:
 - figuring out all configs when deploying the application either locally or to a test network
 - sometimes local deployment would work on initial contract method call, but then when I was trying to update the contract, the contract seems to have succeeded
+
+
+
+Getting account balances:
+- https://stackoverflow.com/questions/32312884/how-do-i-get-the-balance-of-an-account-in-ethereum
+```
+web3.eth.defaultAccount = user.ethAddress
+web3.eth.coinbase = user.ethAddress
+
+web3.eth.getAccounts((err, acc) => {
+  console.log('acc -->', acc)
+  each(acc, (e) => {
+    web3.eth.getBalance(e, (error, result) => {
+      if (!error) {
+        console.log(e + ': ' + result)
+        console.log('Result from web3', result)
+      }
+    })
+  })
+})
+```
+
+
+Limitations of solidity:
+- cannot send back objects
+- cannot send arrays of uknown length
+-  there is no optional parameters in Solidity

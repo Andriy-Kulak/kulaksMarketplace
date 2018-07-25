@@ -37,7 +37,7 @@ pre {
 /* NAVBAR */
 
 .navbar {
-  position: fixed;
+  position: relative;
   padding: 5px;
   background: #6495ED;
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
