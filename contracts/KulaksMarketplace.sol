@@ -9,13 +9,6 @@ contract KulaksMarketplace {
     uint shopId;
     
   }
-  struct PurchaseTransaction {
-      address purchasedBy;
-      uint[] products;
-      uint subtotal;
-      uint shippingAndHandling;
-      uint totalCost;
-  }
   struct Shop {
     uint id;
     string name;
@@ -35,6 +28,8 @@ contract KulaksMarketplace {
   uint storedData;
   uint shopCount;
   uint transactionCount;
+  uint shippingAndHandling = 20;
+  mapping(uint => uint) public shopBalances;
   mapping(address => bool) public admins; // enter an address to confirm if it's an admin
   mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
   mapping(uint => Shop) public shops; // enter shopId to get info about the store
@@ -91,6 +86,19 @@ contract KulaksMarketplace {
     
   }
   
+  function purchaseProduct(uint _productId, uint quantity) public payable  {
+      // require for value of transaction to be of the right amount
+     require(msg.value == products[_productId].price * quantity + shippingAndHandling);
+      // keeping track of balance of a shop. shop owner can then send that value to their account
+     shopBalances[products[_productId].shopId] += msg.value;
+     // return products[_productId].price * quantity + shippingAndHandling;
+  }
+  
+  function moveShopBalanceToOwner (uint _shopId) public payable {
+      shops[_shopId].owner.transfer(shopBalances[_shopId]);
+      shopBalances[_shopId] = 0; // after the money has been transfered over, make balance 0 again
+  }
+
   function doesOwnerHaveShops () public view returns(bool, uint) {
       // if(shopIds[user].length > 0) {
           return(true,  shopIds[user].length);

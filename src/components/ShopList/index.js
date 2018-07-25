@@ -17,7 +17,7 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
       <h2>Shops:</h2>
       <StyledContainer>
         <Tabs
-          defaultActiveKey={1}
+          defaultActiveKey="1"
           tabPosition="top"
           type="card"
           onTabClick={(value) => (selectShop(value))}

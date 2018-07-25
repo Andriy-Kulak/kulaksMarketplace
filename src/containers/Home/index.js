@@ -38,7 +38,7 @@ class Home extends Component {
     }
   }
 
-  componentWillMount() {
+  componentWillMount = async () => {
     // Get network provider and web3 instance.
     // See utils/getWeb3 for more info.
     getWeb3
@@ -195,7 +195,7 @@ class Home extends Component {
 
   render() {
     const { user, userAcctBalance, modal, shops, actions } = this.props
-    const { contractInstance, account, selectedShopId } = this.state
+    const { contractInstance, account } = this.state
     console.log('shops', shops.owner)
     return (
       <div className="App">
@@ -247,6 +247,7 @@ Home.propTypes = {
   userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
+  shops: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => ({
