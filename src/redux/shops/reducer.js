@@ -1,10 +1,18 @@
-import { CREATE_SHOP, GET_ALL_OWNER_STORES, CREATE_PRODUCT, GET_PRODUCTS_BY_SHOP } from './constants'
+import {
+  CREATE_SHOP,
+  GET_ALL_OWNER_STORES,
+  CREATE_PRODUCT,
+  GET_PRODUCTS_BY_SHOP,
+  SELECTED_PRODUCT,
+  CLEAR_EXISTING_PRODUCT
+} from './constants'
 
 const initialState = {
   storeTest: null,
   owner: [],
   all: [],
-  products: {}
+  products: {},
+  selectedProduct: {}
 }
 
 const shopReducer = (state = initialState, action) => {
@@ -30,6 +38,14 @@ const shopReducer = (state = initialState, action) => {
         }
       })
     }
+    case SELECTED_PRODUCT:
+      return Object.assign({}, state, {
+        selectedProduct: action.payload
+      })
+    case CLEAR_EXISTING_PRODUCT:
+      return Object.assign({}, state, {
+        selectedProduct: {}
+      })
     default:
       return state
   }

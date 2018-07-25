@@ -1,5 +1,12 @@
 import { reset } from 'redux-form'
-import { CREATE_SHOP, GET_ALL_OWNER_STORES, CREATE_PRODUCT, GET_PRODUCTS_BY_SHOP } from './constants'
+import {
+  CREATE_SHOP,
+  GET_ALL_OWNER_STORES,
+  CREATE_PRODUCT,
+  GET_PRODUCTS_BY_SHOP,
+  SELECTED_PRODUCT,
+  CLEAR_EXISTING_PRODUCT
+} from './constants'
 
 const prodRespConfirm = ({ id, name, description, price, shopId }) => {
   return (typeof id === 'number' && typeof name === 'string' && typeof price === 'number' && typeof description === 'string' && typeof shopId === 'number')
@@ -135,6 +142,13 @@ export function productCreated(result) {
   })
 }
 
+export function productSelected(result) {
+  return ({
+    type: SELECTED_PRODUCT,
+    payload: result
+  })
+}
+
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
     console.log('contractInstance ===>', contractInstance)
@@ -166,4 +180,37 @@ export function createProduct({ contractInstance, name, description, price, acco
       console.log('ERROR message', e.message)
     }
   }
+}
+
+export function selectProduct({ contractInstance, productId, account }) {
+  return async (dispatch) => {
+    try {
+      console.log('contractInstance ==============>', contractInstance)
+      const result = await contractInstance.products(productId, { from: account })
+      const adjustedResponse = {
+        id: result[0].c[0],
+        name: result[1],
+        description: result[2],
+        price: result[3].c[0],
+        shopId: result[4].c[0]
+      }
+      console.log('adjusted RESPONSE', adjustedResponse)
+      if (prodRespConfirm(adjustedResponse)) {
+        dispatch(productSelected(adjustedResponse))
+      } else {
+        console.log('ERROR with productSelect result. Check the response', result)
+      }
+    } catch (e) {
+      console.log('ERROR with selectProduct', e)
+      console.log('ERROR message', e.message)
+    }
+  }
+}
+
+export function clearExistingProduct() {
+  return ((dispatch) => {
+    dispatch({
+      type: CLEAR_EXISTING_PRODUCT
+    })
+  })
 }

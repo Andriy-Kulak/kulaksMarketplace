@@ -9,7 +9,12 @@ import instantiateContract from '../../util/instantiateContract'
 
 // actions
 import { getUserBalance } from '../../redux/user/actions'
-import { createShop, getAllShopsByOwner, createProduct, getAllProductsByShop } from '../../redux/shops/actions'
+import {
+  createShop,
+  getAllShopsByOwner,
+  createProduct,
+  getAllProductsByShop
+} from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
