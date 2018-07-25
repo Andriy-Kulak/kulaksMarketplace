@@ -5,7 +5,8 @@ import {
   CREATE_PRODUCT,
   GET_PRODUCTS_BY_SHOP,
   SELECTED_PRODUCT,
-  CLEAR_EXISTING_PRODUCT
+  CLEAR_EXISTING_PRODUCT,
+  CHECK_SHOP_BALANCE
 } from './constants'
 
 const prodRespConfirm = ({ id, name, description, price, shopId }) => {
@@ -213,4 +214,19 @@ export function clearExistingProduct() {
       type: CLEAR_EXISTING_PRODUCT
     })
   })
+}
+
+export function checkShopBalance({ shopId, account, contractInstance }) {
+  return async (dispatch) => {
+    const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
+    console.log('CHECK SHOP BALANCE RESULT', result)
+    console.log('DETAILED RESULT', result.c[0])
+    dispatch({
+      type: CHECK_SHOP_BALANCE,
+      payload: {
+        [shopId]: result.c[0]
+      }
+    })
+  }
+ 
 }

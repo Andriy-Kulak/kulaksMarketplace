@@ -8,7 +8,7 @@ import ProductList from '../../components/ProductList'
 import CreateStore from '../../components/CreateStore'
 
 
-const ShopList = ({ shopList, productList, createProduct, selectShop, createShop }) => {
+const ShopList = ({ shopList, productList, createProduct, selectShop, createShop, shopBalances, withdrawBalance }) => {
   const { TabPane } = Tabs
 
   return (
@@ -26,6 +26,11 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
             <TabPane tab={x.name} key={x.id}>
               <h4>Type: {x.type}</h4>
               <p>Description: {x.description}</p>
+              {typeof shopBalances[x.id] === 'number' &&
+              <span>
+                <p>Shop Balance: {shopBalances[x.id]} wei</p>
+                <button onClick={() => (withdrawBalance(x.id))}>Withdraw Balance</button>
+              </span>}
               <ProductList productList={productList[x.id]} shopId={x.id} />
               <CreateProduct onSubmit={(values) => (createProduct({ ...values, shopId: x.id }))} />
             </TabPane>))}
@@ -46,7 +51,8 @@ ShopList.propTypes = {
   createProduct: PropTypes.func.isRequired,
   selectShop: PropTypes.func.isRequired,
   createShop: PropTypes.func.isRequired,
-  productList: PropTypes.object.isRequired
+  productList: PropTypes.object.isRequired,
+  withdrawBalance: PropTypes.func.isRequired
 }
 
 export default ShopList

@@ -56,7 +56,6 @@ class ProductPage extends Component {
 
   checkShopBalance = async (shopId) => {
     const { contractInstance, account } = this.state
-    console.log("SHOP ID", shopId)
     const result = await contractInstance.shopBalances(shopId, { from: account })
     console.log('CHECK SHOP BALANCE RESULT', result)
     console.log('DETAILED RESULT', result.c[0])

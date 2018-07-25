@@ -13,7 +13,8 @@ import {
   createShop,
   getAllShopsByOwner,
   createProduct,
-  getAllProductsByShop
+  getAllProductsByShop,
+  checkShopBalance
 } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
@@ -113,6 +114,13 @@ class Home extends Component {
     }
   }
 
+  checkShopBalance = async (shopId) => {
+    const { contractInstance, account } = this.state
+    const result = await contractInstance.shopBalances(shopId, { from: account })
+    console.log('CHECK SHOP BALANCE RESULT', result)
+    console.log('DETAILED RESULT', result.c[0])
+  }
+
   createShop = ({ name, type, description }) => {
     if (!name || !type || !description) {
       alert('You did not provide a name, type or description for the store')
@@ -188,7 +196,16 @@ class Home extends Component {
       const { contractInstance, account } = this.state
       this.setState({ ...this.state, selectedShopId: parseInt(id, 10) })
       actions.getAllProductsByShop({ shopId: id, account, contractInstance })
+      actions.checkShopBalance({ shopId: id, account, contractInstance })
     }
+  }
+
+  withdrawBalance = async (id) => {
+    const { actions } = this.props
+    const { contractInstance, account } = this.state
+    const result = await contractInstance.moveShopBalanceToOwner(id, { from: account, gas: 550000 })
+    console.log('RESULT FROM WITHDRAW BALANCE', result)
+    actions.checkShopBalance({ shopId: id, account, contractInstance })
   }
 
   render() {
@@ -212,8 +229,10 @@ class Home extends Component {
         <ShopList
           productList={shops.products}
           shopList={shops.owner}
+          shopBalances={shops.shopBalances}
           createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
           selectShop={(id) => (this.selectShop(id))}
+          withdrawBalance={(id) => (this.withdrawBalance(id))}
           createShop={(values) => this.createShop(values)}
         />
         <HomeBody
@@ -254,7 +273,8 @@ const mapDispatchToProps = (dispatch) => ({
     createShop,
     getAllShopsByOwner,
     createProduct,
-    getAllProductsByShop
+    getAllProductsByShop,
+    checkShopBalance
   }, dispatch),
 })
 
