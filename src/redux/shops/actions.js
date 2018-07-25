@@ -228,5 +228,28 @@ export function checkShopBalance({ shopId, account, contractInstance }) {
       }
     })
   }
- 
+}
+
+export function withdrawBalance({ shopId, account, contractInstance }) {
+  return async (dispatch) => {
+    try {
+      const withdrawResult = await contractInstance.moveShopBalanceToOwner(shopId, { from: account, gas: 550000 })
+      if (!withdrawResult.receipt) {
+        console.log('THERE IS an error withdrawing the request. Error 1', withdrawResult)
+      } else {
+        const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
+        console.log('CHECK SHOP BALANCE RESULT', result)
+        console.log('DETAILED RESULT', result.c[0])
+        dispatch({
+          type: CHECK_SHOP_BALANCE,
+          payload: {
+            [shopId]: result.c[0]
+          }
+        })
+      }
+    } catch (e) {
+      console.log('THERE IS an error withdrawing the request. Error 2', e.message)
+    }
+  }
+
 }

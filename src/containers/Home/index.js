@@ -14,7 +14,8 @@ import {
   getAllShopsByOwner,
   createProduct,
   getAllProductsByShop,
-  checkShopBalance
+  checkShopBalance,
+  withdrawBalance
 } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
@@ -185,8 +186,6 @@ class Home extends Component {
     const { actions } = this.props
     const { contractInstance, account } = this.state
     actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
-    // const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
-    // console.log('RESULT of CREATE PRODUCT ==>', result)
   }
 
   selectShop = (id) => {
@@ -198,14 +197,6 @@ class Home extends Component {
       actions.getAllProductsByShop({ shopId: id, account, contractInstance })
       actions.checkShopBalance({ shopId: id, account, contractInstance })
     }
-  }
-
-  withdrawBalance = async (id) => {
-    const { actions } = this.props
-    const { contractInstance, account } = this.state
-    const result = await contractInstance.moveShopBalanceToOwner(id, { from: account, gas: 550000 })
-    console.log('RESULT FROM WITHDRAW BALANCE', result)
-    actions.checkShopBalance({ shopId: id, account, contractInstance })
   }
 
   render() {
@@ -232,7 +223,7 @@ class Home extends Component {
           shopBalances={shops.shopBalances}
           createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
           selectShop={(id) => (this.selectShop(id))}
-          withdrawBalance={(id) => (this.withdrawBalance(id))}
+          withdrawBalance={(id) => (actions.withdrawBalance({ shopId: id, account, contractInstance }))}
           createShop={(values) => this.createShop(values)}
         />
         <HomeBody
@@ -274,7 +265,8 @@ const mapDispatchToProps = (dispatch) => ({
     getAllShopsByOwner,
     createProduct,
     getAllProductsByShop,
-    checkShopBalance
+    checkShopBalance,
+    withdrawBalance
   }, dispatch),
 })
 
