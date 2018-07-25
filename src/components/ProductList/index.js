@@ -1,8 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { browserHistory } from 'react-router'
 import { StyledContainer, StyledProduct } from './styles'
 
-const ProductList = ({ productList }) => {
+const ProductList = ({ productList, shopId }) => {
   return (
     <div>
       {productList.length === 0 &&
@@ -16,6 +17,7 @@ const ProductList = ({ productList }) => {
             <p>id: {x.id}</p>
             <p>Price: {x.price}</p>
             <p>Description: {x.description}</p>
+            <button onClick={() => (browserHistory.push(`shop/${shopId}/product/${x.id}`))}>View</button>
           </StyledProduct>
         ))}
       </StyledContainer>
@@ -29,6 +31,7 @@ ProductList.defaultProps = {
 
 ProductList.propTypes = {
   productList: PropTypes.array,
+  shopId: PropTypes.number.isRequired
 }
 
 export default ProductList

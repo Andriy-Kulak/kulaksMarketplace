@@ -26,7 +26,7 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
             <TabPane tab={x.name} key={x.id}>
               <h4>Type: {x.type}</h4>
               <p>Description: {x.description}</p>
-              <ProductList productList={productList[x.id]} />
+              <ProductList productList={productList[x.id]} shopId={x.id} />
               <CreateProduct onSubmit={(values) => (createProduct({ ...values, shopId: x.id }))} />
             </TabPane>))}
           <TabPane

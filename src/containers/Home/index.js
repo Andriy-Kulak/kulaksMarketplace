@@ -192,41 +192,39 @@ class Home extends Component {
     console.log('shops', shops.owner)
     console.log('this.state', this.state.web3)
     return (
-      <div className="App">
-        <Layout>
-          <div style={{ paddingTop: '10px' }}>
-            <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
-            <button onClick={() => (this.createShop())}> Create STORE</button>
-            <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
-            <button onClick={() => (this.testSender())}> Test SENDER</button>
-            <button onClick={() => (this.getFirstStore())}> Get First Store</button>
-            <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
-          </div>
+      <Layout>
+        <div style={{ paddingTop: '10px' }}>
+          <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
+          <button onClick={() => (this.createShop())}> Create STORE</button>
+          <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
+          <button onClick={() => (this.testSender())}> Test SENDER</button>
+          <button onClick={() => (this.getFirstStore())}> Get First Store</button>
+          <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+        </div>
 
-          {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
+        {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
 
-          <ShopList
-            productList={shops.products}
-            shopList={shops.owner}
-            createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
-            selectShop={(id) => (this.selectShop(id))}
-            createShop={(values) => this.createShop(values)}
-          />
-          <HomeBody
-            updateValue={(value) => (this.handleClick(value))}
-            storageValue={this.state.storageValue}
-            makeMyselfAdmin={() => (this.makeMyselfAdmin())}
-            makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
-            userData={user}
-            userAcctBalance={userAcctBalance}
-          />
-          <DefaultModal
-            active={modal.active}
-            header={modal.header}
-            body={modal.body}
-          />
-        </Layout>
-      </div>
+        <ShopList
+          productList={shops.products}
+          shopList={shops.owner}
+          createProduct={(values) => (actions.createProduct({ ...values, contractInstance, account }))}
+          selectShop={(id) => (this.selectShop(id))}
+          createShop={(values) => this.createShop(values)}
+        />
+        <HomeBody
+          updateValue={(value) => (this.handleClick(value))}
+          storageValue={this.state.storageValue}
+          makeMyselfAdmin={() => (this.makeMyselfAdmin())}
+          makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
+          userData={user}
+          userAcctBalance={userAcctBalance}
+        />
+        <DefaultModal
+          active={modal.active}
+          header={modal.header}
+          body={modal.body}
+        />
+      </Layout>
     )
   }
 }
