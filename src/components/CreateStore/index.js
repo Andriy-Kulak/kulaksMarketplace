@@ -47,9 +47,7 @@ const validate = (values) => {
   return errors
 }
 
-
 const CreateStoreWithForm = reduxForm({
-  // a unique name for the form
   form: 'newShop',
   validate
 })(CreateStore)

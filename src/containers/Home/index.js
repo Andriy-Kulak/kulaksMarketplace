@@ -21,6 +21,7 @@ import { loadingModal } from '../../redux/modal/actions'
 
 // components
 import HomeBody from '../../components/HomeBody'
+import AdminTestPanel from '../../components/AdminTestPanel'
 import Layout from '../../components/Layout'
 import DefaultModal from '../../components/Modal'
 import ShopList from '../../components/ShopList'
@@ -228,7 +229,11 @@ class Home extends Component {
         </div>
 
         {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
-
+        <AdminTestPanel
+          makeMyselfAdmin={() => (this.makeMyselfAdmin())}
+          makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
+          makeMyselfUser={() => ({})}
+        />
         <ShopList
           productList={shops.products}
           shopList={shops.owner}
