@@ -2,7 +2,7 @@ import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
-import { AntdInput } from '../Fields'
+import { AntdInput, AntdTextArea } from '../Fields'
 
 
 // styles
@@ -25,7 +25,7 @@ const CreateProduct = ({ handleSubmit }) => {
         <div>
           <label htmlFor="description">
             Description
-            <Field name="description" id="description" component={AntdInput} type="text" xs hasFeedback />
+            <Field name="description" id="description" component={AntdTextArea} type="text" hasFeedback />
           </label>
         </div>
         <div>
