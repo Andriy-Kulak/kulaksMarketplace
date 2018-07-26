@@ -1,42 +1,57 @@
 import React from 'react'
 import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
+import Button from 'antd/lib/button'
+import { AntdInput, AntdTextArea } from '../Fields'
+
+import { StyledFormContainer } from './styles'
 
 const CreateStore = ({ handleSubmit }) => {
   return (
-    <div style={{ border: '1px solid black' }}>
+    <StyledFormContainer>
       <h3>Create Shop</h3>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">
             Store Name
-            <Field name="name" component="input" type="text" required />
+            <Field name="name" component={AntdInput} type="text" hasFeedback />
           </label>
         </div>
         <div>
           <label htmlFor="type">
             Store Type
-            <Field name="type" component="input" type="text" required />
+            <Field name="type" component={AntdInput} type="text" hasFeedback />
           </label>
         </div>
         <div>
           <label htmlFor="description">
             Description
-            <Field name="description" id="description" component="input" type="text" required />
+            <Field name="description" id="description" component={AntdTextArea} type="text" hasFeedback />
           </label>
         </div>
-        <button type="submit">Submit</button>
+        <Button type="primary" htmlType="submit">Submit</Button>
       </form>
-    </div>)
+    </StyledFormContainer>)
 }
 
 CreateStore.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
 }
 
+const validate = (values) => {
+  const errors = {}
+  if (!values.name) { errors.name = 'Required!' }
+  if (!values.type) { errors.type = 'Required!' }
+  if (!values.description) { errors.description = 'Required!' }
+
+  return errors
+}
+
+
 const CreateStoreWithForm = reduxForm({
   // a unique name for the form
-  form: 'newShop'
+  form: 'newShop',
+  validate
 })(CreateStore)
 
 export default CreateStoreWithForm
