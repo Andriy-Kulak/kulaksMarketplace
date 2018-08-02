@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
-import Card from 'antd/lib/card'
 import Divider from 'antd/lib/divider'
 import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
@@ -55,7 +54,7 @@ class ProductPage extends Component {
 
   purchaseProduct = async (totalCost) => {
     const { contractInstance, account, quantity } = this.state
-    const { actions, params: { productId }, selectedProduct } = this.props
+    const { params: { productId } } = this.props
     const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
     console.log('RESULT', result)
   }
@@ -69,7 +68,7 @@ class ProductPage extends Component {
 
   render() {
     const { quantity } = this.state
-    const { selectedProduct: { id, name, description, price, shopId } } = this.props
+    const { selectedProduct: { id, name, description, price } } = this.props
     const { Option } = Select
     const availableQuantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const subtotalCost = price ? price * quantity : 0
@@ -92,7 +91,7 @@ class ProductPage extends Component {
                 <h4>Subtotal: {subtotalCost} (in wei)</h4>
                 <h4>Total Cost (S&H Included): {totalCost} (in wei)</h4>
                 <Button type="primary" onClick={() => (this.purchaseProduct(totalCost))}>Purchase</Button>
-                <Button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</Button>
+                {/* <Button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</Button> */}
               </div>}
           </StyledProduct>
         </StyledContainer>
