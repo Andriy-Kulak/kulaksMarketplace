@@ -2,7 +2,7 @@ pragma solidity ^0.4.2;
 
 import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
-import "../contracts/KulaksMarketplace.sol";
+import { KulaksMarketplace } from  "../contracts/KulaksMarketplace.sol";
 
 contract TestKulaksMarketplace {
 
