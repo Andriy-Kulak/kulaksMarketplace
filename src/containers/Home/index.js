@@ -20,7 +20,7 @@ import {
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
-import HomeBody from '../../components/HomeBody'
+// import HomeBody from '../../components/HomeBody'
 import AdminTestPanel from '../../components/AdminTestPanel'
 import Layout from '../../components/Layout'
 import DefaultModal from '../../components/Modal'
@@ -78,19 +78,18 @@ class Home extends Component {
   makeMyselfAdmin = async () => {
     const { web3 } = this.state
     const { user, actions } = this.props
+    const { contractInstance, account } = this.state
     if (!user) {
       alert('You are not signed in')
     } else {
-      actions.getUserBalance(web3, user.ethAddress)
-
-      const { contractInstance, account } = this.state
+      actions.getUserBalance(web3, account)
 
       // make the logged in user an admin
-      contractInstance.becomeAdmin(user.ethAddress, { from: account })
+      contractInstance.becomeAdmin(account, { from: account })
         .then((result) => {
           console.log('CHECK RESULT For becomeAdmin', result)
           // Get the value from the contract to prove it worked.
-          return contractInstance.checkIfUserAdmin.call(user.ethAddress)
+          return contractInstance.checkIfUserAdmin.call(account)
         }).then((result) => {
           console.log('CHECK RESULT For checkIfUserAdmin', result)
         })
@@ -105,11 +104,11 @@ class Home extends Component {
     } else {
       const { contractInstance, account } = this.state
       // make the logged in user an admin
-      contractInstance.becomeShopOwner(user.ethAddress, { from: account })
+      contractInstance.becomeShopOwner(account, { from: account })
         .then((result) => {
           console.log('CHECK RESULT For becomeAdmin', result)
           // Get the value from the contract to prove it worked.
-          return contractInstance.checkIfUserShopOwner.call(user.ethAddress)
+          return contractInstance.checkIfUserShopOwner.call(account)
         }).then((result) => {
           console.log('CHECK RESULT For checkIfUserShopOwner', result)
         })
@@ -201,7 +200,7 @@ class Home extends Component {
   }
 
   render() {
-    const { user, userAcctBalance, modal, shops, actions } = this.props
+    const { modal, shops, actions } = this.props
     const { contractInstance, account } = this.state
     console.log('shops', shops.owner)
     console.log('this.state', this.state.web3)
@@ -263,12 +262,12 @@ class Home extends Component {
 
 Home.defaultProps = {
   user: null,
-  userAcctBalance: null
+  // userAcctBalance: null
 }
 
 Home.propTypes = {
   user: PropTypes.object,
-  userAcctBalance: PropTypes.number,
+  // userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
   shops: PropTypes.object.isRequired
