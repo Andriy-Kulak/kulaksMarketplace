@@ -3,7 +3,6 @@ import { Field } from 'redux-form'
 import Card from 'antd/lib/card'
 
 export const StyledFormContainer = styled(Card)`
-  /* border: 1px solid black; */
   margin: 15px !important;
   max-width: 400px !important;
 `

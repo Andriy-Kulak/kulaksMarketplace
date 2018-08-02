@@ -47,7 +47,7 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
                     <Button disabled={shopBalances[x.id] === 0} type="primary" onClick={() => (withdrawBalance(x.id))}>Withdraw Balance</Button>
                     {shopBalances[x.id] === 0 &&
                     <p>
-                      * Your shop balance is 0.<br /> There is nothing currently to withdraw
+                      * Your shop balance is 0.<br /> There is nothing currently to withdraw.
                     </p>}
                   </span>}
                 </StyledShopDetails>

@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
+import Card from 'antd/lib/card'
+import Divider from 'antd/lib/divider'
+import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
@@ -12,6 +15,9 @@ import { getAllProductsByShop, selectProduct, clearExistingProduct } from '../..
 
 // components
 import Layout from '../../components/Layout'
+
+// styles
+import { StyledContainer, StyledProduct } from './styles'
 
 class ProductPage extends Component {
   constructor(props) {
@@ -70,22 +76,26 @@ class ProductPage extends Component {
     const totalCost = subtotalCost + 20 // Shipping and handling fees
     return (
       <Layout>
-        PRODUCT PAGE
-        <h4>Name: {name}</h4>
-        <p>Id: {id}</p>
-        <p>Description: {description}</p>
-        <Select defaultValue={1} style={{ width: 120 }} onChange={(value) => (this.setState({ ...this.state, quantity: value }))}>
-          {availableQuantities.map((x) => (
-            <Option key={x} value={x}>{x}</Option>
-          ))}
-        </Select>
-        {subtotalCost > 0 &&
-        <div>
-          <h4>Subtotal: {subtotalCost}</h4>
-          <h4>Total Cost (S&H Included): {totalCost}</h4>
-        </div>}
-        <button onClick={() => (this.purchaseProduct(totalCost))}>Purchase</button>
-        <button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</button>
+        <StyledContainer>
+          <StyledProduct title={`Product Title: ${name}`}>
+            <p>Id: {id}</p>
+            <p>Description: {description}</p>
+            Quantity:
+            <Select defaultValue={1} style={{ width: 120 }} onChange={(value) => (this.setState({ ...this.state, quantity: value }))}>
+              {availableQuantities.map((x) => (
+                <Option key={x} value={x}>{x}</Option>
+              ))}
+            </Select>
+            <Divider />
+            {subtotalCost > 0 &&
+              <div style={{ textAlign: 'right' }}>
+                <h4>Subtotal: {subtotalCost} (in wei)</h4>
+                <h4>Total Cost (S&H Included): {totalCost} (in wei)</h4>
+                <Button type="primary" onClick={() => (this.purchaseProduct(totalCost))}>Purchase</Button>
+                <Button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</Button>
+              </div>}
+          </StyledProduct>
+        </StyledContainer>
       </Layout>
     )
   }
