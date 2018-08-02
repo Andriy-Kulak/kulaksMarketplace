@@ -3,6 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
 import { AntdInput, AntdTextArea } from '../Fields'
+// import Card from 'ant/lib/card'
 
 
 // styles
@@ -13,8 +14,7 @@ import {
 
 const CreateProduct = ({ handleSubmit }) => {
   return (
-    <StyledFormContainer>
-      <h3>Create Product</h3>
+    <StyledFormContainer title="Create New Product">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">

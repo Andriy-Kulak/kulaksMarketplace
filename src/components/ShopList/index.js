@@ -2,9 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Tabs from 'antd/lib/tabs'
 import Icon from 'antd/lib/icon'
+import Button from 'antd/lib/button'
 
 // styles
-import { StyledContainer, StyledNoShopsWarn, StyledTabs } from './styles'
+import {
+  StyledContainer,
+  StyledNoShopsWarn,
+  StyledTabs,
+  StyledShopContainer,
+  StyledShopDetails
+} from './styles'
 
 // components
 import CreateProduct from '../CreateProduct'
@@ -30,14 +37,24 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
         >
           {shopList.map((x) => (
             <TabPane tab={x.name} key={x.id}>
-              <h4>Type: {x.type}</h4>
-              <p>Description: {x.description}</p>
-              {typeof shopBalances[x.id] === 'number' &&
-              <span>
-                <p>Shop Balance: {shopBalances[x.id]} wei</p>
-                <button onClick={() => (withdrawBalance(x.id))}>Withdraw Balance</button>
-              </span>}
-              <ProductList productList={productList[x.id]} shopId={x.id} />
+              <StyledShopContainer>
+                <StyledShopDetails title="Shop Details">
+                  <h4>Type: {x.type}</h4>
+                  <p>Description: {x.description}</p>
+                  {typeof shopBalances[x.id] === 'number' &&
+                  <span>
+                    <p>Shop Balance: {shopBalances[x.id]} wei</p>
+                    <Button disabled={shopBalances[x.id] === 0} type="primary" onClick={() => (withdrawBalance(x.id))}>Withdraw Balance</Button>
+                    {shopBalances[x.id] === 0 &&
+                    <p>
+                      * Your shop balance is 0.<br /> There is nothing currently to withdraw
+                    </p>}
+                  </span>}
+                </StyledShopDetails>
+                <div>
+                  <ProductList productList={productList[x.id]} shopId={x.id} />
+                </div>
+              </StyledShopContainer>
               <CreateProduct onSubmit={(values) => (createProduct({ ...values, shopId: x.id }))} />
             </TabPane>))}
           <TabPane

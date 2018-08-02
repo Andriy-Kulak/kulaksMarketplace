@@ -1,30 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { browserHistory } from 'react-router'
+import Button from 'antd/lib/button'
 
 // styles
-import { StyledContainer, StyledProduct, StyledNoProductsWarn } from './styles'
+import { StyledContainer, StyledProduct, StyledProductList } from './styles'
 
 const ProductList = ({ productList, shopId }) => {
+  const title = productList.length > 0 ? 'Available Products' : 'This shop currently does not have any products. Create a Product below.'
   return (
     <div>
-      {productList.length === 0 &&
-        <StyledNoProductsWarn>
-          This shop currently does not have any products. Create a Product below.
-        </StyledNoProductsWarn>}
-      {productList.length > 0 && <h2>Available Products</h2>}
-      <StyledContainer>
-        {productList.length > 0 &&
-        productList.map((x) => (
-          <StyledProduct key={x.id}>
-            <h3>Name: {x.name}</h3>
-            <p>id: {x.id}</p>
-            <p>Price: {x.price}</p>
-            <p>Description: {x.description}</p>
-            <button onClick={() => (browserHistory.push(`shop/${shopId}/product/${x.id}`))}>View</button>
-          </StyledProduct>
-        ))}
-      </StyledContainer>
+      <StyledProductList title={title}>
+        <StyledContainer>
+          {productList.length > 0 &&
+          productList.map((x) => (
+            <StyledProduct key={x.id} title={x.name}>
+              <p>id: {x.id}</p>
+              <p>Price: {x.price}</p>
+              <p>Description: {x.description}</p>
+              <Button onClick={() => (browserHistory.push(`shop/${shopId}/product/${x.id}`))}>View</Button>
+            </StyledProduct>
+          ))}
+        </StyledContainer>
+      </StyledProductList>
     </div>
   )
 }
