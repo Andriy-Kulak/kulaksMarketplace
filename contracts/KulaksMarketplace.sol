@@ -21,9 +21,9 @@ contract KulaksMarketplace {
       shopCount = 1;
       productCount = 1;
       transactionCount = 1;
-      user = msg.sender;
+      creator = msg.sender;
   }
-  address public user; // the address that instantiated the contract
+  address public creator; // the address that instantiated the contract
   uint productCount;
   uint storedData;
   uint shopCount;
@@ -39,12 +39,12 @@ contract KulaksMarketplace {
   mapping(address => string) public users;
   
   modifier shopOwnerOnly() {
-    require(keccak256(abi.encodePacked(users[user])) == keccak256(abi.encodePacked("owner")));
+    require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("owner")));
     _;
   }
   
   modifier adminOnly() {
-    require(keccak256(abi.encodePacked(users[user])) == keccak256(abi.encodePacked("admin")));
+    require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
     _;
   }
   
@@ -56,14 +56,14 @@ contract KulaksMarketplace {
        name: _name,
        description: _description,
        shopType: _shopType,
-       owner: user
+       owner: msg.sender
      });
 
       // need to add a
      shops[id] = newShop;
      
      // push the shopId to a shopIds mapping for reference
-     shopIds[user].push(id);
+     shopIds[msg.sender].push(id);
      // increment counter by 1 since you are using it for id's for shops as well
     shopCount++;
   }
@@ -101,7 +101,7 @@ contract KulaksMarketplace {
 
   function doesOwnerHaveShops () public view returns(bool, uint) {
       // if(shopIds[user].length > 0) {
-          return(true,  shopIds[user].length);
+          return(true,  shopIds[msg.sender].length);
       // } else {
       //     return(false, 0);
       // }
@@ -116,8 +116,8 @@ contract KulaksMarketplace {
   }
   
   function getShopIdByOrder (uint order) public view returns(bool, uint) {
-      if(shopIds[user][order] >= 0) {
-          return(true, shopIds[user][order]);
+      if(shopIds[msg.sender][order] >= 0) {
+          return(true, shopIds[msg.sender][order]);
      } else {
         return(false, 0);
      }
@@ -140,11 +140,11 @@ contract KulaksMarketplace {
   }
 
   function becomeAdmin() public returns (bool) {
-      users[user] = "admin";
+      users[msg.sender] = "admin";
   }
   
   function becomeShopOwner() public returns (bool) {
-      users[user] = "owner";
+      users[msg.sender] = "owner";
   }
   
   function set(uint x) public {
