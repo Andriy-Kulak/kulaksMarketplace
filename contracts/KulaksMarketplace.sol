@@ -48,7 +48,7 @@ contract KulaksMarketplace {
     _;
   }
   
-  function createShop(string _name, string _shopType, string _description) shopOwnerOnly public {
+  function createShop(string _name, string _shopType, string _description) public {
      uint id = shopCount;
      
      Shop memory newShop = Shop({
