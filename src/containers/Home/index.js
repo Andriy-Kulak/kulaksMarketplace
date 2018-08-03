@@ -89,7 +89,7 @@ class Home extends Component {
       .then((result) => {
         console.log('CHECK RESULT For becomeAdmin', result)
         // Get the value from the contract to prove it worked.
-        return contractInstance.checkIfUserAdmin.call(account)
+        return contractInstance.users(account)
       }).then((result) => {
         console.log('CHECK RESULT For checkIfUserAdmin', result)
       })
