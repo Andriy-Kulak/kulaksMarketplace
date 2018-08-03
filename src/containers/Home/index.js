@@ -212,6 +212,13 @@ class Home extends Component {
             For the purposes of this sample e-commerce app, we are giving you ability to change between Admin, Shop Owner and Regular User access types.
             This will give you ability to test and play around with functionality of all 3 types of access.
           </p>
+          <button onClick={async () => {
+            const result = await contractInstance.users(account)
+            console.log('result of CHECK USER', result)
+            }}
+          >
+            Check User Status
+          </button>
           <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
           <button onClick={() => (this.createShop())}> Create STORE</button>
           <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
