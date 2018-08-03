@@ -79,40 +79,40 @@ class Home extends Component {
     const { web3 } = this.state
     const { user, actions } = this.props
     const { contractInstance, account } = this.state
-    if (!user) {
-      alert('You are not signed in')
-    } else {
-      actions.getUserBalance(web3, account)
+    // if (!user) {
+    //   alert('You are not signed in')
+    // } else {
+    actions.getUserBalance(web3, account)
 
-      // make the logged in user an admin
-      contractInstance.becomeAdmin(account, { from: account })
-        .then((result) => {
-          console.log('CHECK RESULT For becomeAdmin', result)
-          // Get the value from the contract to prove it worked.
-          return contractInstance.checkIfUserAdmin.call(account)
-        }).then((result) => {
-          console.log('CHECK RESULT For checkIfUserAdmin', result)
-        })
-    }
+    // make the logged in user an admin
+    contractInstance.becomeAdmin(account, { from: account })
+      .then((result) => {
+        console.log('CHECK RESULT For becomeAdmin', result)
+        // Get the value from the contract to prove it worked.
+        return contractInstance.checkIfUserAdmin.call(account)
+      }).then((result) => {
+        console.log('CHECK RESULT For checkIfUserAdmin', result)
+      })
+    // }
   }
 
 
   makeMyselfShopOwner = async () => {
     const { user } = this.props
-    if (!user) {
-      alert('You are not signed in')
-    } else {
-      const { contractInstance, account } = this.state
-      // make the logged in user an admin
-      contractInstance.becomeShopOwner(account, { from: account })
-        .then((result) => {
-          console.log('CHECK RESULT For becomeAdmin', result)
-          // Get the value from the contract to prove it worked.
-          return contractInstance.users(account)
-        }).then((result) => {
-          console.log('CHECK RESULT For checkIfUserShopOwner', result)
-        })
-    }
+    // if (!user) {
+    //   alert('You are not signed in')
+    // } else {
+    const { contractInstance, account } = this.state
+    // make the logged in user an admin
+    contractInstance.becomeShopOwner(account, { from: account })
+      .then((result) => {
+        console.log('CHECK RESULT For becomeAdmin', result)
+        // Get the value from the contract to prove it worked.
+        return contractInstance.users(account)
+      }).then((result) => {
+        console.log('CHECK RESULT For checkIfUserShopOwner', result)
+      })
+    // }
   }
 
   checkShopBalance = async (shopId) => {

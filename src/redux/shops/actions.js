@@ -161,6 +161,7 @@ export function createShop({ contractInstance, name, type, description, account 
       // trigger methods so you get the latest list of shops
       dispatch(getAllShopsByOwner({ contractInstance, account }))
     }).catch((e) => {
+      alert('There was an error with creating the Shop. Make sure you are a shop owner before creating a shop.')
       console.log('ERROR', e)
       console.log('ERROR message', e.message)
     })

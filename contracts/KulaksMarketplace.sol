@@ -36,19 +36,19 @@ contract KulaksMarketplace {
   mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
   mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
   mapping(uint => Product) public products;
+  mapping(address => string) public users;
   
   modifier shopOwnerOnly() {
-    require(shopOwners[user] == true);
+    require(keccak256(abi.encodePacked(users[user])) == keccak256(abi.encodePacked("owner")));
     _;
   }
   
   modifier adminOnly() {
-    require(shopOwners[user] == true);
+    require(keccak256(abi.encodePacked(users[user])) == keccak256(abi.encodePacked("admin")));
     _;
   }
   
-  
-  function createShop(string _name, string _shopType, string _description) public {
+  function createShop(string _name, string _shopType, string _description) shopOwnerOnly public {
      uint id = shopCount;
      
      Shop memory newShop = Shop({
@@ -139,29 +139,12 @@ contract KulaksMarketplace {
       return this.balance;
   }
 
-  function becomeAdmin(address adminAddress) public returns (bool) {
-      admins[adminAddress] = true;
+  function becomeAdmin() public returns (bool) {
+      users[user] = "admin";
   }
   
-  function becomeShopOwner(address ownerAddress) public returns (bool) {
-      shopOwners[ownerAddress] = true;
-  }
-  
-  
-  function checkIfUserAdmin (address checkAddress) public view returns (bool) {
-      if(admins[checkAddress] == true) {
-          return true;
-      } else {
-          return false;
-      }
-  }
-  
-  function checkIfUserShopOwner (address checkAddress) public view returns (bool) {
-      if(shopOwners[checkAddress] == true) {
-          return true;
-      } else {
-          return false;
-      }
+  function becomeShopOwner() public returns (bool) {
+      users[user] = "owner";
   }
   
   function set(uint x) public {
