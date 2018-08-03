@@ -42,35 +42,39 @@ export function getAllShopsByOwner({ contractInstance, account }) {
         getShopIdsArray.push(contractInstance.getShopIdByOrder(counter))
         counter += 1
       }
-
-      const storeIdResp = await Promise.all(getShopIdsArray)
-      console.log('storeIdResp ==>', storeIdResp)
-      console.log('getStoreIdsArray ==>', getShopIdsArray)
-      storeIdResp.forEach((x) => {
-        console.log('ARE WE GETTING HEREEEE store', x)
-        if (x[0] === true && x[1].c[0]) {
-          const storeId = x[1].c[0]
-          getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
-        }
-      })
-      console.log('getStoreInfoArray ==>', getShopInfoArray)
-      const storeInfoResp = await Promise.all(getShopInfoArray)
-      console.log('storeInfoResp ==>', storeInfoResp)
-      storeInfoResp.forEach((x) => {
-        const id = x[0].c[0]
-        const name = x[1]
-        const type = x[2]
-        const description = x[3]
-        const owner = x[4]
-        if (shopRespConfirm({ id, name, type, description })) {
-          shopsArray.push({ id, name, type, description, owner })
-        }
-      })
-      console.log('time it took to get all stores', Date.now() - start)
-      return dispatch({
-        type: GET_ALL_OWNER_STORES,
-        payload: shopsArray
-      })
+      try {
+        const storeIdResp = await Promise.all(getShopIdsArray)
+        console.log('storeIdResp ==>', storeIdResp)
+        console.log('getStoreIdsArray ==>', getShopIdsArray)
+        storeIdResp.forEach((x) => {
+          console.log('ARE WE GETTING HEREEEE store', x)
+          if (x[0] === true && x[1].c[0]) {
+            const storeId = x[1].c[0]
+            getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
+          }
+        })
+        console.log('getStoreInfoArray ==>', getShopInfoArray)
+        const storeInfoResp = await Promise.all(getShopInfoArray)
+        console.log('storeInfoResp ==>', storeInfoResp)
+        storeInfoResp.forEach((x) => {
+          const id = x[0].c[0]
+          const name = x[1]
+          const type = x[2]
+          const description = x[3]
+          const owner = x[4]
+          if (shopRespConfirm({ id, name, type, description })) {
+            shopsArray.push({ id, name, type, description, owner })
+          }
+        })
+        console.log('time it took to get all stores', Date.now() - start)
+        return dispatch({
+          type: GET_ALL_OWNER_STORES,
+          payload: shopsArray
+        })
+      } catch (e) {
+        console.log('shopIdsArray', getShopIdsArray)
+        console.log('WHAT IS THE ERROR IN store id RESP', e)
+      }
     }
   }
 }
