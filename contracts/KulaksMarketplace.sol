@@ -115,26 +115,6 @@ contract KulaksMarketplace {
       }
   }
   
-  function getShopIdByOrder (uint order) public view returns(bool, uint) {
-      if(shopIds[msg.sender][order] >= 0) {
-          return(true, shopIds[msg.sender][order]);
-     } else {
-        return(false, 0);
-     }
-  }
-  
-  function getProductIdByOrder (uint _shopId, uint _order) public view returns(bool, uint) {
-      if(productIds[_shopId][_order] > 0) {
-          return(true, productIds[_shopId][_order]);
-     } else {
-        return(false, 0);
-     }
-  }
-
-  function sendValueTest(address userAddress) public payable {
-      userAddress.transfer(1 ether);
-  }
-  
   function testBalance () public view returns (uint) {
       return this.balance;
   }

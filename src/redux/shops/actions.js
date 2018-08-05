@@ -40,7 +40,6 @@ export function getAllShopsByOwner({ contractInstance, account }) {
 
       while (counter < lengthOfArray) {
         getShopIdsArray.push(contractInstance.shopIds(account, counter))
-        // getShopIdsArray.push(contractInstance.getShopIdByOrder(counter))
         counter += 1
       }
       try {
@@ -97,7 +96,7 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
       const getProductIdsArray = []
       const getProductInfoArray = []
       while (counter < lengthOfArray) {
-        getProductIdsArray.push(contractInstance.getProductIdByOrder(shopId, counter))
+        getProductIdsArray.push(contractInstance.productIds(shopId, counter))
         counter += 1
       }
       const productIdResp = await Promise.all(getProductIdsArray)
@@ -105,8 +104,8 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
       console.log('productIdResp ===>', productIdResp)
       productIdResp.forEach((x) => {
         console.log('ARE WE GETTING HEREEEE product', x)
-        if (x[0] === true && x[1].c[0]) {
-          const productId = x[1].c[0]
+        if (x.c && x.c[0]) {
+          const productId = x.c[0]
           getProductInfoArray.push(contractInstance.products(productId, { from: account }))
         }
       })
