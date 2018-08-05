@@ -100,11 +100,11 @@ contract KulaksMarketplace {
   }
 
   function doesOwnerHaveShops () public view returns(bool, uint) {
-      // if(shopIds[user].length > 0) {
+      if(shopIds[msg.sender].length > 0) {
           return(true,  shopIds[msg.sender].length);
-      // } else {
-      //     return(false, 0);
-      // }
+      } else {
+          return(false, 0);
+      }
   }
   
   function doesShopHaveProducts (uint shopId) public view returns(bool, uint) {
