@@ -39,7 +39,8 @@ export function getAllShopsByOwner({ contractInstance, account }) {
       const getShopInfoArray = []
 
       while (counter < lengthOfArray) {
-        getShopIdsArray.push(contractInstance.getShopIdByOrder(counter))
+        getShopIdsArray.push(contractInstance.shopIds(account, counter))
+        // getShopIdsArray.push(contractInstance.getShopIdByOrder(counter))
         counter += 1
       }
       try {
@@ -48,8 +49,9 @@ export function getAllShopsByOwner({ contractInstance, account }) {
         console.log('getStoreIdsArray ==>', getShopIdsArray)
         storeIdResp.forEach((x) => {
           console.log('ARE WE GETTING HEREEEE store', x)
-          if (x[0] === true && x[1].c[0]) {
-            const storeId = x[1].c[0]
+          console.log('ARE WE GETTING HEREEEE 22222 store', x.c)
+          if (x.c && x.c[0]) {
+            const storeId = x.c[0]
             getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
           }
         })
