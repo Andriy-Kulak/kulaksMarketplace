@@ -5,6 +5,7 @@ import Select from 'antd/lib/select'
 import Divider from 'antd/lib/divider'
 import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
+import { displayError } from '../../util/displayMessage'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
@@ -48,6 +49,7 @@ class ProductPage extends Component {
         actions.selectProduct({ contractInstance, productId, account })
       }
     } catch (e) {
+      displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
     }
   }

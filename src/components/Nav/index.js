@@ -30,6 +30,9 @@ const Nav = () => {
         <li className="pure-menu-item">
           <Link to="/shopowner" className="pure-menu-heading pure-menu-link">Shop Owner</Link>
         </li>
+        <li className="pure-menu-item">
+          <Link to="/admin" className="pure-menu-heading pure-menu-link">Admin</Link>
+        </li>
         <OnlyGuestLinks />
         <OnlyAuthLinks />
       </ul>

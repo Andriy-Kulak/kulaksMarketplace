@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
-
+import { displayError } from '../../util/displayMessage'
 
 // actions
 import { getUserBalance } from '../../redux/user/actions'
@@ -60,6 +60,7 @@ class Home extends Component {
       })
       this.initializeData()
     } catch (e) {
+      displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
     }
   }
