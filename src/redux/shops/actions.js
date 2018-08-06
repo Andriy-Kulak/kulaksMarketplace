@@ -1,6 +1,6 @@
 import { reset } from 'redux-form'
 import message from 'antd/lib/message'
-import displayError from '../../util/displayError'
+import { displayError, displaySuccess } from '../../util/displayMessage'
 import {
   CREATE_SHOP,
   GET_ALL_OWNER_STORES,
@@ -166,15 +166,18 @@ export function productSelected(result) {
 
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
-    console.log('contractInstance ===>', contractInstance)
     dispatch(startLoading('newShop'))
     contractInstance.createShop(name, type, description, { from: account, gas: 550000 }).then((result) => {
       console.log('CREATED STORE RESULT =========', result)
-      dispatch(shopCreated(result))
-      dispatch(reset('newShop')) // reset form
+      if (result.receipt) {
+        displaySuccess(`You have successfully creates a shop called ${name}`)
+        dispatch(reset('newShop')) // reset form
+        // trigger methods so you get the latest list of shops
+        dispatch(getAllShopsByOwner({ contractInstance, account })) // get udated list of shops
+      } else {
+        displayError(`There was an error creating shopc alled ${name}`)
+      }
 
-      // trigger methods so you get the latest list of shops
-      dispatch(getAllShopsByOwner({ contractInstance, account })) // get udated list of shops
       dispatch(finishLoading('newShop')) // hide loading button for form
     }).catch((e) => {
       displayError(e)
@@ -193,15 +196,19 @@ export function createProduct({ contractInstance, name, description, price, acco
       dispatch(startLoading('newProduct')) // show loading button for create product form
       const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
       console.log(' RESULT FROM CREATE PRODUCT ACTION', result)
-      dispatch(productCreated(result))
-      dispatch(getAllProductsByShop({ shopId, contractInstance, account }))
-      dispatch(reset('newProduct')) // reset form
+      if (result.receipt) {
+        displaySuccess('You successfully created a product')
+        dispatch(getAllProductsByShop({ shopId, contractInstance, account }))
+        dispatch(reset('newProduct')) // reset form
+      } else {
+        displayError('There was an error with creating a product')
+        console.log('RESULT FROM CREATING A PRODUCT', result)
+      }
       dispatch(finishLoading('newProduct')) // hide loading button for form
     } catch (e) {
       displayError(e)
       dispatch(clearAllLoading())
-      console.log('ERROR', e)
-      console.log('ERROR message', e.message)
+      console.log('ERROR CREATING PRODUCT', e)
     }
   }
 }
@@ -218,7 +225,7 @@ export function selectProduct({ contractInstance, productId, account }) {
         price: result[3].c[0],
         shopId: result[4].c[0]
       }
-      console.log('adjusted RESPONSE', adjustedResponse)
+
       if (prodRespConfirm(adjustedResponse)) {
         dispatch(productSelected(adjustedResponse))
       } else {
@@ -264,40 +271,45 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
     try {
       dispatch(startLoading('withdraw')) // show loading button for withdraw button
       const withdrawResult = await contractInstance.moveShopBalanceToOwner(shopId, { from: account, gas: 550000 })
-      if (!withdrawResult.receipt) {
-        console.log('THERE IS an error withdrawing the request. Error 1', withdrawResult)
+      if (withdrawResult.receipt) {
+        displaySuccess(`You have successfully withdrawn from the shop balance into account: ${account}`)
       } else {
-        const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
-        console.log('CHECK SHOP BALANCE RESULT', result)
-        console.log('DETAILED RESULT', result.c[0])
-        dispatch({
-          type: CHECK_SHOP_BALANCE,
-          payload: {
-            [shopId]: result.c[0]
-          }
-        })
+        displayError('There was an error withdrawing.')
+        console.log('THERE IS an error withdrawing the request. Error 1', withdrawResult)
       }
+
+      const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
+      console.log('CHECK SHOP BALANCE RESULT', result)
+      console.log('DETAILED RESULT', result.c[0])
+      dispatch({
+        type: CHECK_SHOP_BALANCE,
+        payload: {
+          [shopId]: result.c[0]
+        }
+      })
       dispatch(finishLoading('withdraw')) // hide loading button for withdraw button
     } catch (e) {
       displayError(e)
-      console.log('THERE IS an error withdrawing the request. Error 2', e.message)
+      console.log('THERE IS an error withdrawing the request', e)
       dispatch(clearAllLoading())
     }
   }
 }
+
 export function purchaseProduct({ contractInstance, quantity, totalCost, account, productId }) {
   return async (dispatch) => {
     try {
       dispatch(startLoading('purchaseProduct'))
       const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
       if (typeof result.tx === 'string') {
-        message.success('You have successfully purchased a product')
+        displaySuccess('You have successfully purchased a product')
       }
       dispatch(finishLoading('purchaseProduct'))
       console.log('RESULT', result)
     } catch (e) {
       dispatch(clearAllLoading())
       displayError(e)
+      console.log('error purchasing product', e)
     }
   }
 }

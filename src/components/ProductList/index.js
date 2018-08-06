@@ -18,7 +18,7 @@ const ProductList = ({ productList, shopId }) => {
               <p>id: {x.id}</p>
               <p>Price: {x.price}</p>
               <p>Description: {x.description}</p>
-              <Button onClick={() => (browserHistory.push(`shop/${shopId}/product/${x.id}`))}>View</Button>
+              <Button type="primary" onClick={() => (browserHistory.push(`shop/${shopId}/product/${x.id}`))}>View</Button>
             </StyledProduct>
           ))}
         </StyledContainer>
