@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import message from 'antd/lib/message'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
 import Divider from 'antd/lib/divider'
 import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
+import displayError from '../../util/displayError'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
 
 // actions
-import { getAllProductsByShop, selectProduct, clearExistingProduct } from '../../redux/shops/actions'
+import { selectProduct, clearExistingProduct } from '../../redux/shops/actions'
 
 // components
 import Layout from '../../components/Layout'
@@ -48,6 +50,7 @@ class ProductPage extends Component {
         actions.selectProduct({ contractInstance, productId, account })
       }
     } catch (e) {
+      displayError(e)
       console.log('Error finding web3 or instatiating the contract.', e.message)
     }
   }
@@ -55,8 +58,14 @@ class ProductPage extends Component {
   purchaseProduct = async (totalCost) => {
     const { contractInstance, account, quantity } = this.state
     const { params: { productId } } = this.props
-    const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
-    console.log('RESULT', result)
+    try {
+      const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
+      if (typeof result.tx === 'string') {
+        message.success(`You have successfully purchased a product. Total cost ${totalCost} (wei)`)
+      }
+    } catch (e) {
+      displayError(e)
+    }
   }
 
   checkShopBalance = async (shopId) => {
@@ -68,7 +77,7 @@ class ProductPage extends Component {
 
   render() {
     const { quantity } = this.state
-    const { selectedProduct: { id, name, description, price } } = this.props
+    const { selectedProduct: { id, name, description, price }, loading } = this.props
     const { Option } = Select
     const availableQuantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const subtotalCost = price ? price * quantity : 0
@@ -90,8 +99,9 @@ class ProductPage extends Component {
               <div style={{ textAlign: 'right' }}>
                 <h4>Subtotal: {subtotalCost} (in wei)</h4>
                 <h4>Total Cost (S&H Included): {totalCost} (in wei)</h4>
-                <Button type="primary" onClick={() => (this.purchaseProduct(totalCost))}>Purchase</Button>
-                {/* <Button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</Button> */}
+                <Button type="primary" loading={loading.purchaseProduct} onClick={() => (this.purchaseProduct(totalCost))}>
+                  {loading.purchaseProduct ? 'Purchasing...' : 'Purchase'}
+                </Button>
               </div>}
           </StyledProduct>
         </StyledContainer>
@@ -101,20 +111,21 @@ class ProductPage extends Component {
 }
 
 ProductPage.propTypes = {
-  selectedProduct: PropTypes.object.isRequired
+  selectedProduct: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
-    getAllProductsByShop,
     selectProduct,
-    clearExistingProduct
+    clearExistingProduct,
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
   modal: state.modal,
+  loading: state.loading,
   userAcctBalance: state.user.userAcctBalance,
   selectedProduct: state.shops.selectedProduct
 })

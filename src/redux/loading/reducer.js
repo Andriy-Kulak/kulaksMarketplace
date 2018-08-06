@@ -3,6 +3,8 @@ import { START_LOADING, FINISH_LOADING, CLEAR_ALL_LOADING } from './constants'
 const initialState = {
   newShop: false,
   newProduct: false,
+  purchaseProduct: false,
+  withdraw: false
 }
 
 const loadingReducer = (state = initialState, action) => {

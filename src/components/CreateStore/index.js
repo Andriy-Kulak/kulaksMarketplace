@@ -4,12 +4,11 @@ import PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
 import { AntdInput, AntdTextArea } from '../Fields'
 
-import { StyledFormContainer } from './styles'
+import { StyledCard } from './styles'
 
 const CreateStore = ({ handleSubmit, loading }) => {
   return (
-    <StyledFormContainer>
-      <h3>Create Shop</h3>
+    <StyledCard title="Create Shop">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">
@@ -31,7 +30,7 @@ const CreateStore = ({ handleSubmit, loading }) => {
         </div>
         <Button type="primary" loading={loading} htmlType="submit">{loading ? 'Submitting...' : 'Submit'}</Button>
       </form>
-    </StyledFormContainer>)
+    </StyledCard>)
 }
 
 CreateStore.propTypes = {
