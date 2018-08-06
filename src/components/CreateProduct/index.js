@@ -3,6 +3,7 @@ import { Field, reduxForm } from 'redux-form'
 import PropTypes from 'prop-types'
 import Button from 'antd/lib/button'
 import { AntdInput, AntdTextArea } from '../Fields'
+// import Card from 'ant/lib/card'
 
 
 // styles
@@ -11,10 +12,9 @@ import {
   StyledNumberField
 } from './styles'
 
-const CreateProduct = ({ handleSubmit }) => {
+const CreateProduct = ({ handleSubmit, loading }) => {
   return (
-    <StyledFormContainer>
-      <h3>Create Product</h3>
+    <StyledFormContainer title="Create New Product">
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">
@@ -34,13 +34,14 @@ const CreateProduct = ({ handleSubmit }) => {
             <StyledNumberField name="price" id="price" component={AntdInput} type="number" hasFeedback />
           </label>
         </div>
-        <Button type="primary" htmlType="submit">Submit</Button>
+        <Button type="primary" loading={loading} htmlType="submit">{loading ? 'Submitting...' : 'Submit'}</Button>
       </form>
     </StyledFormContainer>)
 }
 
 CreateProduct.propTypes = {
-  handleSubmit: PropTypes.func.isRequired
+  handleSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired // loading bool specific to new product
 }
 
 const validate = (values) => {

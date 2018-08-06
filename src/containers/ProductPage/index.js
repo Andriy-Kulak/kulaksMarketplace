@@ -2,16 +2,21 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
+import Divider from 'antd/lib/divider'
+import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
 
 // actions
-import { getAllProductsByShop, selectProduct, clearExistingProduct } from '../../redux/shops/actions'
+import { selectProduct, clearExistingProduct, purchaseProduct } from '../../redux/shops/actions'
 
 // components
 import Layout from '../../components/Layout'
+
+// styles
+import { StyledContainer, StyledProduct } from './styles'
 
 class ProductPage extends Component {
   constructor(props) {
@@ -49,9 +54,8 @@ class ProductPage extends Component {
 
   purchaseProduct = async (totalCost) => {
     const { contractInstance, account, quantity } = this.state
-    const { actions, params: { productId }, selectedProduct } = this.props
-    const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
-    console.log('RESULT', result)
+    const { params: { productId }, actions } = this.props
+    actions.purchaseProduct({ contractInstance, quantity, totalCost, account, productId })
   }
 
   checkShopBalance = async (shopId) => {
@@ -63,49 +67,56 @@ class ProductPage extends Component {
 
   render() {
     const { quantity } = this.state
-    const { selectedProduct: { id, name, description, price, shopId } } = this.props
+    const { selectedProduct: { id, name, description, price }, loading } = this.props
     const { Option } = Select
     const availableQuantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const subtotalCost = price ? price * quantity : 0
     const totalCost = subtotalCost + 20 // Shipping and handling fees
     return (
       <Layout>
-        PRODUCT PAGE
-        <h4>Name: {name}</h4>
-        <p>Id: {id}</p>
-        <p>Description: {description}</p>
-        <Select defaultValue={1} style={{ width: 120 }} onChange={(value) => (this.setState({ ...this.state, quantity: value }))}>
-          {availableQuantities.map((x) => (
-            <Option key={x} value={x}>{x}</Option>
-          ))}
-        </Select>
-        {subtotalCost > 0 &&
-        <div>
-          <h4>Subtotal: {subtotalCost}</h4>
-          <h4>Total Cost (S&H Included): {totalCost}</h4>
-        </div>}
-        <button onClick={() => (this.purchaseProduct(totalCost))}>Purchase</button>
-        <button onClick={() => (this.checkShopBalance(shopId))}>Check Shop Balance</button>
+        <StyledContainer>
+          <StyledProduct title={`Product Title: ${name}`}>
+            <p>Id: {id}</p>
+            <p>Description: {description}</p>
+            Quantity:
+            <Select defaultValue={1} style={{ width: 120 }} onChange={(value) => (this.setState({ ...this.state, quantity: value }))}>
+              {availableQuantities.map((x) => (
+                <Option key={x} value={x}>{x}</Option>
+              ))}
+            </Select>
+            <Divider />
+            {subtotalCost > 0 &&
+              <div style={{ textAlign: 'right' }}>
+                <h4>Subtotal: {subtotalCost} (in wei)</h4>
+                <h4>Total Cost (S&H Included): {totalCost} (in wei)</h4>
+                <Button type="primary" loading={loading.purchaseProduct} onClick={() => (this.purchaseProduct(totalCost))}>
+                  {loading.purchaseProduct ? 'Purchasing...' : 'Purchase'}
+                </Button>
+              </div>}
+          </StyledProduct>
+        </StyledContainer>
       </Layout>
     )
   }
 }
 
 ProductPage.propTypes = {
-  selectedProduct: PropTypes.object.isRequired
+  selectedProduct: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
-    getAllProductsByShop,
     selectProduct,
-    clearExistingProduct
+    clearExistingProduct,
+    purchaseProduct
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
   modal: state.modal,
+  loading: state.loading,
   userAcctBalance: state.user.userAcctBalance,
   selectedProduct: state.shops.selectedProduct
 })

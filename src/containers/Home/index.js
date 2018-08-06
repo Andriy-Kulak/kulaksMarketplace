@@ -20,7 +20,8 @@ import {
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
-import HomeBody from '../../components/HomeBody'
+// import HomeBody from '../../components/HomeBody'
+import AdminTestPanel from '../../components/AdminTestPanel'
 import Layout from '../../components/Layout'
 import DefaultModal from '../../components/Modal'
 import ShopList from '../../components/ShopList'
@@ -77,42 +78,41 @@ class Home extends Component {
   makeMyselfAdmin = async () => {
     const { web3 } = this.state
     const { user, actions } = this.props
-    if (!user) {
-      alert('You are not signed in')
-    } else {
-      actions.getUserBalance(web3, user.ethAddress)
+    const { contractInstance, account } = this.state
+    // if (!user) {
+    //   alert('You are not signed in')
+    // } else {
+    actions.getUserBalance(web3, account)
 
-      const { contractInstance, account } = this.state
-
-      // make the logged in user an admin
-      contractInstance.becomeAdmin(user.ethAddress, { from: account })
-        .then((result) => {
-          console.log('CHECK RESULT For becomeAdmin', result)
-          // Get the value from the contract to prove it worked.
-          return contractInstance.checkIfUserAdmin.call(user.ethAddress)
-        }).then((result) => {
-          console.log('CHECK RESULT For checkIfUserAdmin', result)
-        })
-    }
+    // make the logged in user an admin
+    contractInstance.becomeAdmin(account, { from: account })
+      .then((result) => {
+        console.log('CHECK RESULT For becomeAdmin', result)
+        // Get the value from the contract to prove it worked.
+        return contractInstance.users(account)
+      }).then((result) => {
+        console.log('CHECK RESULT For checkIfUserAdmin', result)
+      })
+    // }
   }
 
 
   makeMyselfShopOwner = async () => {
     const { user } = this.props
-    if (!user) {
-      alert('You are not signed in')
-    } else {
-      const { contractInstance, account } = this.state
-      // make the logged in user an admin
-      contractInstance.becomeShopOwner(user.ethAddress, { from: account })
-        .then((result) => {
-          console.log('CHECK RESULT For becomeAdmin', result)
-          // Get the value from the contract to prove it worked.
-          return contractInstance.checkIfUserShopOwner.call(user.ethAddress)
-        }).then((result) => {
-          console.log('CHECK RESULT For checkIfUserShopOwner', result)
-        })
-    }
+    // if (!user) {
+    //   alert('You are not signed in')
+    // } else {
+    const { contractInstance, account } = this.state
+    // make the logged in user an admin
+    contractInstance.becomeShopOwner(account, { from: account })
+      .then((result) => {
+        console.log('CHECK RESULT For becomeAdmin', result)
+        // Get the value from the contract to prove it worked.
+        return contractInstance.users(account)
+      }).then((result) => {
+        console.log('CHECK RESULT For checkIfUserShopOwner', result)
+      })
+    // }
   }
 
   checkShopBalance = async (shopId) => {
@@ -180,13 +180,13 @@ class Home extends Component {
     console.log('getFirstStore RESULT ======>>', result)
   }
 
-  createProduct = async (values) => {
-    const { name, description, price, shopId } = values
-    const parsedPrice = parseInt(price, 10)
-    const { actions } = this.props
-    const { contractInstance, account } = this.state
-    actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
-  }
+  // createProduct = async (values) => {
+  //   const { name, description, price, shopId } = values
+  //   const parsedPrice = parseInt(price, 10)
+  //   const { actions } = this.props
+  //   const { contractInstance, account } = this.state
+  //   actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
+  // }
 
   selectShop = (id) => {
     // if id = newShop, don't do anything. User has selected the tab for creating a new Shop
@@ -200,7 +200,7 @@ class Home extends Component {
   }
 
   render() {
-    const { user, userAcctBalance, modal, shops, actions } = this.props
+    const { modal, shops, actions, loading } = this.props
     const { contractInstance, account } = this.state
     console.log('shops', shops.owner)
     console.log('this.state', this.state.web3)
@@ -212,6 +212,13 @@ class Home extends Component {
             For the purposes of this sample e-commerce app, we are giving you ability to change between Admin, Shop Owner and Regular User access types.
             This will give you ability to test and play around with functionality of all 3 types of access.
           </p>
+          <button onClick={async () => {
+            const result = await contractInstance.users(account)
+            console.log('result of CHECK USER', result)
+            }}
+          >
+            Check User Status
+          </button>
           <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
           <button onClick={() => (this.createShop())}> Create STORE</button>
           <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
@@ -228,7 +235,11 @@ class Home extends Component {
         </div>
 
         {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
-
+        <AdminTestPanel
+          makeMyselfAdmin={() => (this.makeMyselfAdmin())}
+          makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
+          makeMyselfUser={() => ({})}
+        />
         <ShopList
           productList={shops.products}
           shopList={shops.owner}
@@ -237,6 +248,7 @@ class Home extends Component {
           selectShop={(id) => (this.selectShop(id))}
           withdrawBalance={(id) => (actions.withdrawBalance({ shopId: id, account, contractInstance }))}
           createShop={(values) => this.createShop(values)}
+          loading={loading}
         />
         {/* <HomeBody
           updateValue={(value) => (this.handleClick(value))}
@@ -258,15 +270,16 @@ class Home extends Component {
 
 Home.defaultProps = {
   user: null,
-  userAcctBalance: null
+  // userAcctBalance: null
 }
 
 Home.propTypes = {
   user: PropTypes.object,
-  userAcctBalance: PropTypes.number,
+  // userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
-  shops: PropTypes.object.isRequired
+  shops: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired // loading object containining all loading statuses
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -286,7 +299,8 @@ const mapStateToProps = (state) => ({
   user: state.user.data,
   modal: state.modal,
   userAcctBalance: state.user.userAcctBalance,
-  shops: state.shops
+  shops: state.shops,
+  loading: state.loading
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

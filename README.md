@@ -102,3 +102,11 @@ Limitations of solidity:
 - cannot send back objects
 - cannot send arrays of uknown length
 -  there is no optional parameters in Solidity
+
+
+
+  Things required to integrate with Uport for every transaction:
+  1. need uPort to wrap web3 up. This seems to be a good example: https://github.com/uport-project/uport-connect/blob/develop/examples/integration-tutorial/index.js
+  2. Ensure that the account is properly set up
+  3. Example
+  4. TEst App: https://github.com/uport-project/testapp/blob/master/src/Components/Sign.js
