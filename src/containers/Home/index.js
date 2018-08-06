@@ -180,13 +180,13 @@ class Home extends Component {
     console.log('getFirstStore RESULT ======>>', result)
   }
 
-  createProduct = async (values) => {
-    const { name, description, price, shopId } = values
-    const parsedPrice = parseInt(price, 10)
-    const { actions } = this.props
-    const { contractInstance, account } = this.state
-    actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
-  }
+  // createProduct = async (values) => {
+  //   const { name, description, price, shopId } = values
+  //   const parsedPrice = parseInt(price, 10)
+  //   const { actions } = this.props
+  //   const { contractInstance, account } = this.state
+  //   actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
+  // }
 
   selectShop = (id) => {
     // if id = newShop, don't do anything. User has selected the tab for creating a new Shop
@@ -200,7 +200,7 @@ class Home extends Component {
   }
 
   render() {
-    const { modal, shops, actions } = this.props
+    const { modal, shops, actions, loading } = this.props
     const { contractInstance, account } = this.state
     console.log('shops', shops.owner)
     console.log('this.state', this.state.web3)
@@ -248,6 +248,7 @@ class Home extends Component {
           selectShop={(id) => (this.selectShop(id))}
           withdrawBalance={(id) => (actions.withdrawBalance({ shopId: id, account, contractInstance }))}
           createShop={(values) => this.createShop(values)}
+          loading={loading}
         />
         {/* <HomeBody
           updateValue={(value) => (this.handleClick(value))}
@@ -277,7 +278,8 @@ Home.propTypes = {
   // userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
-  shops: PropTypes.object.isRequired
+  shops: PropTypes.object.isRequired,
+  loading: PropTypes.object.isRequired // loading object containining all loading statuses
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -297,7 +299,8 @@ const mapStateToProps = (state) => ({
   user: state.user.data,
   modal: state.modal,
   userAcctBalance: state.user.userAcctBalance,
-  shops: state.shops
+  shops: state.shops,
+  loading: state.loading
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

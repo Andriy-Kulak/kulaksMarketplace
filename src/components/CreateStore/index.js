@@ -6,7 +6,7 @@ import { AntdInput, AntdTextArea } from '../Fields'
 
 import { StyledFormContainer } from './styles'
 
-const CreateStore = ({ handleSubmit }) => {
+const CreateStore = ({ handleSubmit, loading }) => {
   return (
     <StyledFormContainer>
       <h3>Create Shop</h3>
@@ -29,13 +29,14 @@ const CreateStore = ({ handleSubmit }) => {
             <Field name="description" id="description" component={AntdTextArea} type="text" hasFeedback />
           </label>
         </div>
-        <Button type="primary" htmlType="submit">Submit</Button>
+        <Button type="primary" loading={loading} htmlType="submit">{loading ? 'Submitting...' : 'Submit'}</Button>
       </form>
     </StyledFormContainer>)
 }
 
 CreateStore.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired // loading boolean specific to new Shop execution
 }
 
 const validate = (values) => {

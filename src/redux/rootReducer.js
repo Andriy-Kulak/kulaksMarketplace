@@ -5,6 +5,7 @@ import userReducer from './user/reducer'
 import shopReducer from './shops/reducer'
 import modalReducer from './modal/reducer'
 import ethReducer from './eth/reducer'
+import loadingReducer from './loading/reducer'
 
 const reducer = combineReducers({
   routing: routerReducer,
@@ -12,7 +13,8 @@ const reducer = combineReducers({
   user: userReducer,
   modal: modalReducer,
   eth: ethReducer,
-  form: formReducer
+  form: formReducer,
+  loading: loadingReducer
 })
 
 export default reducer

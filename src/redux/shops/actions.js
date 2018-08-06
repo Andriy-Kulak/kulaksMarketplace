@@ -8,6 +8,7 @@ import {
   CLEAR_EXISTING_PRODUCT,
   CHECK_SHOP_BALANCE
 } from './constants'
+import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
 
 const prodRespConfirm = ({ id, name, description, price, shopId }) => {
   return (typeof id === 'number' && typeof name === 'string' && typeof price === 'number' && typeof description === 'string' && typeof shopId === 'number')
@@ -158,14 +159,17 @@ export function productSelected(result) {
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
     console.log('contractInstance ===>', contractInstance)
+    dispatch(startLoading('newShop'))
     contractInstance.createShop(name, type, description, { from: account, gas: 550000 }).then((result) => {
       console.log('CREATED STORE RESULT =========', result)
       dispatch(shopCreated(result))
-      dispatch(reset('newShop')) // clear fields from newStore form
+      dispatch(reset('newShop')) // reset form
 
       // trigger methods so you get the latest list of shops
-      dispatch(getAllShopsByOwner({ contractInstance, account }))
+      dispatch(getAllShopsByOwner({ contractInstance, account })) // get udated list of shops
+      dispatch(finishLoading('newShop')) // hide loading button for form
     }).catch((e) => {
+      dispatch(clearAllLoading())
       alert('There was an error with creating the Shop. Make sure you are a shop owner before creating a shop.')
       console.log('ERROR', e)
       console.log('ERROR message', e.message)
@@ -177,12 +181,15 @@ export function createProduct({ contractInstance, name, description, price, acco
   return async (dispatch) => {
     const parsedPrice = parseInt(price, 10)
     try {
+      dispatch(startLoading('newProduct')) // show loading button for create product form
       const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
       console.log(' RESULT FROM CREATE PRODUCT ACTION', result)
       dispatch(productCreated(result))
       dispatch(getAllProductsByShop({ shopId, contractInstance, account }))
-      dispatch(reset('newProduct'))
+      dispatch(reset('newProduct')) // reset form
+      dispatch(finishLoading('newProduct')) // hide loading button for form
     } catch (e) {
+      dispatch(clearAllLoading())
       console.log('ERROR', e)
       console.log('ERROR message', e.message)
     }
