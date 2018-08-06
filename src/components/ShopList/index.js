@@ -44,7 +44,13 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
                   {typeof shopBalances[x.id] === 'number' &&
                   <span>
                     <p>Shop Balance: {shopBalances[x.id]} wei</p>
-                    <Button disabled={shopBalances[x.id] === 0} type="primary" onClick={() => (withdrawBalance(x.id))}>Withdraw Balance</Button>
+                    <Button
+                      disabled={shopBalances[x.id] === 0}
+                      type="primary"
+                      loading={loading.withdraw}
+                      onClick={() => (withdrawBalance(x.id))}
+                    >{loading.withdraw ? 'Withdrawing' : 'Withdraw Balance' }
+                    </Button>
                     {shopBalances[x.id] === 0 &&
                     <p>
                       * Your shop balance is 0.<br /> There is nothing currently to withdraw.

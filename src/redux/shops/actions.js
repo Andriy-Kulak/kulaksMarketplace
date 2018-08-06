@@ -262,6 +262,7 @@ export function checkShopBalance({ shopId, account, contractInstance }) {
 export function withdrawBalance({ shopId, account, contractInstance }) {
   return async (dispatch) => {
     try {
+      dispatch(startLoading('withdraw')) // show loading button for withdraw button
       const withdrawResult = await contractInstance.moveShopBalanceToOwner(shopId, { from: account, gas: 550000 })
       if (!withdrawResult.receipt) {
         console.log('THERE IS an error withdrawing the request. Error 1', withdrawResult)
@@ -276,6 +277,7 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
           }
         })
       }
+      dispatch(finishLoading('withdraw')) // hide loading button for withdraw button
     } catch (e) {
       displayError(e)
       console.log('THERE IS an error withdrawing the request. Error 2', e.message)
@@ -283,19 +285,19 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
     }
   }
 }
-
-// Probably won't need this - AK
-// export function purchaseProduct({ contractInstance, quantity, totalCost, account, productId }) {
-//   return async (dispatch) => {
-//     try {
-//       const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
-//       if (typeof result.tx === 'string') {
-//         message.success('You have successfully purchased a product')
-//       }
-//       console.log('RESULT', result)
-//     } catch (e) {
-//       dispatch(clearAllLoading())
-//       displayError(e)
-//     }
-//   }
-// }
+export function purchaseProduct({ contractInstance, quantity, totalCost, account, productId }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('purchaseProduct'))
+      const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
+      if (typeof result.tx === 'string') {
+        message.success('You have successfully purchased a product')
+      }
+      dispatch(finishLoading('purchaseProduct'))
+      console.log('RESULT', result)
+    } catch (e) {
+      dispatch(clearAllLoading())
+      displayError(e)
+    }
+  }
+}

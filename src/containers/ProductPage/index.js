@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import message from 'antd/lib/message'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
 import Divider from 'antd/lib/divider'
 import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
-import displayError from '../../util/displayError'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
 
 // actions
-import { selectProduct, clearExistingProduct } from '../../redux/shops/actions'
+import { selectProduct, clearExistingProduct, purchaseProduct } from '../../redux/shops/actions'
 
 // components
 import Layout from '../../components/Layout'
@@ -50,22 +48,14 @@ class ProductPage extends Component {
         actions.selectProduct({ contractInstance, productId, account })
       }
     } catch (e) {
-      displayError(e)
       console.log('Error finding web3 or instatiating the contract.', e.message)
     }
   }
 
   purchaseProduct = async (totalCost) => {
     const { contractInstance, account, quantity } = this.state
-    const { params: { productId } } = this.props
-    try {
-      const result = await contractInstance.purchaseProduct(productId, quantity, { from: account, value: totalCost })
-      if (typeof result.tx === 'string') {
-        message.success(`You have successfully purchased a product. Total cost ${totalCost} (wei)`)
-      }
-    } catch (e) {
-      displayError(e)
-    }
+    const { params: { productId }, actions } = this.props
+    actions.purchaseProduct({ contractInstance, quantity, totalCost, account, productId })
   }
 
   checkShopBalance = async (shopId) => {
@@ -119,6 +109,7 @@ const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
     selectProduct,
     clearExistingProduct,
+    purchaseProduct
   }, dispatch),
 })
 
