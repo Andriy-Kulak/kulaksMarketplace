@@ -49,19 +49,41 @@ contract KulaksMarketplace {
     _;
   }
   
+  // check if user already exists within users mapping
+  function checkUserListExist (address _addr) public view returns(bool) {
+      if(
+          keccak256(abi.encodePacked(users[_addr])) == keccak256(abi.encodePacked("admin")) ||
+          keccak256(abi.encodePacked(users[_addr])) == keccak256(abi.encodePacked("owner")) ||
+          keccak256(abi.encodePacked(users[_addr])) == keccak256(abi.encodePacked("user"))
+      ) {
+          return true;
+      }
+      
+      return false;
+  }
+  
   function makeShopOwner(address _addr) public {
-     users[_addr] = "owner";
-     usersList.push(_addr);
+    if(checkUserListExist(_addr) == false) {
+         usersList.push(_addr);
+    }
+    users[_addr] = "owner";
+     
   }
   
   function makeAdmin(address _addr) public {
-     users[_addr] = "admin";
-     usersList.push(_addr);
+    if(checkUserListExist(_addr) == false) {
+        usersList.push(_addr);
+    }
+    users[_addr] = "admin";
+     
   }
   
   function makeUser(address _addr) public {
-     users[_addr] = "user";
-     usersList.push(_addr);
+    if(checkUserListExist(_addr) == false) {
+        usersList.push(_addr);
+    }
+    users[_addr] = "user";
+     
   }
   
   function getUsersListLength() public view returns(uint) {

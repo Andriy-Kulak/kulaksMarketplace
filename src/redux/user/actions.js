@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router'
+import { reset } from 'redux-form'
 import { uport } from '../../util/connectors'
 import { UPDATE_USER_BALANCE, USER_LOGGED_IN, UPDATE_ADMIN_LIST } from './constants'
 import { displayError, displaySuccess } from '../../util/displayMessage'
@@ -117,6 +118,7 @@ export function makeAdmin({ contractInstance, account, userAccount }) {
       if (result.receipt) {
         displaySuccess(`You have successfully made the following account an admin: ${userAccount}`)
         dispatch(getAllUsers({ contractInstance, account }))
+        dispatch(reset('addAccount')) // reset add account redux-form
       } else {
         displayError()
         console.log('RESULT FROM CREATING ADMIN', result)
@@ -139,6 +141,7 @@ export function makeShopOwner({ contractInstance, account, userAccount }) {
       if (result.receipt) {
         displaySuccess(`You have successfully made the following account a Shop Owner: ${userAccount}`)
         dispatch(getAllUsers({ contractInstance, account }))
+        dispatch(reset('addAccount')) // reset add account redux-form
       } else {
         displayError()
         console.log('RESULT FROM CREATING A SHOP OWNER', result)
@@ -161,6 +164,7 @@ export function makeUser({ contractInstance, account, userAccount }) {
       if (result.receipt) {
         displaySuccess(`You have successfully made the following account a User: ${userAccount}`)
         dispatch(getAllUsers({ contractInstance, account }))
+        dispatch(reset('addAccount')) // reset add account redux-form
       } else {
         displayError()
         console.log('RESULT FROM CREATING USER', result)
