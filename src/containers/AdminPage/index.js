@@ -69,7 +69,6 @@ class AdminPage extends Component {
             makeShopOwner={() => (actions.makeShopOwner({ contractInstance, account, userAccount: accountAddress }))}
             makeUser={() => (actions.makeUser({ contractInstance, account, userAccount: accountAddress }))}
           />
-          <Button type="primary" onClick={() => (actions.makeAdmin({ contractInstance, account, userAccount: account }))}>Make Admin</Button>
           <Spin tip="Submitting..." spinning={loading.adminListAction}>
             <List
               size="large"
