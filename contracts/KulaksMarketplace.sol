@@ -30,12 +30,13 @@ contract KulaksMarketplace {
   uint transactionCount;
   uint shippingAndHandling = 20;
   mapping(uint => uint) public shopBalances;
-  mapping(address => bool) public admins; // enter an address to confirm if it's an admin
-  mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
+  // mapping(address => bool) public admins; // enter an address to confirm if it's an admin
+  // mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
   mapping(uint => Shop) public shops; // enter shopId to get info about the store
   mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
   mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
   mapping(uint => Product) public products;
+  address[] public usersList;
   mapping(address => string) public users;
   
   modifier shopOwnerOnly() {
@@ -46,6 +47,25 @@ contract KulaksMarketplace {
   modifier adminOnly() {
     require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
     _;
+  }
+  
+  function makeShopOwner(address _addr) public {
+     users[_addr] = "owner";
+     usersList.push(_addr);
+  }
+  
+  function makeAdmin(address _addr) public {
+     users[_addr] = "admin";
+     usersList.push(_addr);
+  }
+  
+  function makeUser(address _addr) public {
+     users[_addr] = "user";
+     usersList.push(_addr);
+  }
+  
+  function getUsersListLength() public view returns(uint) {
+     return usersList.length;
   }
   
   function createShop(string _name, string _shopType, string _description) public {

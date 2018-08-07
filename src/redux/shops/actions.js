@@ -1,5 +1,4 @@
 import { reset } from 'redux-form'
-import message from 'antd/lib/message'
 import { displayError, displaySuccess } from '../../util/displayMessage'
 import {
   CREATE_SHOP,
@@ -77,7 +76,7 @@ export function getAllShopsByOwner({ contractInstance, account }) {
           payload: shopsArray
         })
       } catch (e) {
-        displayError(e)
+        displayError(e.message)
         console.log('shopIdsArray', getShopIdsArray)
         console.log('WHAT IS THE ERROR IN store id RESP', e)
       }
@@ -137,7 +136,7 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
         })
       }
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
     }
   }
 }
@@ -175,12 +174,12 @@ export function createShop({ contractInstance, name, type, description, account 
         // trigger methods so you get the latest list of shops
         dispatch(getAllShopsByOwner({ contractInstance, account })) // get udated list of shops
       } else {
-        displayError(`There was an error creating shopc alled ${name}`)
+        displayError(`There was an error creating shop alled ${name}`)
       }
 
       dispatch(finishLoading('newShop')) // hide loading button for form
     }).catch((e) => {
-      displayError(e)
+      displayError(e.message)
       dispatch(clearAllLoading())
       alert('There was an error with creating the Shop. Make sure you are a shop owner before creating a shop.')
       console.log('ERROR', e)
@@ -206,7 +205,7 @@ export function createProduct({ contractInstance, name, description, price, acco
       }
       dispatch(finishLoading('newProduct')) // hide loading button for form
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR CREATING PRODUCT', e)
     }
@@ -232,7 +231,7 @@ export function selectProduct({ contractInstance, productId, account }) {
         console.log('ERROR with productSelect result. Check the response', result)
       }
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR with selectProduct', e)
       console.log('ERROR message', e.message)
@@ -261,7 +260,7 @@ export function checkShopBalance({ shopId, account, contractInstance }) {
         }
       })
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
     }
   }
 }
@@ -289,7 +288,7 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
       })
       dispatch(finishLoading('withdraw')) // hide loading button for withdraw button
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       console.log('THERE IS an error withdrawing the request', e)
       dispatch(clearAllLoading())
     }
@@ -308,7 +307,7 @@ export function purchaseProduct({ contractInstance, quantity, totalCost, account
       console.log('RESULT', result)
     } catch (e) {
       dispatch(clearAllLoading())
-      displayError(e)
+      displayError(e.message)
       console.log('error purchasing product', e)
     }
   }

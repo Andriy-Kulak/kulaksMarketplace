@@ -1,6 +1,8 @@
 import { browserHistory } from 'react-router'
 import { uport } from '../../util/connectors'
-import { UPDATE_USER_BALANCE, USER_LOGGED_IN } from './constants'
+import { UPDATE_USER_BALANCE, USER_LOGGED_IN, UPDATE_ADMIN_LIST } from './constants'
+import { displayError, displaySuccess } from '../../util/displayMessage'
+import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
 
 const mnid = require('mnid')
 
@@ -53,5 +55,121 @@ export function loginUser() {
 
       return browserHistory.push('/dashboard')
     })
+  }
+}
+
+export function getAllUsers({ contractInstance, account }) {
+  return async (dispatch) => {
+    const result = await contractInstance.getUsersListLength({ from: account })
+
+    const userListArray = []
+    const userAccountArray = []
+    const userDetailedList = []
+    if (result.c && result.c[0]) {
+      const lengthOfArray = result.c[0]
+      let counter = 0
+
+      while (counter < lengthOfArray) {
+        userListArray.push(contractInstance.usersList(counter, { from: account }))
+        counter += 1
+      }
+      const userAcctResp = await Promise.all(userListArray)
+      console.log('userAcctResp ====>', userAcctResp)
+
+
+      userAcctResp.forEach((x) => {
+        userAccountArray.push(contractInstance.users(x, { from: account }))
+      })
+      const userResp = await Promise.all(userAccountArray)
+
+      console.log('userResp ===?', userResp)
+      if (userResp.length !== userAcctResp.length) {
+        displayError('There was an Error getting user account statuses. Please investigate')
+        console.log('userResp ====>', userResp)
+        console.log('userAcctResp ====>', userAcctResp)
+      }
+
+      userAcctResp.forEach((x, key) => {
+        userDetailedList.push({
+          account: x,
+          status: userResp[key]
+        })
+      })
+
+      console.log('userDetailedList ===>', userDetailedList)
+      dispatch({
+        type: UPDATE_ADMIN_LIST,
+        payload: userDetailedList
+      })
+
+      // const result2 = await contractInstance.usersList(counter, { from: account })
+    }
+    console.log('RESULT **** from getAllUsers', result)
+  }
+}
+
+export function makeAdmin({ contractInstance, account, userAccount }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminListAction'))
+      const result = await contractInstance.makeAdmin(userAccount, { from: account, gas: 550000 })
+
+      if (result.receipt) {
+        displaySuccess(`You have successfully made the following account an admin: ${userAccount}`)
+        dispatch(getAllUsers({ contractInstance, account }))
+      } else {
+        displayError()
+        console.log('RESULT FROM CREATING ADMIN', result)
+      }
+      dispatch(finishLoading('adminListAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR CREATING AN ADMIN', e)
+    }
+  }
+}
+
+export function makeShopOwner({ contractInstance, account, userAccount }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminListAction'))
+      const result = await contractInstance.makeShopOwner(userAccount, { from: account, gas: 550000 })
+
+      if (result.receipt) {
+        displaySuccess(`You have successfully made the following account a Shop Owner: ${userAccount}`)
+        dispatch(getAllUsers({ contractInstance, account }))
+      } else {
+        displayError()
+        console.log('RESULT FROM CREATING A SHOP OWNER', result)
+      }
+      dispatch(finishLoading('adminListAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR CREATING A SHOP OWNER', e)
+    }
+  }
+}
+
+export function makeUser({ contractInstance, account, userAccount }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminListAction'))
+      const result = await contractInstance.makeUser(userAccount, { from: account, gas: 550000 })
+
+      if (result.receipt) {
+        displaySuccess(`You have successfully made the following account a User: ${userAccount}`)
+        dispatch(getAllUsers({ contractInstance, account }))
+      } else {
+        displayError()
+        console.log('RESULT FROM CREATING USER', result)
+      }
+      dispatch(finishLoading('adminListAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR CREATING A USER', e)
+    }
   }
 }
