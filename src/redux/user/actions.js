@@ -7,7 +7,8 @@ import { startLoading, finishLoading, clearAllLoading } from '../loading/actions
 import {
   UPDATE_USER_BALANCE,
   USER_LOGGED_IN,
-  UPDATE_USER_STATUS
+  UPDATE_USER_STATUS,
+  UPDATE_ADMIN_LIST
 } from './constants'
 
 const mnid = require('mnid')

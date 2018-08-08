@@ -17,7 +17,7 @@ import { selectProduct, clearExistingProduct, purchaseProduct } from '../../redu
 import Layout from '../../components/Layout'
 
 // styles
-import { StyledContainer, StyledProduct } from './styles'
+import { StyledContainer, StyledProduct, StyledInfo } from './styles'
 
 class ProductPage extends Component {
   constructor(props) {
@@ -95,6 +95,7 @@ class ProductPage extends Component {
                   {loading.purchaseProduct ? 'Purchasing...' : 'Purchase'}
                 </Button>
               </div>}
+            <StyledInfo>(For testing purposes only) If you want to test the shop owner feature of withdrawal, then purchase and item, head over to Shop Owner page and withdraw the total balance that users have purchased from the store.</StyledInfo>
           </StyledProduct>
         </StyledContainer>
       </Layout>

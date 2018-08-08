@@ -62,7 +62,7 @@ class HomePage extends Component {
     const { contractInstance, account } = this.state
     console.log('CONTRACT INSTANCE', contractInstance)
     const title = userShops.length === 0 ?
-      'There are currently no stores created. If you want to test the app, then become a Shop Owner and Create Shops and Products.' :
+      'There are currently no stores created. If you want to test the app, then become a Shop Owner by heading over to Shop Owner page and Create Shops and Products.' :
       'Available Shops'
     return (
       <Layout>

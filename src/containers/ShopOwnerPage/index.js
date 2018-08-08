@@ -68,6 +68,7 @@ class ShopOwnerPage extends Component {
         account,
         contractInstance })
       actions.getUserStatus({ contractInstance, account })
+      actions.checkShopBalance({ shopId: 1, account, contractInstance })
     } catch (e) {
       displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
