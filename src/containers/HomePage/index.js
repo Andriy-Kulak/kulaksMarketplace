@@ -52,7 +52,7 @@ class HomePage extends Component {
                 <p>id: {x.id}</p>
                 <p>Owner: {x.owner}</p>
                 <p>Type: {x.type}</p>
-                <p>Description: {x.description}</p>
+                <p>Shop Description: {x.description}</p>
                 <Button type="primary" onClick={() => (browserHistory.push(`shop/${x.id}`))}>View</Button>
               </Card>))}
           </StyledContainerList>

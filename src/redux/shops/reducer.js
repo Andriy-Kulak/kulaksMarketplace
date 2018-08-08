@@ -6,7 +6,8 @@ import {
   SELECTED_PRODUCT,
   CLEAR_EXISTING_PRODUCT,
   CHECK_SHOP_BALANCE,
-  GET_ALL_USER_SHOPS
+  GET_ALL_USER_SHOPS,
+  GET_SHOP_DETAILS
 } from './constants'
 
 const initialState = {
@@ -16,7 +17,8 @@ const initialState = {
   products: {},
   selectedProduct: {},
   shopBalances: {},
-  userShops: []
+  userShops: [],
+  shopDetails: {}
 }
 
 const shopReducer = (state = initialState, action) => {
@@ -46,6 +48,10 @@ const shopReducer = (state = initialState, action) => {
         }
       })
     }
+    case GET_SHOP_DETAILS:
+      return Object.assign({}, state, {
+        shopDetails: action.payload
+      })
     case SELECTED_PRODUCT:
       return Object.assign({}, state, {
         selectedProduct: action.payload

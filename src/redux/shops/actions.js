@@ -8,7 +8,8 @@ import {
   SELECTED_PRODUCT,
   CLEAR_EXISTING_PRODUCT,
   CHECK_SHOP_BALANCE,
-  GET_ALL_USER_SHOPS
+  GET_ALL_USER_SHOPS,
+  GET_SHOP_DETAILS
 } from './constants'
 import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
 
@@ -316,7 +317,6 @@ export function purchaseProduct({ contractInstance, quantity, totalCost, account
 
 // Used when user wants to take a look at all available stores created by shop owners
 export function getAllShops({ contractInstance, account }) {
-  console.log('GETTINGGGGG#####')
   return async (dispatch) => {
     try {
       const result = await contractInstance.getShopsListLength({ from: account })
@@ -361,6 +361,32 @@ export function getAllShops({ contractInstance, account }) {
     } catch (e) {
       displayError(`Error getting all shops... ${e.message}`)
       console.log('ERROR getting all shops', e)
+    }
+  }
+}
+
+export function getSpecificShop({ contractInstance, account, shopId }) {
+  return async (dispatch) => {
+    try {
+      const result = await contractInstance.shops(shopId, { from: account })
+
+      if (result.length === 5) { // ensuring that we are getting a response with appropriate data
+        const id = result[0].c[0]
+        const name = result[1]
+        const type = result[2]
+        const description = result[3]
+        const owner = result[4]
+        dispatch({
+          type: GET_SHOP_DETAILS,
+          payload: { id, name, type, description, owner }
+        })
+      } else {
+        displayError(`Error #2 getting getting  shop with id =${shopId}`)
+        console.log('RESPONSE FRO getSpecificShop', result)
+      }
+    } catch (e) {
+      displayError(`Error getting getting  shop with id =${shopId} ... ${e.message}`)
+      console.log('ERROR getting shop', e)
     }
   }
 }
