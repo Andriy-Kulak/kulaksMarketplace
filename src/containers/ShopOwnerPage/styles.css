@@ -1,13 +1,13 @@
 /* PAGE */
 
-body,
+/* body,
 .pure-g [class*=pure-u] {
   font-family: 'Open Sans', sans-serif;
-}
+} */
 
-h1, h2, h3 {
+/* h1, h2, h3 {
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
-}
+} */
 
 pre {
   display: block;
@@ -40,7 +40,7 @@ pre {
   position: relative;
   padding: 5px;
   background: #6495ED;
-  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  /* font-family: 'Oswald', 'Arial Narrow', sans-serif; */
 }
 
 .navbar a {

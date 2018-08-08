@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/Layout'
 
-class ShopOwner extends Component {
+class HomePage extends Component {
   render() {
     return (
       <Layout>
@@ -14,4 +14,4 @@ class ShopOwner extends Component {
   }
 }
 
-export default connect()(ShopOwner)
+export default connect()(HomePage)

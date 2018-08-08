@@ -33,7 +33,7 @@ import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import './styles.css'
 
-class Home extends Component {
+class ShopOwnerPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -269,12 +269,12 @@ class Home extends Component {
   }
 }
 
-Home.defaultProps = {
+ShopOwnerPage.defaultProps = {
   user: null,
   // userAcctBalance: null
 }
 
-Home.propTypes = {
+ShopOwnerPage.propTypes = {
   user: PropTypes.object,
   // userAcctBalance: PropTypes.number,
   actions: PropTypes.object.isRequired,
@@ -304,4 +304,4 @@ const mapStateToProps = (state) => ({
   loading: state.loading
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(ShopOwnerPage)
