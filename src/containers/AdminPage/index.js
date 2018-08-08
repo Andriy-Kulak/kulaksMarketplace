@@ -63,6 +63,7 @@ class AdminPage extends Component {
       <Layout>
         <StyledContainer>
           <AddAccount
+            adminList={adminList}
             loading={loading.adminListAction}
             accountAddress={accountAddress}
             makeAdmin={() => (actions.makeAdmin({ contractInstance, account, userAccount: accountAddress }))}
