@@ -12,6 +12,7 @@ import instantiateContract from '../../util/instantiateContract'
 import Layout from '../../components/Layout'
 import ProductList from '../../components/ProductList'
 
+// actions
 import {
   getAllProductsByShop,
   getSpecificShop
@@ -24,7 +25,6 @@ class ShopUserPage extends Component {
       web3: null,
       contractInstance: null,
       account: null,
-      quantity: 1,
     }
   }
 
