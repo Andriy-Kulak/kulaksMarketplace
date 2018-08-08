@@ -1,9 +1,14 @@
 import { browserHistory } from 'react-router'
 import { reset } from 'redux-form'
 import { uport } from '../../util/connectors'
-import { UPDATE_USER_BALANCE, USER_LOGGED_IN, UPDATE_ADMIN_LIST } from './constants'
 import { displayError, displaySuccess } from '../../util/displayMessage'
 import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
+
+import {
+  UPDATE_USER_BALANCE,
+  USER_LOGGED_IN,
+  UPDATE_USER_STATUS
+} from './constants'
 
 const mnid = require('mnid')
 
@@ -171,6 +176,96 @@ export function makeUser({ contractInstance, account, userAccount }) {
       displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR CREATING A USER', e)
+    }
+  }
+}
+
+
+export function getUserStatus({ contractInstance, account }) {
+  return async (dispatch) => {
+    try {
+      const result = await contractInstance.users(account, { from: account })
+      console.log('RESULT FROM GETTING A USER', result)
+      if (result === 'owner' || result === 'admin' || result === 'shopper') {
+        dispatch({
+          type: UPDATE_USER_STATUS,
+          payload: result
+        })
+      } else {
+        // if type is not admin, owner, or shopper then make user a guest
+        dispatch({
+          type: UPDATE_USER_STATUS,
+          payload: 'guest'
+        })
+      }
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR GETTING STATUS OF A USER', e)
+    }
+  }
+}
+
+
+export function makeMyselfAdmin({ contractInstance, account }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminPanelAction'))
+      const result = await contractInstance.becomeAdmin(account, { from: account })
+      if (result.receipt) {
+        displaySuccess('You successfuly made youself an admin')
+        dispatch(getUserStatus({ contractInstance, account }))
+      } else {
+        displayError('There was an error making you admin. Check response in console log')
+        console.log('RESPONSE FROM MAKING MYSELF ADMIN', result)
+      }
+      dispatch(finishLoading('adminPanelAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR MAKING MYSELF AN ADMIN', e)
+    }
+  }
+}
+
+export function makeMyselfShopOwner({ contractInstance, account }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminPanelAction'))
+      const result = await contractInstance.becomeShopOwner(account, { from: account })
+      if (result.receipt) {
+        displaySuccess('You successfuly made youself a shop owner')
+        dispatch(getUserStatus({ contractInstance, account }))
+      } else {
+        displayError('There was an error making you a shop owner. Check response in console log')
+        console.log('RESPONSE FROM MAKING MYSELF SHOP OWNER', result)
+      }
+      dispatch(finishLoading('adminPanelAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('ERROR MAKING MYSELF A SHOP OWNER', e)
+    }
+  }
+}
+
+export function makeMyselfRegularUser({ contractInstance, account }) {
+  return async (dispatch) => {
+    try {
+      dispatch(startLoading('adminPanelAction'))
+      const result = await contractInstance.becomeRegularUser(account, { from: account })
+      if (result.receipt) {
+        displaySuccess('You successfuly made youself a regular user/shopper')
+        dispatch(getUserStatus({ contractInstance, account }))
+      } else {
+        displayError('There was an error making you a shop owner. Check response in console log')
+        console.log('response from making myself a regular user', result)
+      }
+      dispatch(finishLoading('adminPanelAction'))
+    } catch (e) {
+      displayError(e.message)
+      dispatch(clearAllLoading())
+      console.log('error from making myself a regular user', e)
     }
   }
 }

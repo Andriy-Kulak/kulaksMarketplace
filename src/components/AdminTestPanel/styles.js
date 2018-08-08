@@ -2,8 +2,8 @@ import Card from 'antd/lib/card'
 import styled from 'styled-components'
 
 export const StyledPanel = styled(Card)`
- /* width: 100%; */
- max-width: 620px;
+ max-width: 680px;
+
 `
 
 export const StyledContainer = styled.div`

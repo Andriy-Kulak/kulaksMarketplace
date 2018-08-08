@@ -8,14 +8,19 @@ import instantiateContract from '../../util/instantiateContract'
 import { displayError } from '../../util/displayMessage'
 
 // actions
-import { getUserBalance } from '../../redux/user/actions'
+import {
+  getUserBalance,
+  makeMyselfAdmin,
+  makeMyselfShopOwner,
+  makeMyselfRegularUser
+} from '../../redux/user/actions'
 import {
   createShop,
   getAllShopsByOwner,
   createProduct,
   getAllProductsByShop,
   checkShopBalance,
-  withdrawBalance
+  withdrawBalance,
 } from '../../redux/shops/actions'
 import { loadingModal } from '../../redux/modal/actions'
 
@@ -72,46 +77,6 @@ class ShopOwnerPage extends Component {
       shopId: 1,
       account,
       contractInstance })
-  }
-
-  makeMyselfAdmin = async () => {
-    const { web3 } = this.state
-    const { user, actions } = this.props
-    const { contractInstance, account } = this.state
-    // if (!user) {
-    //   alert('You are not signed in')
-    // } else {
-    actions.getUserBalance(web3, account)
-
-    // make the logged in user an admin
-    contractInstance.becomeAdmin(account, { from: account })
-      .then((result) => {
-        console.log('CHECK RESULT For becomeAdmin', result)
-        // Get the value from the contract to prove it worked.
-        return contractInstance.users(account)
-      }).then((result) => {
-        console.log('CHECK RESULT For checkIfUserAdmin', result)
-      })
-    // }
-  }
-
-
-  makeMyselfShopOwner = async () => {
-    const { user } = this.props
-    // if (!user) {
-    //   alert('You are not signed in')
-    // } else {
-    const { contractInstance, account } = this.state
-    // make the logged in user an admin
-    contractInstance.becomeShopOwner(account, { from: account })
-      .then((result) => {
-        console.log('CHECK RESULT For becomeAdmin', result)
-        // Get the value from the contract to prove it worked.
-        return contractInstance.users(account)
-      }).then((result) => {
-        console.log('CHECK RESULT For checkIfUserShopOwner', result)
-      })
-    // }
   }
 
   checkShopBalance = async (shopId) => {
@@ -179,14 +144,6 @@ class ShopOwnerPage extends Component {
     console.log('getFirstStore RESULT ======>>', result)
   }
 
-  // createProduct = async (values) => {
-  //   const { name, description, price, shopId } = values
-  //   const parsedPrice = parseInt(price, 10)
-  //   const { actions } = this.props
-  //   const { contractInstance, account } = this.state
-  //   actions.createProduct({ contractInstance, name, description, price: parsedPrice, account, shopId })
-  // }
-
   selectShop = (id) => {
     // if id = newShop, don't do anything. User has selected the tab for creating a new Shop
     if (id !== 'newShop') {
@@ -199,10 +156,8 @@ class ShopOwnerPage extends Component {
   }
 
   render() {
-    const { modal, shops, actions, loading } = this.props
+    const { modal, shops, actions, loading, userStatus } = this.props
     const { contractInstance, account } = this.state
-    console.log('shops', shops.owner)
-    console.log('this.state', this.state.web3)
     return (
       <Layout>
         <div style={{ paddingTop: '10px', border: '1px solid black' }}>
@@ -228,16 +183,16 @@ class ShopOwnerPage extends Component {
             <p>The stored value is: {this.state.storageValue}</p>
           </div>
           <h2> ----------------------------- </h2>
-          <button onClick={() => (this.makeMyselfAdmin())}>Make Myself Admin</button>
-          <button onClick={() => (this.makeMyselfShopOwner())}>Make Myself Shop Owner</button>
+          <button onClick={() => (actions.makeMyselfAdmin({ contractInstance, account }))}>Make Myself Admin</button>
+          <button onClick={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}>Make Myself Shop Owner</button>
           <button onClick={() => (this.handleClick(20))}>Update Value to 20</button>
         </div>
-
-        {/* <CreateStore onSubmit={(values) => (this.createShop(values))} /> */}
         <AdminTestPanel
-          makeMyselfAdmin={() => (this.makeMyselfAdmin())}
-          makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
-          makeMyselfUser={() => ({})}
+          userStatus={userStatus}
+          loading={loading.adminPanelAction}
+          makeMyselfAdmin={() => (actions.makeMyselfAdmin({ contractInstance, account }))}
+          makeMyselfShopOwner={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}
+          makeMyselfUser={() => (actions.makeMyselfRegularUser({ contractInstance, account }))}
         />
         <ShopList
           productList={shops.products}
@@ -249,14 +204,6 @@ class ShopOwnerPage extends Component {
           createShop={(values) => this.createShop(values)}
           loading={loading}
         />
-        {/* <HomeBody
-          updateValue={(value) => (this.handleClick(value))}
-          storageValue={this.state.storageValue}
-          makeMyselfAdmin={() => (this.makeMyselfAdmin())}
-          makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
-          userData={user}
-          userAcctBalance={userAcctBalance}
-        /> */}
         <DefaultModal
           active={modal.active}
           header={modal.header}
@@ -273,8 +220,7 @@ ShopOwnerPage.defaultProps = {
 }
 
 ShopOwnerPage.propTypes = {
-  user: PropTypes.object,
-  // userAcctBalance: PropTypes.number,
+  userStatus: PropTypes.string.isRequired,
   actions: PropTypes.object.isRequired,
   modal: PropTypes.object.isRequired,
   shops: PropTypes.object.isRequired,
@@ -290,12 +236,16 @@ const mapDispatchToProps = (dispatch) => ({
     createProduct,
     getAllProductsByShop,
     checkShopBalance,
-    withdrawBalance
+    withdrawBalance,
+    makeMyselfAdmin,
+    makeMyselfShopOwner,
+    makeMyselfRegularUser
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
+  userStatus: state.user.userStatus,
   modal: state.modal,
   userAcctBalance: state.user.userAcctBalance,
   shops: state.shops,
@@ -303,3 +253,13 @@ const mapStateToProps = (state) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShopOwnerPage)
+
+
+/* <HomeBody
+updateValue={(value) => (this.handleClick(value))}
+storageValue={this.state.storageValue}
+makeMyselfAdmin={() => (this.makeMyselfAdmin())}
+makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
+userData={user}
+userAcctBalance={userAcctBalance}
+/> */

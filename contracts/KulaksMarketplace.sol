@@ -87,10 +87,12 @@ contract KulaksMarketplace {
      
   }
   
+  // get length of userList so we can itterate over it and get all users visible by admin
   function getUsersListLength() public view returns(uint) {
      return usersList.length;
   }
   
+  // get length of shopsList so we can itterate over it and get all shops visible to user
   function getShopsListLength() public view returns(uint) {
      return shopsList.length;
   }
@@ -170,6 +172,10 @@ contract KulaksMarketplace {
 
   function becomeAdmin() public returns (bool) {
       users[msg.sender] = "admin";
+  }
+  
+  function becomeRegularUser() public returns (bool) {
+      users[msg.sender] = "shopper";
   }
   
   function becomeShopOwner() public returns (bool) {

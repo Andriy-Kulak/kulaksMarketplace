@@ -65,6 +65,7 @@ Security Holes:
 
 Potential Errors That come up:
 1. If the following error comes up (usually only in local environment), the only way I found to consistently fix it is to remove and reinstall the Metamask chrom app: `Error: the tx doesn't have the correct nonce. account has nonce of: 4 tx has nonce of: 361`
+2. When you switch between local and test environemnts, make sure you redeploy contract to the appropriate place `npm run deploy:locally` or `npm run deploy:rinkeby`
 
 This repo was built from react-uport truffle scaffold. These were the initial order of operations To Start the app:
 1. truffle unbox react

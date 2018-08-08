@@ -1,9 +1,16 @@
-import { UPDATE_USER_BALANCE, USER_LOGGED_IN, USER_LOGGED_OUT, UPDATE_ADMIN_LIST } from './constants'
+import {
+  UPDATE_USER_BALANCE,
+  USER_LOGGED_IN,
+  USER_LOGGED_OUT,
+  UPDATE_ADMIN_LIST,
+  UPDATE_USER_STATUS
+} from './constants'
 
 const initialState = {
   userAcctBalance: null,
   data: null,
-  adminList: []
+  adminList: [],
+  userStatus: 'guest'
 }
 
 const userReducer = (state = initialState, action) => {
@@ -23,6 +30,10 @@ const userReducer = (state = initialState, action) => {
     case UPDATE_ADMIN_LIST:
       return Object.assign({}, state, {
         adminList: action.payload
+      })
+    case UPDATE_USER_STATUS:
+      return Object.assign({}, state, {
+        userStatus: action.payload
       })
     default:
       return state

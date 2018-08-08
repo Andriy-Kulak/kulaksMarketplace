@@ -10,6 +10,7 @@ import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
 import { displayError } from '../../util/displayMessage'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
+import { getUserStatus } from '../../redux/user/actions'
 import { getAllShops } from '../../redux/shops/actions'
 
 import { StyledContainerList } from './styles'
@@ -33,6 +34,7 @@ class HomePage extends Component {
       console.log('GETTTTTTTTTTTTTTTTT')
       const { actions } = this.props
       actions.getAllShops({ contractInstance, account })
+      actions.getUserStatus({ contractInstance, account })
     } catch (e) {
       displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
@@ -64,24 +66,13 @@ class HomePage extends Component {
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators({
-    getAllShops
-    // loadingModal,
-    // getUserBalance,
-    // createShop,
-    // getAllShopsByOwner,
-    // createProduct,
-    // getAllProductsByShop,
-    // checkShopBalance,
-    // withdrawBalance
+    getAllShops,
+    getUserStatus
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
-  // user: state.user.data,
-  // modal: state.modal,
-  // userAcctBalance: state.user.userAcctBalance,
   userShops: state.shops.userShops,
-  // loading: state.loading
 })
 
 HomePage.propTypes = {
