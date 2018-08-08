@@ -10,13 +10,23 @@ import { displayError } from '../../util/displayMessage'
 import MarketplaceContract from '../../contracts/KulaksMarketplace.json'
 import getWeb3 from '../../util/getWeb3'
 import instantiateContract from '../../util/instantiateContract'
-import AddAccount from '../../components/AddAccount'
 
 // actions
-import { makeAdmin, getAllUsers, makeShopOwner, makeUser } from '../../redux/user/actions'
+import {
+  makeAdmin,
+  getAllUsers,
+  makeShopOwner,
+  makeUser,
+  makeMyselfAdmin,
+  makeMyselfShopOwner,
+  makeMyselfRegularUser,
+  getUserStatus
+} from '../../redux/user/actions'
 
 // components
 import Layout from '../../components/Layout'
+import AdminTestPanel from '../../components/AdminTestPanel'
+import AddAccount from '../../components/AddAccount'
 
 // styles
 import { StyledContainer, StyledAvatar } from './styles'
@@ -50,6 +60,7 @@ class AdminPage extends Component {
 
       const { actions } = this.props
       actions.getAllUsers({ contractInstance, account })
+      actions.getUserStatus({ contractInstance, account })
     } catch (e) {
       displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
@@ -58,10 +69,17 @@ class AdminPage extends Component {
 
   render() {
     const { contractInstance, account } = this.state
-    const { actions, adminList, loading, accountAddress } = this.props
+    const { actions, adminList, loading, accountAddress, userStatus } = this.props
     return (
       <Layout>
         <StyledContainer>
+          <AdminTestPanel
+            userStatus={userStatus}
+            loading={loading.adminPanelAction}
+            makeMyselfAdmin={() => (actions.makeMyselfAdmin({ contractInstance, account }))}
+            makeMyselfShopOwner={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}
+            makeMyselfUser={() => (actions.makeMyselfRegularUser({ contractInstance, account }))}
+          />
           <AddAccount
             adminList={adminList}
             loading={loading.adminListAction}
@@ -104,7 +122,8 @@ AdminPage.propTypes = {
   loading: PropTypes.object.isRequired,
   adminList: PropTypes.array.isRequired,
   actions: PropTypes.object.isRequired,
-  accountAddress: PropTypes.string
+  accountAddress: PropTypes.string,
+  userStatus: PropTypes.string.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => ({
@@ -112,13 +131,18 @@ const mapDispatchToProps = (dispatch) => ({
     makeAdmin,
     getAllUsers,
     makeShopOwner,
-    makeUser
+    makeUser,
+    makeMyselfAdmin,
+    makeMyselfShopOwner,
+    makeMyselfRegularUser,
+    getUserStatus
   }, dispatch),
 })
 
 const mapStateToProps = (state) => ({
   user: state.user.data,
   adminList: state.user.adminList,
+  userStatus: state.user.userStatus,
   accountAddress: selector(state, 'address'),
   loading: state.loading,
 })

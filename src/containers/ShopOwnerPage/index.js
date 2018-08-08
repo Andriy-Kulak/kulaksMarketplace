@@ -12,7 +12,8 @@ import {
   getUserBalance,
   makeMyselfAdmin,
   makeMyselfShopOwner,
-  makeMyselfRegularUser
+  makeMyselfRegularUser,
+  getUserStatus
 } from '../../redux/user/actions'
 import {
   createShop,
@@ -25,7 +26,6 @@ import {
 import { loadingModal } from '../../redux/modal/actions'
 
 // components
-// import HomeBody from '../../components/HomeBody'
 import AdminTestPanel from '../../components/AdminTestPanel'
 import Layout from '../../components/Layout'
 import DefaultModal from '../../components/Modal'
@@ -61,23 +61,29 @@ class ShopOwnerPage extends Component {
         account
 
       })
-      this.initializeData()
+      const { actions } = this.props
+      this.getAllShopsByOwner()
+      actions.getAllProductsByShop({
+        shopId: 1,
+        account,
+        contractInstance })
+      actions.getUserStatus({ contractInstance, account })
     } catch (e) {
       displayError('Error finding web3 or instatiating the contract.', e.message)
       console.log('Error finding web3 or instatiating the contract.', e.message)
     }
   }
 
-  initializeData = async () => {
-    const { account, contractInstance } = this.state
-    const { actions } = this.props
-    this.getAllShopsByOwner() // get all shops for owner
-    // by default you will only get products for the first shop if it exists in the contract
-    return actions.getAllProductsByShop({
-      shopId: 1,
-      account,
-      contractInstance })
-  }
+  // initializeData = async () => {
+  //   const { account, contractInstance } = this.state
+  //   const { actions } = this.props
+  //   this.getAllShopsByOwner() // get all shops for owner
+  //   // by default you will only get products for the first shop if it exists in the contract
+  //   return actions.getAllProductsByShop({
+  //     shopId: 1,
+  //     account,
+  //     contractInstance })
+  // }
 
   checkShopBalance = async (shopId) => {
     const { contractInstance, account } = this.state
@@ -179,13 +185,6 @@ class ShopOwnerPage extends Component {
           <button onClick={() => (this.testSender())}> Test SENDER</button>
           <button onClick={() => (this.getFirstStore())}> Get First Store</button>
           <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
-          <div>
-            <p>The stored value is: {this.state.storageValue}</p>
-          </div>
-          <h2> ----------------------------- </h2>
-          <button onClick={() => (actions.makeMyselfAdmin({ contractInstance, account }))}>Make Myself Admin</button>
-          <button onClick={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}>Make Myself Shop Owner</button>
-          <button onClick={() => (this.handleClick(20))}>Update Value to 20</button>
         </div>
         <AdminTestPanel
           userStatus={userStatus}
@@ -239,7 +238,8 @@ const mapDispatchToProps = (dispatch) => ({
     withdrawBalance,
     makeMyselfAdmin,
     makeMyselfShopOwner,
-    makeMyselfRegularUser
+    makeMyselfRegularUser,
+    getUserStatus
   }, dispatch),
 })
 

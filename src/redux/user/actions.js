@@ -215,13 +215,14 @@ export function makeMyselfAdmin({ contractInstance, account }) {
       if (result.receipt) {
         displaySuccess('You successfuly made youself an admin')
         dispatch(getUserStatus({ contractInstance, account }))
+        browserHistory.push('/admin')
       } else {
         displayError('There was an error making you admin. Check response in console log')
         console.log('RESPONSE FROM MAKING MYSELF ADMIN', result)
       }
       dispatch(finishLoading('adminPanelAction'))
     } catch (e) {
-      displayError(e.message)
+      displayError('teeee')
       dispatch(clearAllLoading())
       console.log('ERROR MAKING MYSELF AN ADMIN', e)
     }
@@ -236,6 +237,7 @@ export function makeMyselfShopOwner({ contractInstance, account }) {
       if (result.receipt) {
         displaySuccess('You successfuly made youself a shop owner')
         dispatch(getUserStatus({ contractInstance, account }))
+        browserHistory.push('/shopowner')
       } else {
         displayError('There was an error making you a shop owner. Check response in console log')
         console.log('RESPONSE FROM MAKING MYSELF SHOP OWNER', result)
