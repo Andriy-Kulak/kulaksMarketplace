@@ -184,8 +184,8 @@ export function makeUser({ contractInstance, account, userAccount }) {
 export function getUserStatus({ contractInstance, account }) {
   return async (dispatch) => {
     try {
+      dispatch(startLoading('userStatus'))
       const result = await contractInstance.users(account, { from: account })
-      console.log('RESULT FROM GETTING A USER', result)
       if (result === 'owner' || result === 'admin' || result === 'shopper') {
         dispatch({
           type: UPDATE_USER_STATUS,
@@ -198,6 +198,7 @@ export function getUserStatus({ contractInstance, account }) {
           payload: 'guest'
         })
       }
+      dispatch(finishLoading('userStatus'))
     } catch (e) {
       displayError(e.message)
       dispatch(clearAllLoading())

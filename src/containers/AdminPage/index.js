@@ -70,6 +70,31 @@ class AdminPage extends Component {
   render() {
     const { contractInstance, account } = this.state
     const { actions, adminList, loading, accountAddress, userStatus } = this.props
+
+    if (loading.userStatus === true) {
+      return (
+        <Layout>
+          <h3>Loading...</h3>
+        </Layout>)
+    }
+
+    if (userStatus !== 'admin') {
+      return (
+        <Layout>
+          <StyledContainer>
+            <AdminTestPanel
+              userStatus={userStatus}
+              loading={loading.adminPanelAction}
+              makeMyselfAdmin={() => (actions.makeMyselfAdmin({ contractInstance, account }))}
+              makeMyselfShopOwner={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}
+              makeMyselfUser={() => (actions.makeMyselfRegularUser({ contractInstance, account }))}
+            />
+            <br />
+            <h3>You do not have admin privileges. For testing purposes you can <b>Make youself an Admin</b> in the <b>Admin Test Panel</b> at the top of the page to use features on this page.</h3>
+          </StyledContainer>
+        </Layout>)
+    }
+
     return (
       <Layout>
         <StyledContainer>

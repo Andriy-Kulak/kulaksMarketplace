@@ -74,17 +74,6 @@ class ShopOwnerPage extends Component {
     }
   }
 
-  // initializeData = async () => {
-  //   const { account, contractInstance } = this.state
-  //   const { actions } = this.props
-  //   this.getAllShopsByOwner() // get all shops for owner
-  //   // by default you will only get products for the first shop if it exists in the contract
-  //   return actions.getAllProductsByShop({
-  //     shopId: 1,
-  //     account,
-  //     contractInstance })
-  // }
-
   checkShopBalance = async (shopId) => {
     const { contractInstance, account } = this.state
     const result = await contractInstance.shopBalances(shopId, { from: account })
@@ -164,6 +153,27 @@ class ShopOwnerPage extends Component {
   render() {
     const { modal, shops, actions, loading, userStatus } = this.props
     const { contractInstance, account } = this.state
+    if (loading.userStatus === true) {
+      return (
+        <Layout>
+          <h3>Loading...</h3>
+        </Layout>)
+    }
+
+    if (userStatus !== 'owner') {
+      return (
+        <Layout>
+          <AdminTestPanel
+            userStatus={userStatus}
+            loading={loading.adminPanelAction}
+            makeMyselfAdmin={() => (actions.makeMyselfAdmin({ contractInstance, account }))}
+            makeMyselfShopOwner={() => (actions.makeMyselfShopOwner({ contractInstance, account }))}
+            makeMyselfUser={() => (actions.makeMyselfRegularUser({ contractInstance, account }))}
+          />
+          <br />
+          <h3>You do not have Shop Owner privileges. For testing purposes you can <b>Make youself a Shop Owner</b> in the <b>Admin Test Panel</b> at the top of the page to use features on this page.</h3>
+        </Layout>)
+    }
     return (
       <Layout>
         <div style={{ paddingTop: '10px', border: '1px solid black' }}>

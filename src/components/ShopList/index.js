@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import Tabs from 'antd/lib/tabs'
 import Icon from 'antd/lib/icon'
 import Button from 'antd/lib/button'
+import Card from 'antd/lib/card'
 
 // styles
 import {
@@ -23,8 +24,8 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
   const { TabPane } = Tabs
 
   return (
-    <div>
-      <h1>Shop Owner Panel</h1>
+    <Card title="Shop Owner Page">
+      {/* <h1>Shop Owner Panel</h1> */}
       <h2>Shops:</h2>
       {!shopList.length > 0 &&
       <StyledNoShopsWarn>You do not have any existing shop. Create a new one below!</StyledNoShopsWarn>}
@@ -61,6 +62,8 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
                   <ProductList productList={productList[x.id]} shopId={x.id} />
                 </div>
               </StyledShopContainer>
+              {(!productList[x.id] || productList[x.id].length === 0) &&
+              <StyledNoShopsWarn>You have 0 products! Create one below!</StyledNoShopsWarn>}
               <CreateProduct onSubmit={(values) => (createProduct({ ...values, shopId: x.id }))} loading={loading.newProduct} />
             </TabPane>))}
           <TabPane
@@ -71,7 +74,7 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
           </TabPane>
         </StyledTabs>
       </StyledContainer>
-    </div>
+    </Card>
   )
 }
 

@@ -6,7 +6,8 @@ const initialState = {
   purchaseProduct: false,
   withdraw: false,
   adminListAction: false,
-  adminPanelAction: false
+  adminPanelAction: false,
+  userStatus: false
 }
 
 const loadingReducer = (state = initialState, action) => {
