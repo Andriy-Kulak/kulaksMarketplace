@@ -63,6 +63,9 @@ Security Holes:
 2. truffle.js credentials are not secure. (Currently using a mneumonic created by metamask)
 
 
+Potential Errors That come up:
+1. If the following error comes up (usually only in local environment), the only way I found to consistently fix it is to remove and reinstall the Metamask chrom app: `Error: the tx doesn't have the correct nonce. account has nonce of: 4 tx has nonce of: 361`
+
 This repo was built from react-uport truffle scaffold. These were the initial order of operations To Start the app:
 1. truffle unbox react
 2. change truffle.js and getWeb3.js (line 24) files as indicated
