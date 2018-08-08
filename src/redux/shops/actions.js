@@ -7,7 +7,8 @@ import {
   GET_PRODUCTS_BY_SHOP,
   SELECTED_PRODUCT,
   CLEAR_EXISTING_PRODUCT,
-  CHECK_SHOP_BALANCE
+  CHECK_SHOP_BALANCE,
+  GET_ALL_USER_SHOPS
 } from './constants'
 import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
 
@@ -309,6 +310,57 @@ export function purchaseProduct({ contractInstance, quantity, totalCost, account
       dispatch(clearAllLoading())
       displayError(e.message)
       console.log('error purchasing product', e)
+    }
+  }
+}
+
+// Used when user wants to take a look at all available stores created by shop owners
+export function getAllShops({ contractInstance, account }) {
+  console.log('GETTINGGGGG#####')
+  return async (dispatch) => {
+    try {
+      const result = await contractInstance.getShopsListLength({ from: account })
+
+      const shopsListArray = []
+      const shopsDetailsRequestArray = []
+      const shopsDetailsResultArray = []
+      if (result.c && result.c[0]) {
+        const lengthOfArray = result.c[0]
+        let counter = 0
+
+        while (counter < lengthOfArray) {
+          shopsListArray.push(contractInstance.shopsList(counter, { from: account }))
+          counter += 1
+        }
+        const shopsListResp = await Promise.all(shopsListArray)
+        console.log('shopsListResp ====>', shopsListResp)
+
+
+        shopsListResp.forEach((x) => {
+          shopsDetailsRequestArray.push(contractInstance.shops(x, { from: account }))
+        })
+        const shopsResp = await Promise.all(shopsDetailsRequestArray)
+
+        console.log('shopsResp ===?', shopsResp)
+        shopsResp.forEach((x) => {
+          const id = x[0].c[0]
+          const name = x[1]
+          const type = x[2]
+          const description = x[3]
+          const owner = x[4]
+          if (shopRespConfirm({ id, name, type, description })) {
+            shopsDetailsResultArray.push({ id, name, type, description, owner })
+          }
+        })
+
+        dispatch({
+          type: GET_ALL_USER_SHOPS,
+          payload: shopsDetailsResultArray
+        })
+      }
+    } catch (e) {
+      displayError(`Error getting all shops... ${e.message}`)
+      console.log('ERROR getting all shops', e)
     }
   }
 }

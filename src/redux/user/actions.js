@@ -102,10 +102,7 @@ export function getAllUsers({ contractInstance, account }) {
         type: UPDATE_ADMIN_LIST,
         payload: userDetailedList
       })
-
-      // const result2 = await contractInstance.usersList(counter, { from: account })
     }
-    console.log('RESULT **** from getAllUsers', result)
   }
 }
 

@@ -37,6 +37,7 @@ contract KulaksMarketplace {
   mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
   mapping(uint => Product) public products;
   address[] public usersList;
+  uint[] public shopsList;
   mapping(address => string) public users;
   
   modifier shopOwnerOnly() {
@@ -90,6 +91,10 @@ contract KulaksMarketplace {
      return usersList.length;
   }
   
+  function getShopsListLength() public view returns(uint) {
+     return shopsList.length;
+  }
+  
   function createShop(string _name, string _shopType, string _description) public {
      uint id = shopCount;
      
@@ -101,12 +106,14 @@ contract KulaksMarketplace {
        owner: msg.sender
      });
 
-      // need to add a
+      // add a shop to shops mapping and reference by id
      shops[id] = newShop;
      
      // push the shopId to a shopIds mapping for reference
      shopIds[msg.sender].push(id);
      // increment counter by 1 since you are using it for id's for shops as well
+     
+     shopsList.push(id); // push shopId to shopList so we can display all shops to user
     shopCount++;
   }
   

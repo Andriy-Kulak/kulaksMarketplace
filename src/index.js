@@ -12,6 +12,7 @@ import ShopOwnerPage from './containers/ShopOwnerPage'
 import ProductPage from './containers/ProductPage'
 import Profile from './components/User/layouts/profile/Profile'
 import AdminPage from './containers/AdminPage'
+import ShopUserPage from './containers/ShopUserPage'
 
 // Redux Store
 import store from './redux/store'
@@ -25,6 +26,7 @@ ReactDOM.render((
       <Route path="/admin" component={AdminPage} />
       <Route path="/dashboard" component={UserIsAuthenticated(Dashboard)} />
       <Route path="/profile" component={UserIsAuthenticated(Profile)} />
+      <Route path="shop/:shopId" component={ShopUserPage} />
       <Route path="shop/:shopId/product/:productId" component={ProductPage} />
       <Route path="/shopowner" component={ShopOwnerPage} />
     </Router>
