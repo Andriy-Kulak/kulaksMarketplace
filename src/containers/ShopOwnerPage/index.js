@@ -28,8 +28,6 @@ import ShopList from '../../components/ShopList'
 
 // Styles
 import 'antd/dist/antd.css' // eslint-disable-line
-import '../../css/oswald.css'
-import '../../css/open-sans.css'
 import '../../css/pure-min.css'
 import './styles.css'
 
