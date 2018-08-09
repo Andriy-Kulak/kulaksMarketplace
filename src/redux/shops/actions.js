@@ -23,8 +23,10 @@ const shopRespConfirm = ({ id, name, type, description }) => {
 }
 
 export function getAllShopsByOwner({ contractInstance, account }) {
+  
   const start = Date.now()
   return async (dispatch) => {
+    // console.log('xxx web3.eth.getBlock(latest)', await web3.eth.getBlock('latest'))
     // checking if shopOwner has created stores
     const response = await contractInstance.doesOwnerHaveShops({ from: account })
     console.log('RESPOND FROM GET ALL STORES ====>', response)
@@ -37,31 +39,25 @@ export function getAllShopsByOwner({ contractInstance, account }) {
 
     if (response[0] === true && response[1] && response[1].c[0]) {
       const lengthOfArray = response[1].c[0]
-      console.log('reponse[1].c[0] lengthOfArray', lengthOfArray)
+      console.log('xxx reponse[1].c[0] lengthOfArray', lengthOfArray)
       let counter = 0
       const shopsArray = []
       const getShopIdsArray = []
       const getShopInfoArray = []
 
       while (counter < lengthOfArray) {
-        getShopIdsArray.push(contractInstance.shopIds(account, counter))
+        getShopIdsArray.push(contractInstance.shopIds(account, counter, { from: account }))
         counter += 1
       }
       try {
         const storeIdResp = await Promise.all(getShopIdsArray)
-        console.log('storeIdResp ==>', storeIdResp)
-        console.log('getStoreIdsArray ==>', getShopIdsArray)
         storeIdResp.forEach((x) => {
-          console.log('ARE WE GETTING HEREEEE store', x)
-          console.log('ARE WE GETTING HEREEEE 22222 store', x.c)
           if (x.c && x.c[0]) {
             const storeId = x.c[0]
             getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
           }
         })
-        console.log('getStoreInfoArray ==>', getShopInfoArray)
         const storeInfoResp = await Promise.all(getShopInfoArray)
-        console.log('storeInfoResp ==>', storeInfoResp)
         storeInfoResp.forEach((x) => {
           const id = x[0].c[0]
           const name = x[1]
@@ -143,7 +139,7 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
   }
 }
 
-function shopCreated(result) {
+export function shopCreated(result) {
   return ({
     type: CREATE_SHOP,
     payload: result
@@ -167,10 +163,13 @@ export function productSelected(result) {
 
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
-    dispatch(startLoading('newShop'))
-    contractInstance.createShop(name, type, description, { from: account, gas: 550000 }).then((result) => {
-      console.log('CREATED STORE RESULT =========', result)
+    try {
+      dispatch(startLoading('newShop'))
+      const result = await contractInstance.createShop(name, type, description, { from: account, gas: 550000 })
+      console.log('xxx CREATED STORE RESULT =========', result)
       if (result.receipt) {
+        // console.log('xxxx web3.eth.blockNumber =========', web3.eth.blockNumber)
+        console.log('xxxx blocknumber', result.receipt.blockNumber)
         displaySuccess(`You have successfully creates a shop called ${name}`)
         dispatch(reset('newShop')) // reset form
         // trigger methods so you get the latest list of shops
@@ -180,13 +179,13 @@ export function createShop({ contractInstance, name, type, description, account 
       }
 
       dispatch(finishLoading('newShop')) // hide loading button for form
-    }).catch((e) => {
+    } catch (e) {
       displayError(e.message)
       dispatch(clearAllLoading())
       alert('There was an error with creating the Shop. Make sure you are a shop owner before creating a shop.')
       console.log('ERROR', e)
       console.log('ERROR message', e.message)
-    })
+    }
   }
 }
 

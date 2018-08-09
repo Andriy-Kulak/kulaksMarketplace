@@ -213,7 +213,7 @@ export function makeMyselfAdmin({ contractInstance, account }) {
   return async (dispatch) => {
     try {
       dispatch(startLoading('adminPanelAction'))
-      const result = await contractInstance.becomeAdmin(account, { from: account })
+      const result = await contractInstance.becomeAdmin({ from: account })
       if (result.receipt) {
         displaySuccess('You successfuly made youself an admin')
         dispatch(getUserStatus({ contractInstance, account }))
@@ -235,7 +235,7 @@ export function makeMyselfShopOwner({ contractInstance, account }) {
   return async (dispatch) => {
     try {
       dispatch(startLoading('adminPanelAction'))
-      const result = await contractInstance.becomeShopOwner(account, { from: account })
+      const result = await contractInstance.becomeShopOwner({ from: account })
       if (result.receipt) {
         displaySuccess('You successfuly made youself a shop owner')
         dispatch(getUserStatus({ contractInstance, account }))
@@ -257,7 +257,7 @@ export function makeMyselfRegularUser({ contractInstance, account }) {
   return async (dispatch) => {
     try {
       dispatch(startLoading('adminPanelAction'))
-      const result = await contractInstance.becomeRegularUser(account, { from: account })
+      const result = await contractInstance.becomeRegularUser({ from: account })
       if (result.receipt) {
         displaySuccess('You successfuly made youself a regular user/shopper')
         dispatch(getUserStatus({ contractInstance, account }))
