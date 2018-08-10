@@ -225,7 +225,7 @@ export function makeMyselfAdmin({ contractInstance, account }) {
       }
       dispatch(finishLoading('adminPanelAction'))
     } catch (e) {
-      displayError('teeee')
+      displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR MAKING MYSELF AN ADMIN', e)
     }
