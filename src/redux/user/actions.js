@@ -73,7 +73,7 @@ export function getAllUsers({ contractInstance, account }) {
     const userAccountArray = []
     const userDetailedList = []
     if (result.c && result.c[0]) {
-      const lengthOfArray = result.c[0]
+      const lengthOfArray = result.toNumber()
       let counter = 0
 
       while (counter < lengthOfArray) {

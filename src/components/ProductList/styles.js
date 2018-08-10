@@ -4,6 +4,7 @@ import Card from 'antd/lib/card'
 export const StyledContainer = styled.div`
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
 `
 
 export const StyledProduct = styled(Card)`

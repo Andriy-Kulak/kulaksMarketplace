@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import Select from 'antd/lib/select'
 import Divider from 'antd/lib/divider'
+import Decimal from 'decimal.js'
 import Button from 'antd/lib/button'
 import PropTypes from 'prop-types'
 import { displayError } from '../../util/displayMessage'
@@ -64,7 +65,7 @@ class ProductPage extends Component {
     const { contractInstance, account } = this.state
     const result = await contractInstance.shopBalances(shopId, { from: account })
     console.log('CHECK SHOP BALANCE RESULT', result)
-    console.log('DETAILED RESULT', result.c[0])
+    console.log('DETAILED RESULT', result.toNumber())
   }
 
   render() {
@@ -73,7 +74,8 @@ class ProductPage extends Component {
     const { Option } = Select
     const availableQuantities = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     const subtotalCost = price ? price * quantity : 0
-    const totalCost = subtotalCost + 20 // Shipping and handling fees
+    const totalCost = new Decimal(subtotalCost).plus(20).toString() // Shipping and handling fees
+    console.log('TOTAL COST ==>', totalCost)
     return (
       <Layout>
         <StyledContainer>

@@ -62,7 +62,7 @@ class ShopOwnerPage extends Component {
 
       })
       const { actions } = this.props
-      this.getAllShopsByOwner()
+      actions.getAllShopsByOwner({ contractInstance, account })
       actions.getAllProductsByShop({
         shopId: 1,
         account,
@@ -96,48 +96,6 @@ class ShopOwnerPage extends Component {
       description,
       account
     })
-  }
-
-  getAllShopsByOwner = () => {
-    const { contractInstance, account } = this.state
-    const { actions } = this.props
-    actions.getAllShopsByOwner({ contractInstance, account })
-  }
-
-  handleClick = (value) => {
-    const { contractInstance, account } = this.state
-    contractInstance.set(value, { from: account })
-      .then(() => {
-        return contractInstance.get.call()
-          .then((getResult) => {
-            return this.setState({ storageValue: getResult.c[0] })
-          })
-      })
-  }
-
-  testBalance = async () => {
-    const { contractInstance } = this.state
-    const result = await contractInstance.testBalance.call()
-    console.log('BALANCE ======>>', result)
-  }
-
-  loadingTrigger = () => {
-    const { actions } = this.props
-    return actions.loadingModal()
-  }
-
-  testSender = async () => {
-    const { contractInstance } = this.state
-    const result = await contractInstance.user()
-    const resultWithCall = await contractInstance.user.call()
-    console.log('owner RESULT ======>>', result)
-    console.log('owner result with Call ===>', resultWithCall)
-  }
-
-  getFirstStore = async () => {
-    const { contractInstance } = this.state
-    const result = await contractInstance.getStoreInfo.call(1)
-    console.log('getFirstStore RESULT ======>>', result)
   }
 
   selectShop = (id) => {
@@ -177,29 +135,6 @@ class ShopOwnerPage extends Component {
     }
     return (
       <Layout>
-        <div style={{ paddingTop: '10px', border: '1px solid black' }}>
-          <h2>Testing Section</h2>
-          <p>
-            For the purposes of this sample e-commerce app, we are giving you ability to change between Admin, Shop Owner and Regular User access types.
-            This will give you ability to test and play around with functionality of all 3 types of access.
-          </p>
-          <button onClick={async () => {
-            const result = await contractInstance.users(account)
-            console.log('result of CHECK USER', result)
-            }}
-          >
-            Check User Status
-          </button>
-          <button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
-          <button onClick={() => (this.createShop())}> Create STORE</button>
-          <button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
-          <button onClick={() => (this.testSender())}> Test SENDER</button>
-          <button onClick={() => (this.getFirstStore())}> Get First Store</button>
-          <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
-          <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
-          <button onClick={() => (this.handleClick(Date.now()))}>Update Value</button>
-          <h3>Current Value: {this.state.storageValue}</h3>
-        </div>
         <AdminTestPanel
           userStatus={userStatus}
           loading={loading.adminPanelAction}
@@ -277,3 +212,70 @@ makeMyselfShopOwner={() => (this.makeMyselfShopOwner())}
 userData={user}
 userAcctBalance={userAcctBalance}
 /> */
+
+// for testing purposes only
+/* <div style={{ paddingTop: '10px', border: '1px solid black' }}>
+<h2>Testing Section</h2>
+<p>
+  For the purposes of this sample e-commerce app, we are giving you ability to change between Admin, Shop Owner and Regular User access types.
+  This will give you ability to test and play around with functionality of all 3 types of access.
+</p>
+<button onClick={async () => {
+  const result = await contractInstance.users(account)
+  console.log('result of CHECK USER', result)
+  }}
+>
+  Check User Status
+</button>
+<button onClick={() => (this.testBalance())}> CHECK BALANCE</button>
+<button onClick={() => (this.createShop())}> Create STORE</button>
+<button onClick={() => (this.loadingTrigger())}> LOADING TRIGGER</button>
+<button onClick={() => (this.testSender())}> Test SENDER</button>
+<button onClick={() => (this.getFirstStore())}> Get First Store</button>
+<button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+<button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+<button onClick={() => (this.handleClick(Date.now()))}>Update Value</button>
+<h3>Current Value: {this.state.storageValue}</h3>
+</div> */
+
+// getAllShopsByOwner = () => {
+//   const { contractInstance, account } = this.state
+//   const { actions } = this.props
+//   actions.getAllShopsByOwner({ contractInstance, account })
+// }
+
+// handleClick = (value) => {
+//   const { contractInstance, account } = this.state
+//   contractInstance.set(value, { from: account })
+//     .then(() => {
+//       return contractInstance.get.call()
+//         .then((getResult) => {
+//           return this.setState({ storageValue: getResult.c[0] })
+//         })
+//     })
+// }
+
+// testBalance = async () => {
+//   const { contractInstance } = this.state
+//   const result = await contractInstance.testBalance.call()
+//   console.log('BALANCE ======>>', result)
+// }
+
+// loadingTrigger = () => {
+//   const { actions } = this.props
+//   return actions.loadingModal()
+// }
+
+// testSender = async () => {
+//   const { contractInstance } = this.state
+//   const result = await contractInstance.user()
+//   const resultWithCall = await contractInstance.user.call()
+//   console.log('owner RESULT ======>>', result)
+//   console.log('owner result with Call ===>', resultWithCall)
+// }
+
+// getFirstStore = async () => {
+//   const { contractInstance } = this.state
+//   const result = await contractInstance.getStoreInfo.call(1)
+//   console.log('getFirstStore RESULT ======>>', result)
+// }

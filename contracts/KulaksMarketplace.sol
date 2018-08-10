@@ -23,31 +23,46 @@ contract KulaksMarketplace {
       creator = msg.sender;
   }
   address public creator; // the address that instantiated the contract
-  uint productCount;
+  uint productCount; // used to create id's for products
   uint storedData; // AK_REMOE
-  uint shopCount;
-  uint shippingAndHandling = 20;
-  mapping(uint => uint) public shopBalances;
+  uint shopCount; // used to create id's for shops
+  uint shippingAndHandling = 20; // s&h charge (in wei)
+  mapping(uint => uint) public shopBalances; // used to keep track of all balances
   // mapping(address => bool) public admins; // enter an address to confirm if it's an admin
   // mapping(address => bool) public shopOwners; // enter an address to confirm if it's an shopOwner
   mapping(uint => Shop) public shops; // enter shopId to get info about the store
   mapping(address => uint[]) public shopIds; // enter an address to get an array of creates shops for the particular shopOwner
   mapping(uint => uint[]) public productIds; // enter a productId to get an array of created products for the particular shop
-  mapping(uint => Product) public products;
-  address[] public usersList;
-  uint[] public shopsList;
-  mapping(address => string) public users;
+  mapping(uint => Product) public products; // used to keep track of all products
+  address[] public usersList; // list of users used to display on admin page
+  uint[] public shopsList; // list of shops used to display on shopper's home page
+  mapping(address => string) public users; // used to keep track of all users
   
+  // for shop owner users only
   modifier shopOwnerOnly() {
-      require(bytes(users[msg.sender]).length > 0);
+    require(bytes(users[msg.sender]).length > 0);
     require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("owner")));
     _;
   }
   
+  // for admin users only
   modifier adminOnly() {
     require(bytes(users[msg.sender]).length > 0);
     require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
-    // require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
+    _;
+  }
+  
+  // only owner of the specific shop can execute this call
+  modifier ownerOfSpecificShopOnly(uint _shopId) {
+       // making sure shopId exists within shops
+    require((shops[_shopId].id) > 0);
+     // making sure the person that is trying to change something within shop is the owner
+    require((shops[_shopId].owner) == msg.sender);
+    // making sure msg.sender exists within users mapping
+    require(bytes(users[msg.sender]).length > 0);
+    require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("owner")));
+    
+    
     _;
   }
   
@@ -65,8 +80,8 @@ contract KulaksMarketplace {
   }
 
   // to be removed - AK_REMOVE
-  function test123(address _addr) public view returns(uint) {
-      return bytes(users[_addr]).length;
+  function test123(uint _shopId) public view returns(uint256) {
+      return (shops[_shopId].id);
   }
   
   // used by admin to create a regular an owner of a shop
@@ -156,7 +171,7 @@ contract KulaksMarketplace {
   }
   
   // moving shop eth balance to the shop owner account (by shop owner only)
-  function moveShopBalanceToOwner (uint _shopId) public shopOwnerOnly payable {
+  function moveShopBalanceToOwner (uint _shopId) public ownerOfSpecificShopOnly(_shopId) payable {
       shops[_shopId].owner.transfer(shopBalances[_shopId]);
       shopBalances[_shopId] = 0; // after the money has been transfered over, make balance 0 again
   }

@@ -42,17 +42,17 @@ const ShopList = ({ shopList, productList, createProduct, selectShop, createShop
                 <StyledShopDetails title="Shop Details">
                   <h4>Type: {x.type}</h4>
                   <p>Description: {x.description}</p>
-                  {typeof shopBalances[x.id] === 'number' &&
+                  {typeof shopBalances[x.id] === 'string' &&
                   <span>
                     <p>Shop Balance: {shopBalances[x.id]} wei</p>
                     <Button
-                      disabled={shopBalances[x.id] === 0}
+                      disabled={shopBalances[x.id] === '0'}
                       type="primary"
                       loading={loading.withdraw}
                       onClick={() => (withdrawBalance(x.id))}
                     >{loading.withdraw ? 'Withdrawing' : 'Withdraw Balance' }
                     </Button>
-                    {shopBalances[x.id] === 0 &&
+                    {shopBalances[x.id] === '0' &&
                     <p>
                       * Your shop balance is 0.<br /> There is nothing currently to withdraw.
                     </p>}
@@ -85,7 +85,7 @@ ShopList.propTypes = {
   createShop: PropTypes.func.isRequired,
   productList: PropTypes.object.isRequired,
   withdrawBalance: PropTypes.func.isRequired,
-  shopBalances: PropTypes.number.isRequired,
+  shopBalances: PropTypes.object.isRequired,
   loading: PropTypes.object.isRequired
 }
 

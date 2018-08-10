@@ -115,11 +115,11 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
 
         const productInfoResp = await Promise.all(getProductInfoArray)
         productInfoResp.forEach((x) => {
-          const id = x[0].c[0]
+          const id = x[0].toNumber()
           const name = x[1]
           const description = x[2]
-          const price = x[3].c[0]
-          const productStoreId = x[4].c[0]
+          const price = x[3].toNumber()
+          const productStoreId = x[4].toNumber()
           if (prodRespConfirm({ id, name, description, price, shopId: productStoreId })) {
             products.push({ id, name, description, price, storeId: productStoreId })
           }
@@ -190,8 +190,10 @@ export function createShop({ contractInstance, name, type, description, account 
 }
 
 export function createProduct({ contractInstance, name, description, price, account, shopId }) {
+  
   return async (dispatch) => {
     const parsedPrice = parseInt(price, 10)
+    console.log('parsedPrice =======================>', parsedPrice)
     try {
       dispatch(startLoading('newProduct')) // show loading button for create product form
       const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
@@ -219,11 +221,11 @@ export function selectProduct({ contractInstance, productId, account }) {
       console.log('contractInstance ==============>', contractInstance)
       const result = await contractInstance.products(productId, { from: account })
       const adjustedResponse = {
-        id: result[0].c[0],
+        id: result[0].toNumber(),
         name: result[1],
         description: result[2],
-        price: result[3].c[0],
-        shopId: result[4].c[0]
+        price: result[3].toNumber(),
+        shopId: result[4].toNumber()
       }
 
       if (prodRespConfirm(adjustedResponse)) {
@@ -253,11 +255,12 @@ export function checkShopBalance({ shopId, account, contractInstance }) {
     try {
       const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
       console.log('CHECK SHOP BALANCE RESULT', result)
-      console.log('DETAILED RESULT', result.c[0])
+      console.log('DETAILED RESULT yyyy', result.toString())
+      console.log('DETAILED RESULT yyyy 2222', result.c[0])
       dispatch({
         type: CHECK_SHOP_BALANCE,
         payload: {
-          [shopId]: result.c[0]
+          [shopId]: result.toString()
         }
       })
     } catch (e) {
@@ -325,7 +328,7 @@ export function getAllShops({ contractInstance, account }) {
       const shopsDetailsRequestArray = []
       const shopsDetailsResultArray = []
       if (result.c && result.c[0]) {
-        const lengthOfArray = result.c[0]
+        const lengthOfArray = result.toNumber()
         let counter = 0
 
         while (counter < lengthOfArray) {
@@ -343,7 +346,7 @@ export function getAllShops({ contractInstance, account }) {
 
         console.log('shopsResp ===?', shopsResp)
         shopsResp.forEach((x) => {
-          const id = x[0].c[0]
+          const id = x[0].toNumber()
           const name = x[1]
           const type = x[2]
           const description = x[3]
@@ -371,7 +374,7 @@ export function getSpecificShop({ contractInstance, account, shopId }) {
       const result = await contractInstance.shops(shopId, { from: account })
 
       if (result.length === 5) { // ensuring that we are getting a response with appropriate data
-        const id = result[0].c[0]
+        const id = result[0].toNumber()
         const name = result[1]
         const type = result[2]
         const description = result[3]
