@@ -272,6 +272,7 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
       dispatch(startLoading('withdraw')) // show loading button for withdraw button
       const withdrawResult = await contractInstance.moveShopBalanceToOwner(shopId, { from: account, gas: 550000 })
       if (withdrawResult.receipt) {
+        dispatch(checkShopBalance({ shopId, account, contractInstance })) // update shop balance
         displaySuccess(`You have successfully withdrawn from the shop balance into account: ${account}`)
       } else {
         displayError('There was an error withdrawing.')

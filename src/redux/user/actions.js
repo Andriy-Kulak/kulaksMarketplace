@@ -162,7 +162,7 @@ export function makeUser({ contractInstance, account, userAccount }) {
   return async (dispatch) => {
     try {
       dispatch(startLoading('adminListAction'))
-      const result = await contractInstance.makeUser(userAccount, { from: account, gas: 550000 })
+      const result = await contractInstance.makeShopper(userAccount, { from: account, gas: 550000 })
 
       if (result.receipt) {
         displaySuccess(`You have successfully made the following account a User: ${userAccount}`)
@@ -187,6 +187,7 @@ export function getUserStatus({ contractInstance, account }) {
     try {
       dispatch(startLoading('userStatus'))
       const result = await contractInstance.users(account, { from: account })
+      console.log('TEST 33333333', result)
       if (result === 'owner' || result === 'admin' || result === 'shopper') {
         dispatch({
           type: UPDATE_USER_STATUS,

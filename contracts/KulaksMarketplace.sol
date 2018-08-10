@@ -20,14 +20,12 @@ contract KulaksMarketplace {
   constructor () public payable {
       shopCount = 1;
       productCount = 1;
-      transactionCount = 1;
       creator = msg.sender;
   }
   address public creator; // the address that instantiated the contract
   uint productCount;
-  uint storedData;
+  uint storedData; // AK_REMOE
   uint shopCount;
-  uint transactionCount;
   uint shippingAndHandling = 20;
   mapping(uint => uint) public shopBalances;
   // mapping(address => bool) public admins; // enter an address to confirm if it's an admin
@@ -41,17 +39,20 @@ contract KulaksMarketplace {
   mapping(address => string) public users;
   
   modifier shopOwnerOnly() {
+      require(bytes(users[msg.sender]).length > 0);
     require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("owner")));
     _;
   }
   
   modifier adminOnly() {
+    require(bytes(users[msg.sender]).length > 0);
     require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
+    // require(keccak256(abi.encodePacked(users[msg.sender])) == keccak256(abi.encodePacked("admin")));
     _;
   }
   
   // check if user already exists within users mapping
-  function checkUserListExist (address _addr) public view returns(bool) {
+  function checkUserListExist (address _addr) private view returns(bool) {
       if(
           keccak256(abi.encodePacked(users[_addr])) == keccak256(abi.encodePacked("admin")) ||
           keccak256(abi.encodePacked(users[_addr])) == keccak256(abi.encodePacked("owner")) ||
@@ -62,8 +63,14 @@ contract KulaksMarketplace {
       
       return false;
   }
+
+  // to be removed - AK_REMOVE
+  function test123(address _addr) public view returns(uint) {
+      return bytes(users[_addr]).length;
+  }
   
-  function makeShopOwner(address _addr) public {
+  // used by admin to create a regular an owner of a shop
+  function makeShopOwner(address _addr) adminOnly public {
     if(checkUserListExist(_addr) == false) {
          usersList.push(_addr);
     }
@@ -71,7 +78,8 @@ contract KulaksMarketplace {
      
   }
   
-  function makeAdmin(address _addr) public {
+  // used by admin to create another admin
+  function makeAdmin(address _addr) adminOnly public {
     if(checkUserListExist(_addr) == false) {
         usersList.push(_addr);
     }
@@ -79,11 +87,12 @@ contract KulaksMarketplace {
      
   }
   
-  function makeUser(address _addr) public {
+  // used by admin to create a regular user/shopper
+  function makeShopper(address _addr) adminOnly public {
     if(checkUserListExist(_addr) == false) {
         usersList.push(_addr);
     }
-    users[_addr] = "user";
+    users[_addr] = "shopper";
      
   }
   
@@ -97,7 +106,8 @@ contract KulaksMarketplace {
      return shopsList.length;
   }
   
-  function createShop(string _name, string _shopType, string _description) public {
+  // creating a shop (by shop owner only)
+  function createShop(string _name, string _shopType, string _description) shopOwnerOnly public {
      uint id = shopCount;
      
      Shop memory newShop = Shop({
@@ -119,8 +129,8 @@ contract KulaksMarketplace {
     shopCount++;
   }
   
-  
-  function createProduct(uint _shopId, string _name, string _description, uint _price) public {
+  // creating a product (by shop owner only)
+  function createProduct(uint _shopId, string _name, string _description, uint _price) shopOwnerOnly public {
      uint id = productCount;
      
      Product memory newProduct = Product({
@@ -145,12 +155,14 @@ contract KulaksMarketplace {
      // return products[_productId].price * quantity + shippingAndHandling;
   }
   
-  function moveShopBalanceToOwner (uint _shopId) public payable {
+  // moving shop eth balance to the shop owner account (by shop owner only)
+  function moveShopBalanceToOwner (uint _shopId) public shopOwnerOnly payable {
       shops[_shopId].owner.transfer(shopBalances[_shopId]);
       shopBalances[_shopId] = 0; // after the money has been transfered over, make balance 0 again
   }
 
-  function doesOwnerHaveShops () public view returns(bool, uint) {
+  // check if shop owner has shops
+  function doesOwnerHaveShops () public view shopOwnerOnly returns(bool, uint) {
       if(shopIds[msg.sender].length > 0) {
           return(true,  shopIds[msg.sender].length);
       } else {
@@ -166,26 +178,35 @@ contract KulaksMarketplace {
       }
   }
   
+  // to be removed - AK_REMOVE
   function testBalance () public view returns (uint) {
       return this.balance;
   }
 
+  // for testing purposes only. any user can make themselves admin
+  // so that they can test all the functionality
   function becomeAdmin() public returns (bool) {
       users[msg.sender] = "admin";
   }
   
+  // for testing purposes only. any user can make themselves a shopper
+  // so that they can test all the functionality
   function becomeRegularUser() public returns (bool) {
       users[msg.sender] = "shopper";
   }
   
+  // for testing purposes only. any user can make themselves shop owner
+  // so that they can test all the functionality
   function becomeShopOwner() public returns (bool) {
       users[msg.sender] = "owner";
   }
   
+  // to be removed - AK_REMOVE
   function set(uint x) public {
     storedData = x;
   }
 
+  // to be removed - AK_REMOVE
   function get() public view returns (uint) {
     return storedData;
   }

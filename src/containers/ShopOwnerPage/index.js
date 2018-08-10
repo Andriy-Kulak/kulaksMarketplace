@@ -104,7 +104,7 @@ class ShopOwnerPage extends Component {
     actions.getAllShopsByOwner({ contractInstance, account })
   }
 
-  handleClick(value) {
+  handleClick = (value) => {
     const { contractInstance, account } = this.state
     contractInstance.set(value, { from: account })
       .then(() => {
@@ -196,6 +196,9 @@ class ShopOwnerPage extends Component {
           <button onClick={() => (this.testSender())}> Test SENDER</button>
           <button onClick={() => (this.getFirstStore())}> Get First Store</button>
           <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+          <button onClick={() => (this.getAllShopsByOwner())}> Get All Stores By Owner</button>
+          <button onClick={() => (this.handleClick(Date.now()))}>Update Value</button>
+          <h3>Current Value: {this.state.storageValue}</h3>
         </div>
         <AdminTestPanel
           userStatus={userStatus}
