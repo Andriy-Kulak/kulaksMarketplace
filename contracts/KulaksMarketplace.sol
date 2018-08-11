@@ -145,7 +145,7 @@ contract KulaksMarketplace {
   }
   
   // creating a product (by shop owner only)
-  function createProduct(uint _shopId, string _name, string _description, uint _price) shopOwnerOnly public {
+  function createProduct(uint _shopId, string _name, string _description, uint _price) ownerOfSpecificShopOnly(_shopId) public {
      uint id = productCount;
      
      Product memory newProduct = Product({
@@ -159,7 +159,6 @@ contract KulaksMarketplace {
      products[id] = newProduct; // adding a product to shopProducts mapping
      productIds[_shopId].push(id); // pushing the product id to be refernced in the store struct
      productCount ++;
-    
   }
   
   function purchaseProduct(uint _productId, uint quantity) public payable  {

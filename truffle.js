@@ -1,3 +1,4 @@
+const envVariables = require('./envVariables')
 const HDWalletProvider = require('truffle-hdwallet-provider')
 
 // See <http://truffleframework.com/docs/advanced/configuration>
@@ -12,8 +13,10 @@ module.exports = {
     rinkeby: {
       provider: () => {
         return new HDWalletProvider(
-          'skill october purchase stairs attack culture click cycle atom maid monster dove',
-          'https://rinkeby.infura.io/yGU1efDtsMTxmGUSJOva')
+          envVariables.RINKEBY_DEPLOY_MNEMONIC,
+          envVariables.RINKEBY_INFURA_DEPLOY_URL)
+        // 'skill october purchase stairs attack culture click cycle atom maid monster dove',
+        // 'https://rinkeby.infura.io/yGU1efDtsMTxmGUSJOva')
       },
       network_id: 3
     }
