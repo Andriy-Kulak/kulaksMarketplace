@@ -7,6 +7,6 @@ message.config({
 })
 
 // pop up that display error message with the help of ant design
-export const displayError = (e) => (message.error(`There was an error processing your request. More info: ${e.message}`))
+export const displayError = (e) => (message.error(`There was an error processing your request. More info: ${e}`))
 
 export const displaySuccess = (text) => (message.success(text))

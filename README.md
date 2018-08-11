@@ -4,25 +4,30 @@ commands
 - truffle migrate --reset
 - npm run start
 
+
+
+
 Steps to Set up Uport Account So you Can Sign in
 1. truffle unbox react-uport
 2. go to https://appmanager.uport.me/
 3. create uport account. Instead of signing in you, use your phone to authenticate requests
 
 Locally Start
-1. run > ganache in gui (or ganache-cli with port 7545). Copy mneumonic and paste it in metamask.
-2. create a custom RPC in metamask with `http://127.0.0.1:7545` to match local ganache environment
+1. run > ganache in gui (or ganache-cli with port 8545). Copy mneumonic and paste it in metamask.
 3. paste the mneumonic to metamask and go to localhost:8545
 4. run > truffle migrate --reset
 5. npm run start
 
+To deploy to rinkeby
+
 If you were to do deployment of contract to test network from scratch, there are a few initial steps:
-1. Set up infura at https://infura.io/
+1. Set up infura at https://infura.io/ and https://truffleframework.com/tutorials/using-infura-custom-provider
 2. Set up a metamask account. You need to downdload the metamask chrome extension, then create an account then save the mneumonic
 3. You need to fill up your rinkeby account with fake ethereum. Go to https://faucet.rinkeby.io/ and follow the steps
-4. Now that you have the infura rinkeby url and the mneumonic, update the turffle hd wallet in `truffle.js` file.
-5. Follow the next steps below to deploy contract
-- some of the steps where taken from the following doc: https://truffleframework.com/tutorials/using-infura-custom-provider
+4. Now that you have the infura rinkeby url and the mneumonic, run the following command and insert the mneumonic and infura url
+-  Copy`cp .envVariables.example.js envVariables.js` and fill in values.
+5. Run `npm run deploy:rinkeby` to deploy address to rinkeby. You will then be able to deploy the web app to a service like heroku
+
 
 To Deploy Contract To Test Network:
  - Run `deploy:contracts-rinkeby`. This does 3 things:
@@ -62,6 +67,10 @@ Security Holes:
 1. uport credentials are not secure. (Uses rinkeby test network). Make sure these credentials are not discoverable by public in the future
 2. truffle.js credentials are not secure. (Currently using a mneumonic created by metamask)
 
+
+Potential Errors That come up:
+1. If the following error comes up (usually only in local environment), the only way I found to consistently fix it is to remove and reinstall the Metamask chrom app: `Error: the tx doesn't have the correct nonce. account has nonce of: 4 tx has nonce of: 361`
+2. When you switch between local and test environemnts, make sure you redeploy contract to the appropriate place `npm run deploy:locally` or `npm run deploy:rinkeby`
 
 This repo was built from react-uport truffle scaffold. These were the initial order of operations To Start the app:
 1. truffle unbox react

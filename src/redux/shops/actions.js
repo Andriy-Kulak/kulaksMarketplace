@@ -1,5 +1,4 @@
 import { reset } from 'redux-form'
-import message from 'antd/lib/message'
 import { displayError, displaySuccess } from '../../util/displayMessage'
 import {
   CREATE_SHOP,
@@ -8,7 +7,9 @@ import {
   GET_PRODUCTS_BY_SHOP,
   SELECTED_PRODUCT,
   CLEAR_EXISTING_PRODUCT,
-  CHECK_SHOP_BALANCE
+  CHECK_SHOP_BALANCE,
+  GET_ALL_USER_SHOPS,
+  GET_SHOP_DETAILS
 } from './constants'
 import { startLoading, finishLoading, clearAllLoading } from '../loading/actions'
 
@@ -22,8 +23,10 @@ const shopRespConfirm = ({ id, name, type, description }) => {
 }
 
 export function getAllShopsByOwner({ contractInstance, account }) {
+  
   const start = Date.now()
   return async (dispatch) => {
+    // console.log('xxx web3.eth.getBlock(latest)', await web3.eth.getBlock('latest'))
     // checking if shopOwner has created stores
     const response = await contractInstance.doesOwnerHaveShops({ from: account })
     console.log('RESPOND FROM GET ALL STORES ====>', response)
@@ -36,31 +39,25 @@ export function getAllShopsByOwner({ contractInstance, account }) {
 
     if (response[0] === true && response[1] && response[1].c[0]) {
       const lengthOfArray = response[1].c[0]
-      console.log('reponse[1].c[0] lengthOfArray', lengthOfArray)
+      console.log('xxx reponse[1].c[0] lengthOfArray', lengthOfArray)
       let counter = 0
       const shopsArray = []
       const getShopIdsArray = []
       const getShopInfoArray = []
 
       while (counter < lengthOfArray) {
-        getShopIdsArray.push(contractInstance.shopIds(account, counter))
+        getShopIdsArray.push(contractInstance.shopIds(account, counter, { from: account }))
         counter += 1
       }
       try {
         const storeIdResp = await Promise.all(getShopIdsArray)
-        console.log('storeIdResp ==>', storeIdResp)
-        console.log('getStoreIdsArray ==>', getShopIdsArray)
         storeIdResp.forEach((x) => {
-          console.log('ARE WE GETTING HEREEEE store', x)
-          console.log('ARE WE GETTING HEREEEE 22222 store', x.c)
           if (x.c && x.c[0]) {
             const storeId = x.c[0]
             getShopInfoArray.push(contractInstance.shops(storeId, { from: account }))
           }
         })
-        console.log('getStoreInfoArray ==>', getShopInfoArray)
         const storeInfoResp = await Promise.all(getShopInfoArray)
-        console.log('storeInfoResp ==>', storeInfoResp)
         storeInfoResp.forEach((x) => {
           const id = x[0].c[0]
           const name = x[1]
@@ -77,7 +74,7 @@ export function getAllShopsByOwner({ contractInstance, account }) {
           payload: shopsArray
         })
       } catch (e) {
-        displayError(e)
+        displayError(e.message)
         console.log('shopIdsArray', getShopIdsArray)
         console.log('WHAT IS THE ERROR IN store id RESP', e)
       }
@@ -118,11 +115,11 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
 
         const productInfoResp = await Promise.all(getProductInfoArray)
         productInfoResp.forEach((x) => {
-          const id = x[0].c[0]
+          const id = x[0].toNumber()
           const name = x[1]
           const description = x[2]
-          const price = x[3].c[0]
-          const productStoreId = x[4].c[0]
+          const price = x[3].toNumber()
+          const productStoreId = x[4].toNumber()
           if (prodRespConfirm({ id, name, description, price, shopId: productStoreId })) {
             products.push({ id, name, description, price, storeId: productStoreId })
           }
@@ -137,12 +134,12 @@ export function getAllProductsByShop({ contractInstance, account, shopId }) {
         })
       }
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
     }
   }
 }
 
-function shopCreated(result) {
+export function shopCreated(result) {
   return ({
     type: CREATE_SHOP,
     payload: result
@@ -166,32 +163,37 @@ export function productSelected(result) {
 
 export function createShop({ contractInstance, name, type, description, account }) {
   return async (dispatch) => {
-    dispatch(startLoading('newShop'))
-    contractInstance.createShop(name, type, description, { from: account, gas: 550000 }).then((result) => {
-      console.log('CREATED STORE RESULT =========', result)
+    try {
+      dispatch(startLoading('newShop'))
+      const result = await contractInstance.createShop(name, type, description, { from: account, gas: 550000 })
+      console.log('xxx CREATED STORE RESULT =========', result)
       if (result.receipt) {
+        // console.log('xxxx web3.eth.blockNumber =========', web3.eth.blockNumber)
+        console.log('xxxx blocknumber', result.receipt.blockNumber)
         displaySuccess(`You have successfully creates a shop called ${name}`)
         dispatch(reset('newShop')) // reset form
         // trigger methods so you get the latest list of shops
         dispatch(getAllShopsByOwner({ contractInstance, account })) // get udated list of shops
       } else {
-        displayError(`There was an error creating shopc alled ${name}`)
+        displayError(`There was an error creating shop alled ${name}`)
       }
 
       dispatch(finishLoading('newShop')) // hide loading button for form
-    }).catch((e) => {
-      displayError(e)
+    } catch (e) {
+      displayError(e.message)
       dispatch(clearAllLoading())
       alert('There was an error with creating the Shop. Make sure you are a shop owner before creating a shop.')
       console.log('ERROR', e)
       console.log('ERROR message', e.message)
-    })
+    }
   }
 }
 
 export function createProduct({ contractInstance, name, description, price, account, shopId }) {
+  
   return async (dispatch) => {
     const parsedPrice = parseInt(price, 10)
+    console.log('parsedPrice =======================>', parsedPrice)
     try {
       dispatch(startLoading('newProduct')) // show loading button for create product form
       const result = await contractInstance.createProduct(shopId, name, description, parsedPrice, { from: account })
@@ -206,7 +208,7 @@ export function createProduct({ contractInstance, name, description, price, acco
       }
       dispatch(finishLoading('newProduct')) // hide loading button for form
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR CREATING PRODUCT', e)
     }
@@ -219,11 +221,11 @@ export function selectProduct({ contractInstance, productId, account }) {
       console.log('contractInstance ==============>', contractInstance)
       const result = await contractInstance.products(productId, { from: account })
       const adjustedResponse = {
-        id: result[0].c[0],
+        id: result[0].toNumber(),
         name: result[1],
         description: result[2],
-        price: result[3].c[0],
-        shopId: result[4].c[0]
+        price: result[3].toNumber(),
+        shopId: result[4].toNumber()
       }
 
       if (prodRespConfirm(adjustedResponse)) {
@@ -232,7 +234,7 @@ export function selectProduct({ contractInstance, productId, account }) {
         console.log('ERROR with productSelect result. Check the response', result)
       }
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       dispatch(clearAllLoading())
       console.log('ERROR with selectProduct', e)
       console.log('ERROR message', e.message)
@@ -253,15 +255,16 @@ export function checkShopBalance({ shopId, account, contractInstance }) {
     try {
       const result = await contractInstance.shopBalances(shopId, { from: account, gas: 550000 })
       console.log('CHECK SHOP BALANCE RESULT', result)
-      console.log('DETAILED RESULT', result.c[0])
+      console.log('DETAILED RESULT yyyy', result.toString())
+      console.log('DETAILED RESULT yyyy 2222', result.c[0])
       dispatch({
         type: CHECK_SHOP_BALANCE,
         payload: {
-          [shopId]: result.c[0]
+          [shopId]: result.toString()
         }
       })
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
     }
   }
 }
@@ -272,6 +275,7 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
       dispatch(startLoading('withdraw')) // show loading button for withdraw button
       const withdrawResult = await contractInstance.moveShopBalanceToOwner(shopId, { from: account, gas: 550000 })
       if (withdrawResult.receipt) {
+        dispatch(checkShopBalance({ shopId, account, contractInstance })) // update shop balance
         displaySuccess(`You have successfully withdrawn from the shop balance into account: ${account}`)
       } else {
         displayError('There was an error withdrawing.')
@@ -289,7 +293,7 @@ export function withdrawBalance({ shopId, account, contractInstance }) {
       })
       dispatch(finishLoading('withdraw')) // hide loading button for withdraw button
     } catch (e) {
-      displayError(e)
+      displayError(e.message)
       console.log('THERE IS an error withdrawing the request', e)
       dispatch(clearAllLoading())
     }
@@ -308,8 +312,84 @@ export function purchaseProduct({ contractInstance, quantity, totalCost, account
       console.log('RESULT', result)
     } catch (e) {
       dispatch(clearAllLoading())
-      displayError(e)
+      displayError(e.message)
       console.log('error purchasing product', e)
+    }
+  }
+}
+
+// Used when user wants to take a look at all available stores created by shop owners
+export function getAllShops({ contractInstance, account }) {
+  return async (dispatch) => {
+    try {
+      const result = await contractInstance.getShopsListLength({ from: account })
+
+      const shopsListArray = []
+      const shopsDetailsRequestArray = []
+      const shopsDetailsResultArray = []
+      if (result.c && result.c[0]) {
+        const lengthOfArray = result.toNumber()
+        let counter = 0
+
+        while (counter < lengthOfArray) {
+          shopsListArray.push(contractInstance.shopsList(counter, { from: account }))
+          counter += 1
+        }
+        const shopsListResp = await Promise.all(shopsListArray)
+        console.log('shopsListResp ====>', shopsListResp)
+
+
+        shopsListResp.forEach((x) => {
+          shopsDetailsRequestArray.push(contractInstance.shops(x, { from: account }))
+        })
+        const shopsResp = await Promise.all(shopsDetailsRequestArray)
+
+        console.log('shopsResp ===?', shopsResp)
+        shopsResp.forEach((x) => {
+          const id = x[0].toNumber()
+          const name = x[1]
+          const type = x[2]
+          const description = x[3]
+          const owner = x[4]
+          if (shopRespConfirm({ id, name, type, description })) {
+            shopsDetailsResultArray.push({ id, name, type, description, owner })
+          }
+        })
+
+        dispatch({
+          type: GET_ALL_USER_SHOPS,
+          payload: shopsDetailsResultArray
+        })
+      }
+    } catch (e) {
+      displayError(`Error getting all shops... ${e.message}`)
+      console.log('ERROR getting all shops', e)
+    }
+  }
+}
+
+export function getSpecificShop({ contractInstance, account, shopId }) {
+  return async (dispatch) => {
+    try {
+      const result = await contractInstance.shops(shopId, { from: account })
+
+      if (result.length === 5) { // ensuring that we are getting a response with appropriate data
+        const id = result[0].toNumber()
+        const name = result[1]
+        const type = result[2]
+        const description = result[3]
+        const owner = result[4]
+        dispatch({
+          type: GET_SHOP_DETAILS,
+          payload: { id, name, type, description, owner }
+        })
+      } else {
+        displayError(`Error #2 getting getting  shop with id =${shopId}`)
+        console.log('RESPONSE FRO getSpecificShop', result)
+      }
+    } catch (e) {
+      displayError(`Error getting getting  shop with id =${shopId} ... ${e.message}`)
+      console.log('ERROR getting shop', e)
     }
   }
 }

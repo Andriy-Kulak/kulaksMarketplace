@@ -7,7 +7,7 @@ import Button from 'antd/lib/button'
 import { StyledContainer, StyledProduct, StyledProductList } from './styles'
 
 const ProductList = ({ productList, shopId }) => {
-  const title = productList.length > 0 ? 'Available Products' : 'This shop currently does not have any products. Create a Product below.'
+  const title = productList.length > 0 ? 'Available Products' : 'This shop currently does not have any products.'
   return (
     <div>
       <StyledProductList title={title}>

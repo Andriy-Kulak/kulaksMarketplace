@@ -5,7 +5,9 @@ import {
   GET_PRODUCTS_BY_SHOP,
   SELECTED_PRODUCT,
   CLEAR_EXISTING_PRODUCT,
-  CHECK_SHOP_BALANCE
+  CHECK_SHOP_BALANCE,
+  GET_ALL_USER_SHOPS,
+  GET_SHOP_DETAILS
 } from './constants'
 
 const initialState = {
@@ -14,7 +16,9 @@ const initialState = {
   all: [],
   products: {},
   selectedProduct: {},
-  shopBalances: {}
+  shopBalances: {},
+  userShops: [],
+  shopDetails: {}
 }
 
 const shopReducer = (state = initialState, action) => {
@@ -32,6 +36,10 @@ const shopReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         owner: action.payload
       })
+    case GET_ALL_USER_SHOPS:
+      return Object.assign({}, state, {
+        userShops: action.payload
+      })
     case GET_PRODUCTS_BY_SHOP: {
       return Object.assign({}, state, {
         products: {
@@ -40,6 +48,10 @@ const shopReducer = (state = initialState, action) => {
         }
       })
     }
+    case GET_SHOP_DETAILS:
+      return Object.assign({}, state, {
+        shopDetails: action.payload
+      })
     case SELECTED_PRODUCT:
       return Object.assign({}, state, {
         selectedProduct: action.payload

@@ -4,7 +4,10 @@ const initialState = {
   newShop: false,
   newProduct: false,
   purchaseProduct: false,
-  withdraw: false
+  withdraw: false,
+  adminListAction: false,
+  adminPanelAction: false,
+  userStatus: false
 }
 
 const loadingReducer = (state = initialState, action) => {

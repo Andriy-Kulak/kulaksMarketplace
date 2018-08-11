@@ -8,3 +8,7 @@ export const StyledContainer = styled.div`
 export const StyledProduct = styled(Card)`
   max-width: 600px !important;
 `
+
+export const StyledInfo = styled.h3`
+  background-color: yellow;
+`

@@ -43,10 +43,10 @@
     "recursive-readdir": "2.1.0",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
-    "truffle-contract": "^1.1.8",
-    "truffle-hdwallet-provider": "0.0.3",
+    "truffle-contract": "^3.0.6",
+    "truffle-hdwallet-provider": "0.0.6",
     "url-loader": "0.5.7",
-    "web3": "^1.0.0-beta.26",
+    "web3": "^1.0.0-beta.35",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
     "webpack-manifest-plugin": "1.1.0",
@@ -54,6 +54,7 @@
   },
   "dependencies": {
     "antd": "^3.6.5",
+    "decimal.js": "^10.0.1",
     "lodash": "^4.17.10",
     "mnid": "^0.1.1",
     "prop-types": "^15.6.2",
@@ -76,7 +77,8 @@
     "deploy:rinkeby": "truffle compile && truffle migrate --network rinkeby --reset && npm run contracts:sync-src",
     "deploy:locally": "truffle compile && truffle migrate --reset && npm run contracts:sync-src",
     "build:contracts": "truffle compile && npm run contracts:sync-src",
-    "contracts:sync-src": "rimraf src/contracts && cp -R build/contracts/ src/contracts"
+    "contracts:sync-src": "rimraf src/contracts && cp -R build/contracts/ src/contracts",
+    "test123": "truffle migrate --reset --compile-all && npm run contracts:sync-src"
   },
   "jest": {
     "collectCoverageFrom": [

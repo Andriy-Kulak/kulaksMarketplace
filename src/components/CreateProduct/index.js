@@ -49,6 +49,7 @@ const validate = (values) => {
   if (!values.name) { errors.name = 'Required!' }
   if (!values.description) { errors.description = 'Required!' }
   if (!values.price) { errors.price = 'Required!' }
+  if (!(values.price > 1000)) { errors.price = 'Minimum price for a product is 1,000 wei!' }
 
   return errors
 }

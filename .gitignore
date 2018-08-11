@@ -13,3 +13,7 @@
 #config_vars
 src/configVars
 src/contracts
+
+
+# environment variables
+envVariables.js
